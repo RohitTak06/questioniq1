@@ -1,0 +1,48 @@
+random_state: 42
+tesseract_cmd: "C:/Program Files/Tesseract-OCR/tesseract.exe"
+
+portal:
+  url: "https://exam-quiz-portal-lib-jklu.vercel.app"
+  backend: "https://learn-backend-jklu.vercel.app"
+  profile_dir: ".auth"
+  min_delay_seconds: 1.0
+  max_retries: 3
+
+collection:
+  min_subjects: 20
+  skip_exam_types: [Assignment]
+
+courses: []  # filled from the catalogue in Phase 0b
+
+paths:
+  raw: data/raw
+  catalogue: data/catalogue.csv
+  manifest: data/manifest.csv
+  ocr: data/ocr
+  ocr_gold: data/ocr_gold
+  labels: data/labels
+  models: models
+  metrics: reports/metrics
+  figures: reports/figures
+  db: data/questioniq.db
+
+extraction:
+  min_chars_per_page: 50
+  dpi: 300
+  psm: 6
+  lang: eng
+
+topics:
+  k_min: 4
+  k_max: 15
+  top_n: 10
+  min_df: 2
+  ngram_range: [1, 2]
+  group_min_questions: 150
+
+annotation:
+  relabel_n: 150
+  relabel_delay_hours: 48
+
+difficulty:
+  cv_folds: 5

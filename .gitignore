@@ -1,0 +1,12 @@
+.env
+.auth/
+data/raw/
+data/ocr/
+data/api_log.jsonl
+models/
+*.db
+.venv/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+.ipynb_checkpoints/
