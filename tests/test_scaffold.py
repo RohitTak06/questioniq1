@@ -21,6 +21,11 @@ MODULES = [
     "app",
     "app.routes",
     "scripts.discover_api",
+    "scripts.run_extraction",
+    "scripts.run_segmentation",
+    "scripts.select_gold",
+    "scripts.ocr_eval",
+    "scripts.seg_eval",
 ]
 
 

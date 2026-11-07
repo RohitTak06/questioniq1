@@ -3,6 +3,11 @@
 data/raw/
 data/ocr/
 data/api_log.jsonl
+data/ocr_gold/*
+!data/ocr_gold/.gitkeep
+data/questions.csv
+data/labels/segment_lines_*.csv
+reports/segmentation_review/
 models/
 *.db
 .venv/

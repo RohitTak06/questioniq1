@@ -16,6 +16,7 @@ collection:
   min_subjects: 20
   skip_exam_types: [Assignment]
   skip_title_words: [assignment, coding hour]
+  exclude_from_analysis: [116]  # identical file to paper 50
 
 courses: []  # filled from the catalogue in Phase 0b
 
@@ -27,6 +28,11 @@ paths:
   summary: reports/collection_summary.md
   ocr: data/ocr
   ocr_gold: data/ocr_gold
+  questions: data/questions.csv
+  seg_summary: reports/segmentation_summary.md
+  seg_review: reports/segmentation_review
+  seg_check: data/seg_gold/segmentation_check.csv
+  gold_selection: reports/gold_selection.md
   labels: data/labels
   models: models
   metrics: reports/metrics
@@ -38,6 +44,15 @@ extraction:
   dpi: 300
   psm: 6
   lang: eng
+  method: otsu  # otsu, adaptive or layers; chosen by CER in scripts/ocr_eval.py
+  right_zone: 0.80  # marks and CO columns start after this fraction of the page width
+  table_digit_ratio: 0.35
+  table_min_tokens: 30
+  low_confidence: 70
+
+gold:
+  n_check_papers: 10
+  n_line_papers: 10
 
 topics:
   k_min: 4

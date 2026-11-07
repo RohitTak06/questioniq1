@@ -14,3 +14,7 @@ Append-only. One line per decision: `date | area | decision | reason`.
 2026-11-07 | collection | `has_text_layer` is true if any page has at least 50 characters of text | Same threshold as `extraction.min_chars_per_page`, so a watermark alone does not count as text.
 2026-11-07 | collection | 5 s between requests, retries after 15, 30 and 60 s | At about 1.5 s apart the backend returned 500 or reset the connection on list page 4; the same page worked at 6 s apart.
 2026-11-07 | collection | Correction to the line above: spacing was not the main cause. List papers one year at a time | The plain list answers 500 past position 142 at any speed, while year filters reach all 150. The 5 s gap stays as a precaution against occasional connection resets.
+2026-11-07 | extraction | `table_digit_ratio` = 0.35 | Real statistical table pages scored 0.39 to 0.81 and the next highest page 0.21, so 0.35 falls in the gap.
+2026-11-07 | segmentation | One row per question; sub-parts are separate only when each has its own marks; each OR option is its own row; MCQ options stay in the text | A sub-part without its own marks has no separate marks to learn from. Approved by the owner.
+2026-11-07 | segmentation | Paper 116 is excluded from analysis | Identical file to paper 50, so its questions would be counted twice. Approved by the owner.
+2026-11-07 | segmentation | Misread question numbers are kept and flagged, not corrected | Numbers can really skip, so a guess could be wrong. The split boundary is still right.
