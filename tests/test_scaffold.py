@@ -20,6 +20,7 @@ MODULES = [
     "questioniq.pipeline",
     "app",
     "app.routes",
+    "scripts.discover_api",
 ]
 
 

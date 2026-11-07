@@ -5,12 +5,17 @@ portal:
   url: "https://exam-quiz-portal-lib-jklu.vercel.app"
   backend: "https://learn-backend-jklu.vercel.app"
   profile_dir: ".auth"
-  min_delay_seconds: 1.0
+  min_delay_seconds: 5.0
   max_retries: 3
+  retry_base_seconds: 15
+  login_timeout_seconds: 600
+  page_size: 20
 
 collection:
+  scope: all  # all = every eligible paper; anything else stops at min_subjects
   min_subjects: 20
   skip_exam_types: [Assignment]
+  skip_title_words: [assignment, coding hour]
 
 courses: []  # filled from the catalogue in Phase 0b
 
@@ -18,6 +23,8 @@ paths:
   raw: data/raw
   catalogue: data/catalogue.csv
   manifest: data/manifest.csv
+  api_log: data/api_log.jsonl
+  summary: reports/collection_summary.md
   ocr: data/ocr
   ocr_gold: data/ocr_gold
   labels: data/labels

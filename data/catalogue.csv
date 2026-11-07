@@ -1,0 +1,151 @@
+paper_id,course,course_name,title,year,exam_type,semester,status,file_name,uploaded_at
+170,EE1120,Digital Circuit and Systems,Mid term II Digital Circuit and Systems sem 2,2025,Midterm,2nd Sem,approved,mid term 2 digital.pdf,2026-03-21T21:39:53.292000
+169,AS1114,Linear Algebra and Differential Equations,Mid term II Linear Algebra and Differential Equations Sem 2,2025,Midterm,2nd Sem,approved,linear algebra mid term 2.pdf,2026-03-21T21:38:32.075000
+168,AS1108,Applied Physics,MID TERM 2 APPLIED PHYSICS SEM2,2025,Midterm,2nd Sem,approved,applied physics mid term 2.pdf,2026-03-21T21:30:38.589000
+167,CS1135,Programming II,MID TERM 2  Programming II (C) 1ST YEAR II SEM,2025,Midterm,2nd Sem,approved,mid term 2 programing 2.pdf,2026-03-21T21:29:16.719000
+166,EE1110,Digital System Design,3:8 decoder using VHDL,2024,Assignment,2nd Sem,approved,DIGITAL_Assi.10 aman.pdf,2026-03-02T21:40:20.302000
+79,ES1114,Environmental Studies,ES1114 - Environmental Studies - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,ES1114-Environmental Studies.pdf,2025-11-30T02:03:21.128000Z
+78,EE1118,Fundamentals Of Electrical And Electronics Engineering,EE1118 - Fundamentals Of Electrical And Electronics Engineering - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,EE1118-Fundamentals Of Electrical And Electronics Engineering.pdf,2025-11-30T02:03:14.057000Z
+77,AS1406,Partial Differential Equation And Fourier Transform,AS1406 - Partial Differential Equation And Fourier Transform - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,AS1406-Partial Differential Equation And Fourier Transform.pdf,2025-11-30T02:03:04.682000Z
+76,AS1209,Matrix Computations,AS1209 - Matrix Computations - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,AS1209-Matrix Computations.pdf,2025-11-30T02:02:57.569000Z
+75,AS1109,Calculus (A),AS1109 - Calculus (B) - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,AS1109-Calculus (B).pdf,2025-11-30T02:02:44.455000Z
+74,AS1109,Calculus (A),AS1109 - Calculus (A) - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,AS1109-Calculus (A).pdf,2025-11-30T02:02:40.085000Z
+73,AS1108,Applied Physics,AS1108 - Applied Physics - Endterm - Sem 15 - 2024,2024,Endterm,15,approved,AS1108-Applied Physics.pdf,2025-11-30T02:02:32.494000Z
+72,ED1102,Idea To Business Model,ED1102 - Idea To Business Model - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,ED1102-Idea To Business Model.pdf,2025-11-30T02:02:26.027000Z
+71,CS1240,Project Based Advanced Programming,CS1240 - Project Based Advanced Programming - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,CS1240-Project Based Advanced Programming.pdf,2025-11-30T02:02:19.643000Z
+70,CS1234,Applied Computer Vision,CS1234 - Applied Computer Vision - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,CS1234-Applied Computer Vision.pdf,2025-11-30T02:02:11.591000Z
+68,ME1105,Strength Of Material & Analysis,ME1105 - Strength Of Material & Analysis - Endterm - Sem 2 - 2024,2024,Endterm,2,approved,ME1105-Strength Of Material & Analysis.pdf,2025-11-30T02:01:53.956000Z
+67,LS1108,Essentials Of Business Management,LS1108 - Essentials Of Business Management - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,LS1108-Essentials Of Business Management.pdf,2025-11-30T02:01:47.775000Z
+66,EE1408,Microprocessor And Microcontroller,EE1408 - Microprocessor And Microcontroller - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,EE1408-Microprocessor And Microcontroller.pdf,2025-11-30T02:01:41.437000Z
+65,EE1406,Graph Theory And Filter Circuits,EE1406 - Graph Theory And Filter Circuits - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,EE1406-Graph Theory And Filter Circuits.pdf,2025-11-30T02:01:34.481000Z
+64,EE1228,Iot Application,EE1228 - Iot Application - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,EE1228-Iot Application.pdf,2025-11-30T02:01:25.564000Z
+63,EE1227,Introduction To RUST Programming,EE1227 - Introduction To RUST Programming - Endterm - Sem 7 - 2024,2024,Endterm,7,approved,EE1227-Introduction To RUST Programming.pdf,2025-11-30T02:01:19.164000Z
+62,EE1222,Introduction To Iot And Automation Projects EE1410 Iot Protocol And Applications,EE1222 - Introduction To Iot And Automation Projects EE1410 Iot Protocol And Applications - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,EE1222-Introduction To Iot And Automation Projects-EE1410-Iot Protocol And Applications.pdf,2025-11-30T02:01:12.700000Z
+61,EE1122,Signals And Systems,EE1122 - Signals And Systems - Endterm - Sem 3 - 2024,2024,Endterm,3,approved,EE1122-Signals And Systems.pdf,2025-11-30T02:01:06.203000Z
+60,CS1239,Security Engineering,CS1239 - Security Engineering - Endterm - Sem 7 - 2024,2024,Endterm,7,approved,CS1239-Security Engineering.pdf,2025-11-30T02:00:59.683000Z
+59,CS1236,Advanced Data Structures,CS1236 - Advanced Data Structures - Endterm - Sem 7 - 2024,2024,Endterm,7,approved,CS1236-Advanced Data Structures.pdf,2025-11-30T02:00:52.628000Z
+58,CS1224,Artificial Intelligence,CS1224 - Artificial Intelligence - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,CS1224-Artificial Intelligence.pdf,2025-11-30T02:00:42.771000Z
+57,CS1218,Deep Learning,CS1218 - Deep Learning - Endterm - Sem 7 - 2024,2024,Endterm,7,approved,CS1218-Deep Learning.pdf,2025-11-30T02:00:37.089000Z
+56,CS1203,Blockchain Technology And Applications,CS1203 - Blockchain Technology And Applications - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,CS1203-Blockchain Technology And Applications.pdf,2025-11-30T02:00:30.798000Z
+55,CS1142,Discrete Mathematics (A),CS1142 - Discrete Mathematics (B) - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,CS1142-Discrete Mathematics (B).pdf,2025-11-30T02:00:24.205000Z
+54,CS1142,Discrete Mathematics (A),CS1142 - Discrete Mathematics (A) - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,CS1142-Discrete Mathematics (A).pdf,2025-11-30T02:00:18.131000Z
+53,CS1140,Computer Networks,CS1140 - Computer Networks - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,CS1140-Computer Networks.pdf,2025-11-30T02:00:10.646000Z
+52,CS1139,Programming I (A),CS1139 - Programming I (A) - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,CS1139-Programming-I (A).pdf,2025-11-30T02:00:02.823000Z
+51,CS1134,CS1117 Computer Organization And Architecture Computer Organization And Systems (A) (2),CS1134 - CS1117 Computer Organization And Architecture Computer Organization And Systems (A) (2) - Endterm - Sem 3 - 2024,2024,Endterm,3,approved,CS1134-CS1117-Computer Organization And Architecture-Computer Organization And Systems (A) (2).pdf,2025-11-30T01:59:56.799000Z
+49,CS1132,C Programming And Data Structures,CS1132 - C Programming And Data Structures - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,CS1132-C Programming And Data Structures.pdf,2025-11-30T01:59:43.462000Z
+48,CS1131,Data Structure And Algorithms,CS1131 - Data Structure And Algorithms - Endterm - Sem 3 - 2024,2024,Endterm,3,approved,CS1131-Data Structure And Algorithms.pdf,2025-11-30T01:59:36.954000Z
+47,CS1120,Operating Systems And Linux Administration,CS1120 - Operating Systems And Linux Administration - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,CS1120-Operating Systems And Linux Administration.pdf,2025-11-30T01:59:30.480000Z
+46,CS1116,Database Management And Applications,CS1116 - Database Management And Applications - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,CS1116-Database Management And Applications.pdf,2025-11-30T01:59:23.786000Z
+45,CS1108,Operating Systems,CS1108 - Operating Systems - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,CS1108-Operating Systems.pdf,2025-11-30T01:59:16.955000Z
+44,CS1105,Design And Analysis Of Algorithms,CS1105 - Design And Analysis Of Algorithms - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,CS1105-Design And Analysis Of Algorithms.pdf,2025-11-30T01:59:10.585000Z
+43,CS1102,Data Structures,CS1102 - Data Structures - Endterm - Sem 3 - 2024,2024,Endterm,3,approved,CS1102-Data Structures.pdf,2025-11-30T01:59:03.234000Z
+42,CE1206,Disaster Management,CE1206 - Disaster Management - Endterm - Sem 7 - 2024,2024,Endterm,7,approved,CE1206-Disaster Management.pdf,2025-11-30T01:58:56.981000Z
+41,CC1106,Critical Thinking For Decisions AT Workplace,CC1106 - Critical Thinking For Decisions AT Workplace - Endterm - Sem 6 - 2024,2024,Endterm,6,approved,CC1106-Critical Thinking For Decisions AT Workplace.pdf,2025-11-30T01:58:50.874000Z
+40,CC1105,Understanding And Managing Conflict,CC1105 - Understanding And Managing Conflict - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,CC1105-Understanding And Managing Conflict.pdf,2025-11-30T01:58:43.934000Z
+39,CC1103,Perspectives Of Contemporary Issues,CC1103 - Perspectives Of Contemporary Issues - Endterm - Sem 1 - 2024,2024,Endterm,3,approved,CC1103-Perspectives Of Contemporary Issues.pdf,2025-11-30T01:58:36.039000Z
+38,AS1202,Advanced Statistics,AS1202 - Advanced Statistics - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,AS1202-Advanced Statistics.pdf,2025-11-30T01:58:23.764000Z
+37,AS1110,Differential EQuations,AS1110 - Differential EQuations - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,AS1110-Differential EQuations.pdf,2025-11-30T01:58:17.817000Z
+36,OP1101,Operations Management (2),OP1101 - Operations Management - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,OP1101-Operations Management.pdf,2025-11-30T01:58:08.188000Z
+35,OP1101,Operations Management (2),OP1101 - Operations Management (2) - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,OP1101-Operations Management (2).pdf,2025-11-30T01:58:03.932000Z
+34,MA1128,Sales & Distribution Management,MA1128 - Sales & Distribution Management - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,MA1128-Sales & Distribution Management.pdf,2025-11-30T01:57:56.767000Z
+32,MA1103,Consumer Behavior,MA1103 - Consumer Behavior - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,MA1103-Consumer Behavior.pdf,2025-11-30T01:57:43.911000Z
+31,MA1102,Advertising & Sales Management,MA1102 - Advertising & Sales Management - Endterm - Sem 4 - 2024,2024,Endterm,4,approved,MA1102-Advertising & Sales Management.pdf,2025-11-30T01:57:37.406000Z
+30,LS1107,Environmental Studies,LS1107 - Environmental Studies - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,LS1107-Environmental Studies.pdf,2025-11-30T01:57:30.770000Z
+29,LS1106,Foundations Of Business Management,LS1106 - Foundations Of Business Management - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,LS1106-Foundations Of Business Management.pdf,2025-11-30T01:57:23.934000Z
+28,LD1101,Understanding And Leading Self,LD1101 - Understanding And Leading Self - Endterm - Sem 3 - 2024,2024,Endterm,3,approved,LD1101-Understanding And Leading Self.pdf,2025-11-30T01:57:18.935000Z
+27,ID1121,Intelligent Automation,ID1121 - Intelligent Automation - Endterm - Sem 3 - 2024,2024,Endterm,3,approved,ID1121-Intelligent Automation.pdf,2025-11-30T01:57:14.337000Z
+26,FA1131,Contemporary Banking Payments And Insurance,FA1131 - Contemporary Banking Payments And Insurance - Endterm - Sem 3 - 2024,2024,Endterm,3,approved,FA1131-Contemporary Banking Payments And Insurance.pdf,2025-11-30T01:57:09.838000Z
+25,FA1129,Banking Securities And Collection Operations,FA1129 - Banking Securities And Collection Operations - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,FA1129-Banking Securities And Collection Operations.pdf,2025-11-30T01:57:04.344000Z
+24,FA1101,Accounting For Business,FA1101 - Accounting For Business - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,FA1101-Accounting For Business.pdf,2025-11-30T01:56:52.740000Z
+23,ED1109,Introduction To Entrepreneurship,ED1109 - Introduction To Entrepreneurship - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,ED1109-Introduction To Entrepreneurship.pdf,2025-11-30T01:56:44.936000Z
+22,ED1104,Sustaining And Growing Start Upsi,ED1104 - Sustaining And Growing Start Upsi - Endterm - Sem 5 - 2024,2024,Endterm,5,approved,ED1104-Sustaining And Growing Start-Upsi.pdf,2025-11-30T01:56:39.748000Z
+21,CC1101,Fundamentals Of Communication,CC1101 - Fundamentals Of Communication - Endterm - Sem 1 - 2024,2024,Endterm,1,approved,CC1101-Fundamentals Of Communication.pdf,2025-11-30T01:56:34.345000Z
+164,CS1418,Operating,CS1418 - Operating - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,CS1418 Operating.pdf,2025-11-30T02:13:11.008000Z
+163,CS1138,Machine Learing,CS1138 - Machine Learing - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,CS1138 Machine Learing.pdf,2025-11-30T02:13:04.393000Z
+162,IL1104,Accounting,IL1104 - Accounting - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,IL1104 Accounting.pdf,2025-11-30T02:12:57.467000Z
+161,EE1119,Arduino,EE1119 - Arduino - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,EE1119 Arduino.pdf,2025-11-30T02:12:49.942000Z
+160,CS1135,Programming II,CS1135 - Programming II - Sem 3 - 2023,2023,Other,3,approved,CS1135 Programming-II.pdf,2025-11-30T02:12:42.967000Z
+159,CS1131,Data Structure And Algorithms,CS1131 - Data Structure And Algorithms - Endterm - Sem 3 - 2023,2023,Endterm,3,approved,CS1131 Data Structure And Algorithms.pdf,2025-11-30T02:12:36.590000Z
+158,CS1122,C++Programming And Data Structures,CS1122 - C++Programming And Data Structures - Endterm - Sem 3 - 2023,2023,Endterm,3,approved,CS1122 C++Programming And Data Structures.pdf,2025-11-30T02:12:30.567000Z
+157,AS1106,Statistical Computing,AS1106 - Statistical Computing - Endterm - Sem 3 - 2023,2023,Endterm,3,approved,AS1106 Statistical Computing.pdf,2025-11-30T02:12:21.404000Z
+156,CS1417,Database,CS1417 - Database - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,CS1417 Database.pdf,2025-11-30T02:12:14.724000Z
+155,CS1139,Programming I (A),CS1139 - Python - Sem 1 - 2023,2023,Other,1,approved,CS1139 Python.pdf,2025-11-30T02:12:06.123000Z
+154,CS1137,Design And Modelling,CS1137 - Design And Modelling - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,CS1137 Design And Modelling.pdf,2025-11-30T02:11:59.062000Z
+153,CS1136,Fundamentals Of Information Technology,CS1136 - Fundamentals Of Information Technology - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,CS1136 Fundamentals Of Information Technology.pdf,2025-11-30T02:11:50.808000Z
+152,CS1117,Computer Organisation And Systems,CS1117 - Computer Organisation And Systems - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,CS1117 Computer Organisation And Systems.pdf,2025-11-30T02:11:43.645000Z
+151,CS1115,(Backlog) Programming I (Python),CS1115 - (Backlog) Programming I (Python) - Sem 1 - 2023,2023,Other,1,approved,CS1115 (Backlog) Programming-I (Python).pdf,2025-11-30T02:11:37.370000Z
+150,AS1111,AS1104 Mathematics I,AS1111 - Mathematics I - Sem 1 - 2023,2023,Other,1,approved,AS1111 Mathematics-I.pdf,2025-11-30T02:11:30.903000Z
+149,AS1104,Mathematics,AS1104 - Mathematics - Sem 1 - 2023,2023,Other,1,approved,AS1104 Mathematics.pdf,2025-11-30T02:11:24.924000Z
+148,ME2101,Industrial Safety Management,ME2101 - Industrial Safety Management - Endterm - Sem 7 - 2023,2023,Endterm,7,approved,Me2101 Industrial Safety Management.pdf,2025-11-30T02:11:17.991000Z
+147,ME1227,Fundamental of Sustainable Development,ME1227 - Fundamental of Sustainable Development - Endterm - Sem 7 - 2023,2023,Endterm,7,approved,Me1227 Fundamental of Sustainable Development.pdf,2025-11-30T02:11:11.178000Z
+146,ME1225,Industrial Waste Management,ME1225 - Industrial Waste Management - Endterm - Sem 7 - 2023,2023,Endterm,7,approved,Me1225 Industrial Waste Management.pdf,2025-11-30T02:11:01.620000Z
+145,ME1223,Product Design And Manufacturing,ME1223 - Product Design And Manufacturing - Endterm - Sem 7 - 2023,2023,Endterm,7,approved,Me1223 Product Design And Manufacturing.pdf,2025-11-30T02:10:55.128000Z
+144,FA1127,Fundamentals Of Investing,FA1127 - Fundamentals Of Investing - Endterm - Sem 7 - 2023,2023,Endterm,7,approved,Fa1127 Fundamentals Of Investing.pdf,2025-11-30T02:10:46.459000Z
+143,CS1228,Computer Vision,CS1228 - Computer Vision - Endterm - Sem 7 - 2023,2023,Endterm,7,approved,Cs1228 Computer Vision.pdf,2025-11-30T02:10:30.561000Z
+141,CS1225,Multi Dimensional And Nosql,CS1225 - Multi Dimensional And Nosql - Endterm - Sem 7 - 2023,2023,Endterm,7,approved,Cs1225 Multi-Dimensional And Nosql.pdf,2025-11-30T02:10:15.229000Z
+140,CE1206,Disaster Management,CE1206 - Disaster Management - Endterm - Sem 7 - 2023,2023,Endterm,7,approved,Ce1206 Disaster Management.pdf,2025-11-30T02:10:07.543000Z
+139,AS1201,Operations Research,AS1201 - Operations Research - Sem 7 - 2023,2023,Other,7,approved,As1201 Operations Research.pdf,2025-11-30T02:10:00.781000Z
+138,ME1410,Machine Design,ME1410 - Machine Design - Endterm - Sem 6 - 2023,2023,Endterm,6,approved,Me1410 Machine Design.pdf,2025-11-30T02:09:52.837000Z
+137,CE1210,Advanced Foundation Engineering,CE1210 - Advanced Foundation Engineering - Endterm - Sem 6 - 2023,2023,Endterm,6,approved,Ce1210 Advanced Foundation Engineering.pdf,2025-11-30T02:09:46.050000Z
+136,CC1106,Critical Thinking For Decisions AT Workplace,CC1106 - Critical Thinking For Decisions At Workplace - Endterm - Sem 6 - 2023,2023,Endterm,6,approved,Cc1106 Critical Thinking For Decisions At Workplace.pdf,2025-11-30T02:09:36.263000Z
+135,EE1406,Graph Theory And Filter Circuits,EE1406 - Graph Theory And Filter Circuits - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,Ee1406 Graph Theory And Filter Circuits.pdf,2025-11-30T02:09:30.479000Z
+133,EE1222,Introduction To Iot And Automation Projects EE1410 Iot Protocol And Applications,EE1222 - Introduction To Iot And Automation Project - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,Ee1222 Introduction To Iot And Automation Project.pdf,2025-11-30T02:09:20.216000Z
+132,CSE1135,Programming II (C),CSE1135 - Programming II (C) - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,Cse1135 Programming II (C).pdf,2025-11-30T02:09:15.643000Z
+131,CS1227,Game Design And Development,CS1227 - Game Design And Development - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,Cs1227 Game Design And Development.pdf,2025-11-30T02:09:09.017000Z
+130,CS1205,Mobile Application Development,CS1205 - Mobile Application Development - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,Cs1205 Mobile Application Development.pdf,2025-11-30T02:09:02.004000Z
+129,CS1108,Operating Systems,CS1108 - Operating System - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,Cs1108 Operating System.pdf,2025-11-30T02:08:54.052000Z
+128,CE1213,Hydrology And Water Resources Engineering,CE1213 - Hydrology And Water Resources Engineering - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,Ce1213 Hydrology And Water Resources Engineering.pdf,2025-11-30T02:08:49.724000Z
+127,AS1406,Partial Differential Equation And Fourier Transform,AS1406 - Partial Differential Equation And Fourier Transform - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,As1406 Partial Differential Equation And Fourier Transform.pdf,2025-11-30T02:08:41.734000Z
+126,AS1202,Advanced Statistics,AS1202 - Advanced Statistics - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,As1202 Advanced Statistics.pdf,2025-11-30T02:08:33.909000Z
+125,ME1409,Design And Documentation,ME1409 - Design And Documentation - Endterm - Sem 4 - 2023,2023,Endterm,4,approved,Me1409 Design And Documentation.pdf,2025-11-30T02:08:28.120000Z
+124,ME1221,Energy Resources Economics And Environment,ME1221 - Energy Resources Economics And Environment - Sem 4 - 2023,2023,Other,4,approved,Me1221 Energy Resources Economics And Environment.pdf,2025-11-30T02:08:18.521000Z
+123,EE1404,Introduction To Electrical And Electronics Engineering,EE1404 - Introduction To Electrical And Electronics Engineering - Endterm - Sem 4 - 2023,2023,Endterm,4,approved,Ee1404 Introduction To Electrical And Electronics Engineering.pdf,2025-11-30T02:08:11.384000Z
+122,ME1226,Introduction To Robotics,ME1226 - Introduction To Robotics - Endterm - Sem 2 - 2023,2023,Endterm,2,approved,Me1226 Introduction To Robotics.pdf,2025-11-30T02:08:00.985000Z
+121,LS1108,Essentials Of Business Management,LS1108 - Essentials Of Business Management - Endterm - Sem 3 - 2023,2023,Endterm,3,approved,Ls1108 Essentials Of Business Management.pdf,2025-11-30T02:07:50.096000Z
+120,EE1110,Digital System Design,EE1110 - Digital System Design - Endterm - Sem 3 - 2023,2023,Endterm,3,approved,Ee1110 Digital System Design.pdf,2025-11-30T02:07:43.644000Z
+119,EE1101,Electronic Devices And Circuits,EE1101 - Electronic Devices And Circuits - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,Ee1101 Electronic Devices And Circuits.pdf,2025-11-30T02:07:35.413000Z
+118,CSE1132,C Programming And Data Structures,CSE1132 - C Programming And Data Structures - Endterm - Sem 3 - 2023,2023,Endterm,3,approved,Cse1132 C Programming And Data Structures.pdf,2025-11-30T02:07:23.491000Z
+117,CS1134,CS1117 Computer Organization And Architecture Computer Organization And Systems (A) (2),CS1134 - Computer Organization And Architecture - Endterm - Sem 3 - 2023,2023,Endterm,3,approved,Cs1134 Computer Organization And Architecture.pdf,2025-11-30T02:07:16.331000Z
+116,CS1133,Database Management Systems,CS1133 - Database Management Systems - Endterm - Sem 3 - 2023,2023,Endterm,3,approved,Cs1133 Database Management Systems.pdf,2025-11-30T02:07:11.725000Z
+115,AS1110,Differential EQuations,AS1110 - Differential Equations - Endterm - Sem 3 - 2023,2023,Endterm,3,approved,As1110 Differential Equations.pdf,2025-11-30T02:07:07.380000Z
+114,ME1408,Applied Mechanics,ME1408 - Applied Mechanics - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,Me1408 Applied Mechanics.pdf,2025-11-30T02:07:01.998000Z
+113,ES1105,Energy And Environmental Studies,ES1105 - Energy And Environmental Studies - Endterm - Sem 2 - 2023,2023,Endterm,2,approved,Es1105 Energy And Environmental Studies.pdf,2025-11-30T02:06:55.547000Z
+112,ME1108,Theory Of Machines,ME1108 - Theory Of Machines - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,Me1108 Theory Of Machines.pdf,2025-11-30T02:06:48.132000Z
+111,ME1103,Engineering Drawing (Backlog),ME1103 - Engineering Drawing - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,Me1103 Engineering Drawing.pdf,2025-11-30T02:06:41.882000Z
+110,ES1114,Environmental Studies,ES1114 - Environmental Studies - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,Es1114 Environmental Studies.pdf,2025-11-30T02:06:36.916000Z
+109,EE1408,Microprocessor And Microcontroller,EE1408 - Processor Architecture - Endterm - Sem 2023 - 2023,2023,Endterm,2023,approved,Ee1408 Processor Architecture.pdf,2025-11-30T02:06:31.881000Z
+107,CS1224,Artificial Intelligence,CS1224 - Sem 1 - 2023,2023,Other,1,approved,Cs-1224 Artificial Intelligence.pdf,2025-11-30T02:06:23.599000Z
+106,CS1139,Programming I (A),CS1139 - Programming1 (Python) - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,Cs1139 Programming1 (Python).pdf,2025-11-30T02:06:19.018000Z
+105,CE1201,Public Health Engineering,CE1201 - Public Health Engineering - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,Ce1201 Public Health Engineering.pdf,2025-11-30T02:06:11.569000Z
+104,CE1113,Design Of Rc Structures,CE1113 - Design Of Rc Structures - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,Ce1113 Design Of Rc Structures.pdf,2025-11-30T02:06:04.165000Z
+103,AS2202,Numerical And Scientific Computing,AS2202 - Numerical And Scientific Computing - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,As2202 Numerical And Scientific Computing.pdf,2025-11-30T02:05:58.137000Z
+102,AS1405,Ordinary Differential Equations And Laplace Transforms,AS1405 - Ordinary Differential Equations And Laplace Transforms - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,As1405 Ordinary Differential Equations And Laplace Transforms.pdf,2025-11-30T02:05:51.445000Z
+101,AS1109,Calculus (A),AS1109 - Calculus - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,As1109 Calculus.pdf,2025-11-30T02:05:43.969000Z
+100,AS1107,Applied Chemistry,AS1107 - Applied Chemistry - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,As1107 Applied Chemistry.pdf,2025-11-30T02:05:39.634000Z
+99,MA1127,; Services Marketing,MA1127 - ; Services Marketing - Endterm - Sem 3 - 2023,2023,Endterm,3,approved,Ma1127; Services Marketing.pdf,2025-11-30T02:05:32.008000Z
+98,MA1106,; Sales In Retail Banking & Insurance,MA1106 - ; Sales In Retail Banking & Insurance - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,Ma1106; Sales In Retail Banking & Insurance.pdf,2025-11-30T02:05:25.025000Z
+97,MA1105,Consumer Behaviour & Brand Management In BFSI,MA1105 - ; Consumer Behaviour & Brand Management In BFSI - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,Ma1105; Consumer Behaviour & Brand Management In BFSI.pdf,2025-11-30T02:05:18.154000Z
+96,MA1103,Consumer Behavior,MA1103 - ; Consumer Behavior - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,Ma1103; Consumer Behavior.pdf,2025-11-30T02:05:12.533000Z
+95,MA1101,; Principles Of Marketing,MA1101 - ; Principles Of Marketing - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,Ma1101; Principles Of Marketing.pdf,2025-11-30T02:05:07.125000Z
+94,LS1107,Environmental Studies,LS1107 - ; Environmental Studies - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,Ls1107; Environmental Studies.pdf,2025-11-30T02:05:00.235000Z
+93,LS1106,Foundations Of Business Management,LS1106 - ; Foundation Of Business Management - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,LS1106 ; Foundation Of Business Management.pdf,2025-11-30T02:04:54.302000Z
+92,LS1103,; Legal Aspects Of Banking And Fintech,LS1103 - ; Legal Aspects Of Banking And Fintech - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,LS1103; Legal Aspects Of Banking And Fintech.pdf,2025-11-30T02:04:48.446000Z
+91,LS1102,; Legal Aspects Of Business,LS1102 - ; Legal Aspects Of Business - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,LS1102; Legal Aspects Of Business.pdf,2025-11-30T02:04:41.085000Z
+90,ID1121,Intelligent Automation,ID1121 - ; Intelligent Automation - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,ID1121; Intelligent Automation.pdf,2025-11-30T02:04:30.008000Z
+89,ID1104,; Business Mathematics,ID1104 - ; Business Mathematics - Endterm - Sem 3 - 2023,2023,Endterm,3,approved,ID1104; Business Mathematics.pdf,2025-11-30T02:04:24.273000Z
+88,FA1111,Banking Operations &Risk Management,"FA1111 - , Banking Operations & Risk Management - Sem 2021 - 2023",2023,Other,2021,approved,"FA1111, Banking Operations & Risk Management.pdf",2025-11-30T02:04:16.484000Z
+86,FA1108,; Principles Of Financial Risk Management,FA1108 - ; Principles Of Financial Risk Management - Sem 2022 - 2023,2023,Other,2022,approved,FA1108; Principles Of Financial Risk Management.pdf,2025-11-30T02:04:04.934000Z
+85,FA1104,; Taxation,FA1104 - ; Taxation - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,FA1104; Taxation.pdf,2025-11-30T02:03:57.526000Z
+84,FA1102,Management Accounting,FA1102 - ; Management Accounting - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,FA1102; Management Accounting.pdf,2025-11-30T02:03:49.777000Z
+83,FA1101,Accounting For Business,FA1101 - ; Accounting For Business - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,FA1101; Accounting For Business.pdf,2025-11-30T02:03:44.926000Z
+82,ED1109,Introduction To Entrepreneurship,ED1109 - ; Introduction To Entrepreneurship - Endterm - Sem 1 - 2023,2023,Endterm,1,approved,ED1109; Introduction To Entrepreneurship.pdf,2025-11-30T02:03:38.398000Z
+81,ED1104,Sustaining And Growing Start Upsi,ED1104 - ; Sustaining And Growing Start Ups - Endterm - Sem 5 - 2023,2023,Endterm,5,approved,ED1104; Sustaining And Growing Start-Ups.pdf,2025-11-30T02:03:33.436000Z
+80,ED1102,Idea To Business Model,ED1102 - ; Idea To Business Model - Endterm - Sem 3 - 2023,2023,Endterm,3,approved,ED1102; Idea To Business Model.pdf,2025-11-30T02:03:29.628000Z
+50,CS1133,Database Management Systems,CS1133 - Database Management Systems - Endterm - Sem 3 - 2023,2023,Endterm,3,approved,CS1133-Database Management Systems.pdf,2025-11-30T01:59:50.163000Z
+142,CS1226,Foundation Of Blockchain Technology,CS1226 - Foundation Of Blockchain Technology - Endterm - Sem 5 - 2022,2022,Endterm,5,approved,Cs1226 Foundation Of Blockchain Technology.pdf,2025-11-30T02:10:22.937000Z
+134,EE1224,Digital Image Processing And Introduction,EE1224 - Digital Image Processing And Introduction - Endterm - Sem 5 - 2022,2022,Endterm,5,approved,Ee1224 Digital Image Processing And Introduction.pdf,2025-11-30T02:09:26.280000Z
+108,EE1118,Fundamentals Of Electrical And Electronics Engineering,EE1118 - Fundamentals Of Electrical And Electronics - Endterm - Sem 1 - 2022,2022,Endterm,1,approved,Ee1118 Fundamentals Of Electrical And Electronics.pdf,2025-11-30T02:06:27.638000Z
+69,AS1106,Statistical Computing,AS1106 - Statistical Computing - Endterm - Sem 1 - 2022,2022,Endterm,1,approved,AS1106-Statistical Computing.pdf,2025-11-30T02:02:00.634000Z
+20,BS1102,Human Resource Management,BS1102 - Human Resource Management - Endterm - Sem 5 - 2022,2022,Endterm,5,approved,BS1102-Human Resource Management.pdf,2025-11-30T01:56:28.633000Z
+33,MA1105,Consumer Behaviour & Brand Management In BFSI,MA1105 - Consumer Behaviour & Brand Management In BFSI - Endterm - Sem 5 - 2020,2020,Endterm,5,approved,MA1105-Consumer Behaviour & Brand Management In BFSI.pdf,2025-11-30T01:57:50.473000Z
+87,FA1110,Direct Taxation,FA1110 - ; Direct Taxation - Endterm - Sem 5 - 2019,2019,Endterm,5,approved,FA1110; Direct Taxation.pdf,2025-11-30T02:04:10.215000Z
