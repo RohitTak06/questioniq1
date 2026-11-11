@@ -44,7 +44,9 @@ extraction:
   dpi: 300
   psm: 6
   lang: eng
-  method: otsu  # otsu, adaptive or layers; chosen by CER in scripts/ocr_eval.py
+  method: layers  # otsu, adaptive or layers; chosen by CER in scripts/ocr_eval.py
+  layers_min_word_ratio: 0.5  # below this share of otsu's words, layers lost text: use otsu
+  layers_check_min_words: 20
   right_zone: 0.80  # marks and CO columns start after this fraction of the page width
   table_digit_ratio: 0.35
   table_min_tokens: 30

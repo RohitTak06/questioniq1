@@ -29,6 +29,7 @@ class PageText:
     is_table: bool = False
     mean_conf: float | None = None
     words: list[dict] = field(default_factory=list)
+    render_method: str | None = None
 
 
 def clean_page(gray: np.ndarray, method: str) -> np.ndarray:
@@ -75,9 +76,32 @@ def foreground_layers(doc: pymupdf.Document, page: pymupdf.Page, dpi: int) -> np
     return canvas
 
 
+def has_scan_layers(page: pymupdf.Page) -> bool:
+    """Return True if a page is built from 1-bit scan layers, which the layers method needs."""
+    return any(info[8] == "CCITTFaxDecode" for info in page.get_images(full=True))
+
+
+def page_method(doc: pymupdf.Document, page_index: int, method: str) -> str:
+    """Return the method actually used for a page: layers falls back to otsu without scan layers."""
+    if method == "layers" and not has_scan_layers(doc[page_index]):
+        return "otsu"
+    return method
+
+
+def keep_layers(layers_words: int, otsu_words: int, min_ratio: float, min_words: int) -> bool:
+    """Return True if layers kept enough of the text that otsu found on the same page.
+
+    On some scans the text sits in a colour layer that layers leaves out, so most words vanish.
+    """
+    if otsu_words < min_words:
+        return True
+    return layers_words >= min_ratio * otsu_words
+
+
 def render_page(doc: pymupdf.Document, page_index: int, method: str, dpi: int) -> np.ndarray:
     """Render one page to a cleaned image, ready for OCR."""
     page = doc[page_index]
+    method = page_method(doc, page_index, method)
     if method == "layers":
         return foreground_layers(doc, page, dpi)
     pixmap = page.get_pixmap(dpi=dpi, colorspace=pymupdf.csGRAY)
@@ -145,10 +169,21 @@ def extract_text(pdf_path: Path, cfg: dict) -> list[PageText]:
         for index, plumber_page in enumerate(plumber.pages):
             layer_text = (plumber_page.extract_text() or "").strip()
             if len(layer_text) >= extraction["min_chars_per_page"]:
-                text, words, ocr_used = layer_text, [], False
+                text, words, ocr_used, used = layer_text, [], False, None
             else:
-                image = render_page(doc, index, extraction["method"], extraction["dpi"])
+                used = page_method(doc, index, extraction["method"])
+                image = render_page(doc, index, used, extraction["dpi"])
                 words = ocr_words(image, cfg)
+                if used == "layers":
+                    otsu_image = render_page(doc, index, "otsu", extraction["dpi"])
+                    otsu_words = ocr_words(otsu_image, cfg)
+                    if not keep_layers(
+                        len(words),
+                        len(otsu_words),
+                        extraction["layers_min_word_ratio"],
+                        extraction["layers_check_min_words"],
+                    ):
+                        image, words, used = otsu_image, otsu_words, "otsu-fallback"
                 text = words_to_text(words, image.shape[1], extraction["right_zone"])
                 ocr_used = True
             pages.append(
@@ -162,6 +197,7 @@ def extract_text(pdf_path: Path, cfg: dict) -> list[PageText]:
                     ),
                     mean_conf=mean_confidence(words),
                     words=words,
+                    render_method=used,
                 )
             )
     return pages

@@ -14,6 +14,7 @@ from questioniq.extract import (
     extract_cached,
     extract_text,
     is_table_page,
+    keep_layers,
     load_cache,
     load_pages,
     mean_confidence,
@@ -155,6 +156,28 @@ def test_render_page_returns_an_image_for_every_method(method: str, tmp_path: Pa
     with pymupdf.open(scanned_pdf(tmp_path / "s.pdf")) as document:
         image = render_page(document, 0, method, 100)
     assert image.ndim == 2 and image.size > 0
+
+
+def test_layers_falls_back_to_otsu_on_a_page_without_scan_layers(tmp_path: Path) -> None:
+    cfg = load_config(CONFIG_PATH)
+    cfg["extraction"]["method"] = "layers"
+    pages = extract_text(scanned_pdf(tmp_path / "s.pdf"), cfg)
+    assert pages[0].render_method == "otsu"
+    assert "Toy line of text" in pages[0].text
+
+
+def test_text_layer_pages_record_no_render_method(tmp_path: Path) -> None:
+    assert extract_text(text_pdf(tmp_path / "t.pdf"), load_config(CONFIG_PATH))[0].render_method is None
+
+
+@pytest.mark.parametrize(
+    "layers_words, otsu_words, expected",
+    [(60, 350, False), (180, 350, True), (175, 350, True), (5, 10, True), (0, 0, True)],
+)
+def test_keep_layers_only_drops_layers_when_it_lost_most_of_the_text(
+    layers_words: int, otsu_words: int, expected: bool
+) -> None:
+    assert keep_layers(layers_words, otsu_words, 0.5, 20) is expected
 
 
 def test_cache_round_trip(tmp_path: Path) -> None:

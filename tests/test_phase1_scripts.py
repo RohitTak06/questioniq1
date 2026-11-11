@@ -5,7 +5,7 @@ import random
 import pytest
 
 from questioniq.extract import PageText
-from scripts.ocr_eval import page_cer, pooled_cer
+from scripts.ocr_eval import page_cer, parse_gold_name, pooled_cer
 from scripts.run_segmentation import review_markdown, summary_markdown
 from scripts.seg_eval import score_rows
 from scripts.select_gold import allocate, choose_gold_pages, choose_papers, page_candidates
@@ -56,6 +56,14 @@ def test_choose_papers_returns_n_distinct_papers_and_is_repeatable() -> None:
     assert len(set(picked)) == 10
     assert "200" in picked
     assert picked == choose_papers(by_style, 10, random.Random(42))
+
+
+@pytest.mark.parametrize(
+    "name, expected",
+    [("101_p1.txt", ("101", 1)), ("89_all.txt", ("89", None)), (".gitkeep", None), ("101_p1.md", None)],
+)
+def test_parse_gold_name_accepts_single_pages_and_whole_papers(name: str, expected: tuple | None) -> None:
+    assert parse_gold_name(name) == expected
 
 
 def test_page_cer_ignores_spacing_and_table_lines_but_not_case() -> None:
