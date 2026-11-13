@@ -29,6 +29,10 @@ paths:
   ocr: data/ocr
   ocr_gold: data/ocr_gold
   questions: data/questions.csv
+  questions_clean: data/questions_clean.csv
+  preprocess_summary: reports/preprocess_summary.md
+  preprocess_review: reports/preprocess_review.md
+  preprocess_check: data/preprocess_check.csv
   seg_summary: reports/segmentation_summary.md
   seg_review: reports/segmentation_review
   seg_check: data/seg_gold/segmentation_check.csv
@@ -58,6 +62,18 @@ gold:
   n_line_papers: 10
   # Re-measure after the rule fixes on papers never looked at while fixing (the reserved set).
   fresh_check_papers: [23, 24, 31, 51, 55, 63, 92, 103, 127, 143]
+
+preprocess:
+  min_token_length: 3
+  n_review: 20
+  # Words common to all exam questions, removed before topic modelling. Bloom verbs
+  # (define, explain, ...) are removed here only; Phase 5 reads the raw text for them.
+  exam_stopwords: [explain, write, brief, briefly, mark, marks, following, question, questions,
+    short, note, notes, answer, give, discuss, describe, define, state, list, find, compute,
+    calculate, determine, show, draw, using, use, consider, given, suitable, example, roll, page,
+    # Added after the first run: frequent words that carry no topic.
+    one, two, three, four, five, six, seven, eight, nine, ten, also, would, could, may, might,
+    various, different, take, assume]
 
 topics:
   k_min: 4

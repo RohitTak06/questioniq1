@@ -1,11 +1,11 @@
 paper_id,course,pipeline_questions,owner_total,owner_correct,notes
-23,ED1109,8,,,
-24,FA1101,5,,,
-31,MA1102,6,,,
-51,CS1134,3,,,
-55,CS1142,14,,,
-63,EE1227,7,,,
-92,LS1103,8,,,
-103,AS2202,5,,,
-127,AS1406,8,,,
-143,CS1228,7,,,
+23,ED1109,8,8,8,All clean. Q2 and Q5 OR options split correctly
+24,FA1101,5,5,5,"All clean, incl. the 2-page trial balance in Q2.1. Q1.3 "
+31,MA1102,6,6,6,All clean. Attempt any 5 of 6.
+51,CS1134,3,9,2,Only Q2 and Q3A clean. Q1A and Q1B missing (Q1 
+55,CS1142,14,14,14,"All clean. Q1 and Q10 marks are one cell each (1+1+2, 2+1+1), so 1 question each."
+63,EE1227,7,10,5,Q1 Q2a Q2b Q4-OR1 Q4-OR2 clean. Q3a+Q3b merged; Q5+Q6a+Q6b merged (rows with an empty Sr. No. cell not split).
+92,LS1103,8,8,8,"All clean, incl. Q2 across the page break and Q5.1/5.2, Q6.1/6.2."
+103,AS2202,5,5,5,All clean.
+127,AS1406,8,8,8,All clean.
+143,CS1228,7,7,3,"Q5 Q6 Q7 clean. Q1(a)'s MCQ options 1-3 became fake Q1-Q3; Q1 rest + Q2 + Q3 + Q4 merged into one row. Numbering is '1.' not 'Q.1', so list items inside Q1 were read as questions."

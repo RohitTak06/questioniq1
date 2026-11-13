@@ -1,25 +1,65 @@
 {
   "target": 0.9,
-  "score": null,
+  "score": 0.8,
   "score_source": "fresh_papers_after_fixes",
   "fresh_papers_after_fixes": {
     "target": 0.9,
-    "score": null,
-    "n_correct": 0,
-    "n_total": 0,
-    "papers": {},
-    "not_checked_yet": [
-      "23",
-      "24",
-      "31",
-      "51",
-      "55",
-      "63",
-      "92",
-      "103",
-      "127",
-      "143"
-    ]
+    "score": 0.8,
+    "n_correct": 64,
+    "n_total": 80,
+    "papers": {
+      "23": {
+        "owner_total": 8,
+        "owner_correct": 8,
+        "pipeline_questions": 8
+      },
+      "24": {
+        "owner_total": 5,
+        "owner_correct": 5,
+        "pipeline_questions": 5
+      },
+      "31": {
+        "owner_total": 6,
+        "owner_correct": 6,
+        "pipeline_questions": 6
+      },
+      "51": {
+        "owner_total": 9,
+        "owner_correct": 2,
+        "pipeline_questions": 3
+      },
+      "55": {
+        "owner_total": 14,
+        "owner_correct": 14,
+        "pipeline_questions": 14
+      },
+      "63": {
+        "owner_total": 10,
+        "owner_correct": 5,
+        "pipeline_questions": 7
+      },
+      "92": {
+        "owner_total": 8,
+        "owner_correct": 8,
+        "pipeline_questions": 8
+      },
+      "103": {
+        "owner_total": 5,
+        "owner_correct": 5,
+        "pipeline_questions": 5
+      },
+      "127": {
+        "owner_total": 8,
+        "owner_correct": 8,
+        "pipeline_questions": 8
+      },
+      "143": {
+        "owner_total": 7,
+        "owner_correct": 3,
+        "pipeline_questions": 7
+      }
+    },
+    "not_checked_yet": []
   },
   "studied_papers_before_fixes": {
     "target": 0.9,

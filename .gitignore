@@ -6,6 +6,8 @@ data/api_log.jsonl
 data/ocr_gold/*
 !data/ocr_gold/.gitkeep
 data/questions.csv
+data/questions_clean.csv
+reports/preprocess_review.md
 data/labels/segment_lines_*.csv
 reports/segmentation_review/
 models/

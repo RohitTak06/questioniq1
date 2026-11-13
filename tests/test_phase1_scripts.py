@@ -8,7 +8,7 @@ from questioniq.extract import PageText
 from scripts.ocr_eval import page_cer, parse_gold_name, pooled_cer
 from scripts.run_segmentation import review_markdown, summary_markdown
 from scripts.make_fresh_check import blank_rows, instructions
-from scripts.seg_eval import combined_report, score_rows
+from scripts.seg_eval import combined_report, read_sheet, score_rows
 from scripts.select_gold import allocate, choose_gold_pages, choose_papers, page_candidates
 from questioniq.segment import Question
 
@@ -148,3 +148,15 @@ def test_fresh_instructions_point_at_the_fresh_sheet() -> None:
     assert "data/seg_gold/fresh.csv" in text
     assert "segmentation_check.csv" not in text
     assert "reports/segmentation_review/7.md" in text
+
+
+def test_sheet_saved_by_excel_in_windows_1252_is_read(tmp_path) -> None:
+    sheet = tmp_path / "check.csv"
+    sheet.write_bytes("paper_id,notes\n7,fake\xa0note\n".encode("cp1252"))
+    assert read_sheet(sheet) == [{"paper_id": "7", "notes": "fake\xa0note"}]
+
+
+def test_sheet_in_utf8_with_bom_is_read(tmp_path) -> None:
+    sheet = tmp_path / "check.csv"
+    sheet.write_bytes("paper_id,notes\n7,fake\n".encode("utf-8-sig"))
+    assert read_sheet(sheet) == [{"paper_id": "7", "notes": "fake"}]

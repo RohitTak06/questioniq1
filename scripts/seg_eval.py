@@ -6,6 +6,7 @@ Writes reports/metrics/segmentation.json and prints the score.
 """
 
 import csv
+import io
 import json
 from pathlib import Path
 
@@ -38,11 +39,19 @@ def score_rows(rows: list[dict]) -> dict:
 
 
 def read_sheet(path: Path) -> list[dict] | None:
-    """Return the rows of a check sheet, or None if it doesn't exist yet."""
+    """Return the rows of a check sheet, or None if it doesn't exist yet.
+
+    Excel on Windows saves CSV files in the Windows-1252 character set, not UTF-8, so that
+    is tried when the file isn't valid UTF-8.
+    """
     if not path.exists():
         return None
-    with open(path, encoding="utf-8", newline="") as f:
-        return list(csv.DictReader(f))
+    raw = path.read_bytes()
+    try:
+        text = raw.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        text = raw.decode("cp1252")
+    return list(csv.DictReader(io.StringIO(text, newline="")))
 
 
 def combined_report(first: list[dict], fresh: list[dict] | None) -> dict:
