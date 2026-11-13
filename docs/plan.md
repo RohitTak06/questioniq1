@@ -22,8 +22,9 @@ Project rules are in `CLAUDE.md`.
    counts. NMF runs on TF-IDF. Both are compared with C_v coherence.
 2. "Question Generation" in the synopsis flow means the topic-wise question
    bank. We do not generate new questions.
-3. The Logistic Regression segmentation fallback is trained on about 10 papers
-   hand-labelled at line level.
+3. The Logistic Regression segmentation fallback is dropped (decided 2026-11-13).
+   Its 10 reserved papers became the fresh test set for the rule-based segmenter,
+   after the first check was used to fix the rules. See `docs/decisions.md`.
 4. OCR moves from "future work" into v1, because most portal papers are scans.
 5. Topic models are trained on the pooled question set (all subjects, or one
    model per department such as AS / CS / EE when a group has 150+ questions),

@@ -369,3 +369,87 @@ def test_check_paper_marks_equal_marks_papers_apart_from_missing_marks() -> None
 def test_check_paper_does_not_call_attempt_any_papers_a_mismatch() -> None:
     result = check_paper([q("1", 5), q("2", 5)], "Max. Marks: 5 Attempt any one", 90.0, 70)
     assert "marks_mismatch" not in result["flags"]
+
+
+# --- Rules added after the first hand check (2026-11-13) ---
+
+
+def labels(text: str) -> list[tuple[str, str | None]]:
+    return [(question.qno, question.sub_part) for question in segment(text)]
+
+
+def test_two_level_numbers_are_separate_questions() -> None:
+    text = "Q.1.1 Fake\t3\nQ.1.2 Fake\t3\nQ.2.1 Fake\t3"
+    assert labels(text) == [("1", "1"), ("1", "2"), ("2", "1")]
+
+
+def test_two_level_number_with_q_read_as_zero() -> None:
+    text = "Q.1.1 Fake\t3\nQ.1.2 Fake\t3\n0.2.1 Fake\t3\n0. 2.2 Fake\t3"
+    assert labels(text) == [("1", "1"), ("1", "2"), ("2", "1"), ("2", "2")]
+
+
+def test_number_read_as_a_letter_is_kept_and_flagged() -> None:
+    questions = segment("Q1. Fake\t2\nQ.g Fake\t2\nQ3. Fake\t2")
+    assert [question.qno for question in questions] == ["1", "g", "3"]
+    assert "unreadable_qno" in check_paper(questions, "Max. Marks: 6", None, 70)["flags"]
+
+
+def test_number_read_as_a_letter_needs_a_bigger_label_after_it() -> None:
+    assert labels("Q1. Fake\t2\nQA Fake text\nQ2. Fake\t2") == [("1", None), ("2", None)]
+
+
+def test_numbered_rows_are_not_lost_questions_when_the_same_question_continues() -> None:
+    text = "Q4A. Fake table\t2\n5 Fake row\n6 Fake row\nQ4B. Fake\t2"
+    assert labels(text) == [("4", "A"), ("4", "B")]
+
+
+def test_far_misread_label_does_not_move_the_expected_number() -> None:
+    assert [question.qno for question in segment("Q1. Fake\t1\nQ32. Fake\t1\n02 Fake\t1")] == [
+        "1",
+        "32",
+        "2",
+    ]
+
+
+def test_marks_line_just_above_a_number_moves_to_that_question() -> None:
+    questions = segment("Q.1 Fake\t3\nFake first line of two\t3\nQ.2 Fake second line")
+    assert [question.text for question in questions] == [
+        "Fake",
+        "Fake first line of two Fake second line",
+    ]
+
+
+def test_marks_line_stays_when_it_is_a_labelled_part() -> None:
+    questions = segment("Q.1 Fake\n(a) Fake\t2\n(b) Fake\t3\nQ.2 Fake second")
+    assert [(q.qno, q.sub_part) for q in questions] == [("1", "a"), ("1", "b"), ("2", None)]
+
+
+def test_marks_line_stays_when_the_start_line_has_its_own_marks() -> None:
+    questions = segment("Q.1 Fake\t3\nFake more\t3\nQ.2 Fake\t4")
+    assert questions[0].text == "Fake Fake more"
+
+
+def test_number_followed_by_a_bare_letter_starts_a_question_with_parts() -> None:
+    text = "Sr. No. Question Marks\n1. Fake one\t2\n2 a Fake part\t3\nb Fake part\t2\n3. Fake\t1"
+    assert labels(text) == [("1", None), ("2", "a"), ("2", "b"), ("3", None)]
+
+
+def test_page_footer_with_numbers_in_the_right_cell_is_dropped() -> None:
+    assert segment("Q1. Fake\t2\nPage of\t1 3\nQ2. Fake\t2")[0].text == "Fake"
+
+
+def test_co_label_in_brackets_is_not_marks() -> None:
+    assert parse_marks("(LO1 3)") is None
+
+
+def test_line_starting_with_the_same_number_as_the_label_below_joins_it() -> None:
+    questions = segment("Q1. Fake one\t2\nFake more\n2 Fake first line\nQ2. Fake second line\t2")
+    assert [question.text for question in questions] == [
+        "Fake one Fake more",
+        "Fake first line Fake second line",
+    ]
+
+
+def test_step_two_of_the_previous_question_stays_with_it() -> None:
+    questions = segment("Q1. Fake stem\t2\n1. Fake step\n2. Fake step\nQ2. Fake\t2")
+    assert questions[0].text == "Fake stem 1. Fake step 2. Fake step"

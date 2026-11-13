@@ -11,21 +11,27 @@ text. Odd results are flagged by check_paper, never silently corrected.
 import re
 from dataclasses import dataclass, field
 
+# Groups: number, second-level number (Q.1.2), part letter (Q2A), rest of the line.
+# One stray lowercase letter before the Q is OCR noise from a table rule (gQ.6).
 Q_START = re.compile(
-    r"^\W*(?:Q(?:ues)?|[Qq]uestion|QUESTION)[\W_]{0,3}(?:No\W{0,2})?"
-    r"([0-9Il][0-9IlO]?)([A-Ha-h]?)(?![A-Za-z0-9])\W*(.*)$"
+    r"^\W*[a-z]?(?:Q(?:ues)?|[Qq]uestion|QUESTION)[\W_]{0,3}(?:No\W{0,2})?"
+    r"([0-9Il][0-9IlO]?)(?:\s?\.(\d)(?!\d))?([A-Ha-h]?)(?![A-Za-z0-9])\W*(.*)$"
 )
-Q_MISREAD = re.compile(r"^\W*[O0][\W_]{0,2}(\d{1,2})\b\W*([A-Za-z(].*)$")  # (O4 Design, 0.8 Definition
+# A Q read as 0 or O: (O4 Design, 0.8 Definition, 0.3.1 Discuss.
+Q_MISREAD = re.compile(r"^\W*[O0][\W_]{0,2}(\d{1,2})(?:\.(\d)(?!\d))?\b\W*([A-Za-z(].*)$")
+# A Q whose number was read as a letter: Q.g Let, (Qi A State, QiB Fill. Groups: letter, part, rest.
+Q_LETTER = re.compile(r"^\W*Q[\W_]{0,2}([A-Za-z])([A-Ha-h]?)(?![A-Za-z0-9])\W*([A-Z].*)$")
 NUMBER_START = re.compile(r"^\W*\(?(\d{1,2})\s*[.),]\s+(\S.*)$")  # 4, is a misread 4.
 NUMBER_LETTER_START = re.compile(r"^\W*(\d{1,2})\s*\(([a-hA-H])\)\W*\s*(\S.*)$")  # 1(a). Provide
+NUMBER_BARE_LETTER = re.compile(r"^\W*(\d{1,2})[.)]?\s+([a-h][.)]?\s+\S.*)$")  # 2 a Explain
 BARE_START = re.compile(r"^\W*(\d{1,2})\W*\s+([A-Z(].*)$")
 TABLE_HEADER = re.compile(r"\b(?:sr|s)\W{0,2}no\b|\bquestions?\b.*\bmarks\b", re.I)
-LETTER_PART = re.compile(r"^\W*\(?([a-hA-H])[).]\s+(\S.*)$")
+LETTER_PART = re.compile(r"^\W*\(?([a-hA-H])(?:[).]\s+|\s+(?=[A-Z]))(\S.*)$")  # a) x, B. X, b Write
 ROMAN_PART = re.compile(r"^\W*\(?(i{1,3}|iv|vi{0,3}|ix|x)[).]\s+(\S.*)$")
 NUMBER_PART = NUMBER_START
 OR_LINE = re.compile(r"^\W*(?:OR|Or)\W*$")
 NOISE_LINE = re.compile(
-    r"^\W*(?:page\W*\w{0,3}\W*of\W*\d+|roll\W*n\w*\b.*|best of luck.*|all the best.*"
+    r"^\W*(?:page\W*\w{0,3}\W*of(?:\W*\d+){0,2}|roll\W*n\w*\b.*|best of luck.*|all the best.*"
     r"|(?:section|part)\W*[A-C0-9I]{1,3}\W*|\W*)$",
     re.I,
 )
@@ -75,6 +81,7 @@ class _Block:
     qno: str
     sub_part: str | None
     lines: list[tuple[str, str]] = field(default_factory=list)
+    position: tuple[int, int] | None = None  # (number, second-level number) used for ordering
 
 
 def normalise_qno(raw: str) -> str:
@@ -119,7 +126,7 @@ def parse_marks(cell: str) -> float | None:
     marks = body_marks(cell)
     if marks is not None:
         return marks
-    without_labels = CO_LABEL.sub(" ", cell)
+    without_labels = CO_LABEL.sub(" ", TRAILING_LABEL.sub("", cell))  # (LO1 3) is a label
     if re.fullmatch(r"[\s\d.,\[\]()]*", without_labels):
         found = MARKS_IN_CELL.search(without_labels)
         if found:
@@ -154,30 +161,120 @@ def _number_match(body: str) -> tuple[int, str | None, str] | None:
     paired = NUMBER_LETTER_START.match(body)
     if paired:
         return int(paired.group(1)), paired.group(2), paired.group(3)
-    match = NUMBER_START.match(body) or BARE_START.match(body)
+    match = NUMBER_START.match(body) or NUMBER_BARE_LETTER.match(body) or BARE_START.match(body)
     return (int(match.group(1)), None, match.group(2)) if match else None
 
 
-def _q_style_start(body: str, last: int, in_numbered_steps: bool) -> tuple[_Block, str] | None:
+def _explicit_number(body: str) -> int | None:
+    """Return the number of a line with a clear Q label (Q3, Q.3.1), or None."""
+    match = Q_START.match(body)
+    if not match or is_instruction(body):
+        return None
+    number = normalise_qno(match.group(1))
+    return int(number) if number.isdigit() else None
+
+
+def _next_explicit(bodies: list[str]) -> list[int | None]:
+    """For each line, return the number of the next clearly labelled question after it."""
+    upcoming: list[int | None] = [None] * len(bodies)
+    following = None
+    for index in range(len(bodies) - 1, -1, -1):
+        upcoming[index] = following
+        number = _explicit_number(bodies[index])
+        if number is not None:
+            following = number
+    return upcoming
+
+
+def _q_style_start(
+    body: str, last: tuple[int, int], in_numbered_steps: bool, upcoming: int | None
+) -> tuple[_Block, str] | None:
     """Return a new block for a line in a Q1-style paper, or None.
 
-    A misread Q (O4, 0.8) or a lost Q (a bare 4) counts only if it is exactly the next
-    number, and a lost Q never counts once the question has started its own 1, 2, 3 steps.
+    last is the (number, second-level number) of the previous question. A clear Q label
+    always counts. A guessed start counts only if it is the next number expected and the
+    next clear Q label after it has a bigger number:
+    - a Q misread as 0 or O (O4, 0.3.1), kept as written;
+    - a Q whose number was read as a letter (Q.g, Qi), kept as that letter and flagged;
+    - a lost Q (a bare 4), but not once the question has started its own 1, 2, 3 steps.
     """
     if is_instruction(body):
         return None
     match = Q_START.match(body)
     if match:
-        return _Block(normalise_qno(match.group(1)), match.group(2) or None), match.group(3)
-    if not last:
+        number = normalise_qno(match.group(1))
+        second = match.group(2)
+        block = _Block(number, second or match.group(3) or None)
+        if number.isdigit():
+            block.position = (int(number), int(second or 0))
+        return block, match.group(4)
+    number, second = last
+    lettered = Q_LETTER.match(body)
+    if lettered and (upcoming is None or upcoming > number + 1):
+        block = _Block(lettered.group(1), lettered.group(2) or None, position=(number + 1, 0))
+        return block, lettered.group(3)
+    if not number:
         return None
     misread = Q_MISREAD.match(body)
-    if misread and int(misread.group(1)) == last + 1:
-        return _Block(misread.group(1), None), misread.group(2)
+    if misread:
+        found_number = int(misread.group(1))
+        found_second = int(misread.group(2) or 0)
+        next_number = found_number == number + 1
+        next_second = found_second and found_number == number and found_second > second
+        allowed = upcoming is None or upcoming > found_number or (found_second and upcoming == found_number)
+        if (next_number or next_second) and allowed:
+            block = _Block(misread.group(1), misread.group(2), position=(found_number, found_second))
+            return block, misread.group(3)
     found = _number_match(body)
-    if found and found[0] == last + 1 and not in_numbered_steps:
-        return _Block(str(found[0]), found[1]), found[2]
+    if (
+        found
+        and found[0] == number + 1
+        and not in_numbered_steps
+        and (upcoming is None or upcoming > found[0])
+    ):
+        return _Block(str(found[0]), found[1], position=(found[0], 0)), found[2]
     return None
+
+
+def _numbered_line_above(previous: list[tuple[str, str]], block: _Block) -> tuple[str, str] | None:
+    """Return the line above a Q label if it starts with the same bare number, minus that number.
+
+    When the number sits between two lines, OCR can give "2 First line" then "Q2. second
+    line". The first line belongs to Q2, not to the question before it. Not when the
+    question before has its own 1, 2, 3 steps, since its step 2 can sit just above Q2.
+    """
+    if len(previous) < 2 or not block.qno.isdigit() or block.position is None:
+        return None
+    if _has_numbered_steps(_Block("", None, previous[:-1])):
+        return None
+    body, right = previous[-1]
+    found = _number_match(body)
+    if found and found[0] == int(block.qno) and found[1] is None:
+        return found[2], right
+    return None
+
+
+def _takes_marks_line(
+    previous: list[tuple[str, str]], earlier_has_marks: bool, start_right: str
+) -> bool:
+    """Return True if the line just before a question start belongs to that question.
+
+    In table layouts the question number sits in the middle of a tall cell, so the
+    question's first line (with its marks) comes out just above the number. That line is
+    moved only if it carries marks, the question before it already had marks, and the
+    start line has no marks of its own. A labelled part (a, i, 1), an OR line or the
+    first line after an OR stays where it is.
+    """
+    if not previous or parse_marks(start_right) is not None:
+        return False
+    body, right = previous[-1]
+    if parse_marks(right) is None or not earlier_has_marks:
+        return False
+    if len(previous) >= 2 and OR_LINE.match(previous[-2][0]):
+        return False
+    if OR_LINE.match(body) or is_instruction(body) or re.search(r"marks", body, re.I):
+        return False
+    return not any(pattern.match(body) for pattern in (LETTER_PART, ROMAN_PART, NUMBER_PART))
 
 
 def _has_numbered_steps(block: _Block | None) -> bool:
@@ -189,19 +286,26 @@ def _has_numbered_steps(block: _Block | None) -> bool:
 
 def _find_blocks(lines: list[tuple[str, str]], style: str) -> tuple[list[str], list[_Block]]:
     """Group lines into question blocks. Lines before the first question are returned apart."""
-    before: list[str] = []
+    before_lines: list[tuple[str, str]] = []
     blocks: list[_Block] = []
     last = 0
+    q_last = (0, 0)
     restarted = False
-    for body, right in lines:
+    upcoming = _next_explicit([body for body, _ in lines]) if style == "q" else []
+    for index, (body, right) in enumerate(lines):
+        before = [line[0] for line in before_lines]
         new_block = None
         rest = body
         if style == "q":
             current = blocks[-1] if blocks else None
-            start = _q_style_start(body, last, _has_numbered_steps(current))
+            start = _q_style_start(body, q_last, _has_numbered_steps(current), upcoming[index])
             if start:
                 new_block, rest = start
-                last = int(new_block.qno) if new_block.qno.isdigit() else last
+                position = new_block.position
+                # A clear label far beyond the next number is likely misread (Q35 for Q5):
+                # it is kept as written, but doesn't move the expected next number.
+                if position and (not q_last[0] or position[0] <= q_last[0] + 3):
+                    q_last = position
         else:
             found = _number_match(body)
             if found and not is_instruction(found[2]):
@@ -216,7 +320,7 @@ def _find_blocks(lines: list[tuple[str, str]], style: str) -> tuple[list[str], l
                     and not any(_block_has_marks(block) for block in blocks)
                 ):
                     # A second "1." after an instructions header means the first run was instructions.
-                    before += [line[0] for block in blocks for line in block.lines]
+                    before_lines += [line for block in blocks for line in block.lines]
                     blocks, last, restarted = [], 0, True
                 repeats = letter is not None and number == last
                 if (last == 0 and number <= 3) or last < number <= last + 3 or repeats:
@@ -224,13 +328,24 @@ def _find_blocks(lines: list[tuple[str, str]], style: str) -> tuple[list[str], l
                     rest = candidate
                     last = number
         if new_block is not None:
+            if blocks:
+                previous = blocks[-1].lines
+                earlier = len(previous) >= 2 and _lines_marks(previous[:-1]) is not None
+            else:
+                previous, earlier = before_lines, True
+            numbered = _numbered_line_above(previous, new_block)
+            if numbered is not None:
+                previous.pop()
+                new_block.lines.append(numbered)
+            elif _takes_marks_line(previous, earlier, right):
+                new_block.lines.append(previous.pop())
             blocks.append(new_block)
             blocks[-1].lines.append((rest, right))
         elif blocks:
             blocks[-1].lines.append((body, right))
         else:
-            before.append(body)
-    return before, blocks
+            before_lines.append((body, right))
+    return [line[0] for line in before_lines], blocks
 
 
 def _block_has_marks(block: _Block) -> bool:
@@ -356,7 +471,13 @@ def leading_passage(before: list[str]) -> str:
 def segment(text: str) -> list[Question]:
     """Split paper text into questions using numbering rules."""
     lines = [split_cells(line) for line in text.splitlines()]
-    lines = [line for line in lines if not is_noise_line(line[0]) or line[1]]
+    # A noise line is kept only if its right cell holds something that isn't noise too
+    # ("Page of<TAB>1 3" is a page footer, but "<TAB>5" alone is a marks cell).
+    lines = [
+        line
+        for line in lines
+        if not is_noise_line(line[0]) or (line[1] and not is_noise_line(f"{line[0]} {line[1]}"))
+    ]
     style = paper_style([body for body, _ in lines])
     if style == "none":
         return []
@@ -438,6 +559,8 @@ def check_paper(
         flags.append("attempt_any")
     if jumps:
         flags.append("number_jump")
+    if any(not question.qno.isdigit() for question in questions):
+        flags.append("unreadable_qno")
     if mean_conf is not None and mean_conf < low_confidence:
         flags.append("low_confidence")
     if questions and PASSAGE_START.search(questions[0].text):

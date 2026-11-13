@@ -37,14 +37,34 @@ def score_rows(rows: list[dict]) -> dict:
     }
 
 
-def main() -> None:
-    """Read the owner's checks and save the score."""
-    cfg = load_config()
-    with open(cfg["paths"]["seg_check"], encoding="utf-8", newline="") as f:
-        report = score_rows(list(csv.DictReader(f)))
-    metrics_dir = Path(cfg["paths"]["metrics"])
-    metrics_dir.mkdir(parents=True, exist_ok=True)
-    (metrics_dir / "segmentation.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+def read_sheet(path: Path) -> list[dict] | None:
+    """Return the rows of a check sheet, or None if it doesn't exist yet."""
+    if not path.exists():
+        return None
+    with open(path, encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f))
+
+
+def combined_report(first: list[dict], fresh: list[dict] | None) -> dict:
+    """Return both checks. The fresh one is the score that counts.
+
+    The first check's papers were used to fix the rules, so their score is kept only as
+    the "before" number, measured with the rules as they were then.
+    """
+    first_report = score_rows(first)
+    fresh_report = score_rows(fresh) if fresh is not None else None
+    return {
+        "target": TARGET,
+        "score": fresh_report["score"] if fresh_report else None,
+        "score_source": "fresh_papers_after_fixes",
+        "fresh_papers_after_fixes": fresh_report,
+        "studied_papers_before_fixes": first_report,
+    }
+
+
+def print_report(name: str, report: dict) -> None:
+    """Print one check's per-paper counts and score."""
+    print(f"== {name}")
     for paper_id, paper in report["papers"].items():
         print(
             f"paper {paper_id}: {paper['owner_correct']}/{paper['owner_total']} correct, "
@@ -54,6 +74,24 @@ def main() -> None:
         print(f"Score: {report['n_correct']}/{report['n_total']} = {report['score']:.1%} (target 90%)")
     if report["not_checked_yet"]:
         print(f"Not checked yet: {report['not_checked_yet']}")
+
+
+def main() -> None:
+    """Read the owner's checks and save the scores."""
+    cfg = load_config()
+    first = read_sheet(Path(cfg["paths"]["seg_check"]))
+    if first is None:
+        raise SystemExit("The first check sheet is missing.")
+    fresh = read_sheet(Path(cfg["paths"]["seg_check_fresh"]))
+    report = combined_report(first, fresh)
+    metrics_dir = Path(cfg["paths"]["metrics"])
+    metrics_dir.mkdir(parents=True, exist_ok=True)
+    (metrics_dir / "segmentation.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    print_report("Studied papers, rules before the fixes (not the final score)", report["studied_papers_before_fixes"])
+    if report["fresh_papers_after_fixes"] is None:
+        print("== Fresh papers: sheet not created yet (run scripts/make_fresh_check.py)")
+    else:
+        print_report("Fresh papers, frozen rules (the score that counts)", report["fresh_papers_after_fixes"])
 
 
 if __name__ == "__main__":

@@ -32,6 +32,7 @@ paths:
   seg_summary: reports/segmentation_summary.md
   seg_review: reports/segmentation_review
   seg_check: data/seg_gold/segmentation_check.csv
+  seg_check_fresh: data/seg_gold/segmentation_check_fresh.csv
   gold_selection: reports/gold_selection.md
   labels: data/labels
   models: models
@@ -55,6 +56,8 @@ extraction:
 gold:
   n_check_papers: 10
   n_line_papers: 10
+  # Re-measure after the rule fixes on papers never looked at while fixing (the reserved set).
+  fresh_check_papers: [23, 24, 31, 51, 55, 63, 92, 103, 127, 143]
 
 topics:
   k_min: 4

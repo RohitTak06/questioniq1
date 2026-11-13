@@ -7,7 +7,8 @@ import pytest
 from questioniq.extract import PageText
 from scripts.ocr_eval import page_cer, parse_gold_name, pooled_cer
 from scripts.run_segmentation import review_markdown, summary_markdown
-from scripts.seg_eval import score_rows
+from scripts.make_fresh_check import blank_rows, instructions
+from scripts.seg_eval import combined_report, score_rows
 from scripts.select_gold import allocate, choose_gold_pages, choose_papers, page_candidates
 from questioniq.segment import Question
 
@@ -120,3 +121,30 @@ def test_review_shows_split_questions_and_exact_text() -> None:
     text = review_markdown(ROW, questions, CHECK, pages)
     assert "**Q1 (a)**, OR option 2 [marks 5.0, CO1]: Fake question" in text
     assert "Exact fake OCR" in text
+
+
+def test_final_score_comes_only_from_the_fresh_papers() -> None:
+    report = combined_report([check_row("1", "10", "5")], [check_row("2", "10", "9")])
+    assert report["score"] == 0.9
+    assert report["studied_papers_before_fixes"]["score"] == 0.5
+
+
+def test_no_final_score_before_the_fresh_sheet_exists() -> None:
+    report = combined_report([check_row("1", "10", "5")], None)
+    assert report["score"] is None
+    assert report["fresh_papers_after_fixes"] is None
+
+
+def test_fresh_sheet_rows_are_blank_except_the_pipeline_count() -> None:
+    manifest = {"7": {"course": "XX1", "path": "fake.pdf"}}
+    assert blank_rows(["7"], manifest, {"7": 4}) == [
+        {"paper_id": "7", "course": "XX1", "pipeline_questions": 4}
+    ]
+
+
+def test_fresh_instructions_point_at_the_fresh_sheet() -> None:
+    manifest = {"7": {"course": "XX1", "path": "fake.pdf"}}
+    text = instructions(["7"], manifest, "data/seg_gold/fresh.csv")
+    assert "data/seg_gold/fresh.csv" in text
+    assert "segmentation_check.csv" not in text
+    assert "reports/segmentation_review/7.md" in text
