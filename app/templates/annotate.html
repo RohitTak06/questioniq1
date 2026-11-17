@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{{ annotator }} {{ index + 1 }}/{{ total }} · QuestionIQ{% endblock %}
+{% block head %}
+<style>
+  .top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .bar { height: 6px; background: var(--line); border-radius: 3px; margin: 8px 0 16px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--accent); }
+  details { margin-bottom: 16px; }
+  details pre { white-space: pre-wrap; font: inherit; margin: 8px 0 0; }
+  .meta { margin-bottom: 10px; }
+  .text { font-size: 1.05rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+  form.choices { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+  form.choices button { flex: 1 1 120px; padding: 12px 10px; font: inherit; font-weight: 600; cursor: pointer;
+    border: 2px solid var(--line); border-radius: 8px; background: var(--card); color: var(--text); }
+  form.choices button:hover, form.choices button:focus-visible { border-color: var(--accent); outline: none; }
+  form.choices button.chosen { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--card)); }
+  form.choices button[value="Easy"] { color: var(--easy); }
+  form.choices button[value="Medium"] { color: var(--medium); }
+  form.choices button[value="Hard"] { color: var(--hard); }
+  kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; font-size: 0.8rem; }
+  .nav { display: flex; justify-content: space-between; margin-top: 16px; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="top">
+  <h1>Labelling: {{ annotator }}</h1>
+  <span class="muted">Question {{ index + 1 }} of {{ total }} · {{ done }} labelled</span>
+</div>
+<div class="bar"><span style="width: {{ (100 * done / total) | round(1) }}%"></span></div>
+
+<details>
+  <summary>Rubric</summary>
+  <pre>{{ rubric }}</pre>
+</details>
+
+<div class="card">
+  <div class="meta muted">
+    {{ question.course }} · {{ question.year }} · {{ question.exam_type }} ·
+    <a href="{{ url_for('main.paper_pdf', paper_id=question.paper_id) }}" target="_blank" rel="noopener">
+      Hard to read? Open the original paper, question {{ question.qno }}{% if question.sub_part %} ({{ question.sub_part }}){% endif %}</a>
+  </div>
+  <div class="text">{{ text }}</div>
+  <form class="choices" method="post" action="{{ url_for('main.save_label') }}">
+    <input type="hidden" name="annotator" value="{{ annotator }}">
+    <input type="hidden" name="question_id" value="{{ question.question_id }}">
+    {% for choice in choices %}
+    <button type="submit" name="label" value="{{ choice }}" data-key="{{ loop.index if choice != 'Skip' else 's' }}"
+            class="{{ 'chosen' if current == choice else '' }}">
+      {{ choice }} <kbd>{{ loop.index if choice != 'Skip' else 'S' }}</kbd>
+    </button>
+    {% endfor %}
+  </form>
+  {% if current %}<p class="muted">Your label in this round: {{ current }}. Click another to change it.</p>{% endif %}
+</div>
+
+<div class="nav muted">
+  {% if index > 0 %}
+  <a id="back" href="{{ url_for('main.annotate', annotator=annotator, i=index - 1) }}">← Back <kbd>B</kbd></a>
+  {% else %}<span></span>{% endif %}
+  <a href="{{ url_for('main.annotate', annotator=annotator) }}">Next unlabelled →</a>
+</div>
+
+<script>
+  // Keys 1, 2, 3 and S press the matching button; B goes back.
+  document.addEventListener("keydown", (event) => {
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
+    const key = event.key.toLowerCase();
+    if (key === "b") { const back = document.getElementById("back"); if (back) back.click(); return; }
+    const button = document.querySelector(`button[data-key="${key}"]`);
+    if (button) button.click();
+  });
+</script>
+{% endblock %}

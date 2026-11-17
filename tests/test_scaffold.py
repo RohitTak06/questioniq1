@@ -11,6 +11,7 @@ MODULES = [
     "questioniq.extract",
     "questioniq.segment",
     "questioniq.preprocess",
+    "questioniq.annotate",
     "questioniq.topics",
     "questioniq.features",
     "questioniq.difficulty",
@@ -26,6 +27,10 @@ MODULES = [
     "scripts.select_gold",
     "scripts.ocr_eval",
     "scripts.seg_eval",
+    "scripts.make_fresh_check",
+    "scripts.run_preprocess",
+    "scripts.make_label_queue",
+    "scripts.kappa",
 ]
 
 

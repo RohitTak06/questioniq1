@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>QuestionIQ labelling</h1>
+<div class="card">
+  <p>Pick the round you are labelling. Each round only ever shows its own labels.</p>
+  <ul>
+    {% for name in annotators %}
+    <li><a href="{{ url_for('main.annotate', annotator=name) }}">{{ name }}</a></li>
+    {% endfor %}
+  </ul>
+  <p class="muted">Round 2 opens when round 1 is complete and 48 hours have passed since its last label.</p>
+</div>
+{% endblock %}

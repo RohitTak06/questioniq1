@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · QuestionIQ{% endblock %}
+{% block content %}
+<h1>{{ title }}</h1>
+<div class="card"><p>{{ body }}</p></div>
+<p class="muted"><a href="{{ url_for('main.index') }}">Back to the start page</a></p>
+{% endblock %}

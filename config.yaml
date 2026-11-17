@@ -33,6 +33,11 @@ paths:
   preprocess_summary: reports/preprocess_summary.md
   preprocess_review: reports/preprocess_review.md
   preprocess_check: data/preprocess_check.csv
+  rubric: docs/rubric.md
+  round1_queue: data/labels/round1_queue.csv
+  round2_queue: data/labels/round2_queue.csv
+  kappa_disagreements: reports/kappa_disagreements.md
+  settle_sheet: data/labels/settled_labels.csv
   seg_summary: reports/segmentation_summary.md
   seg_review: reports/segmentation_review
   seg_check: data/seg_gold/segmentation_check.csv
@@ -84,8 +89,17 @@ topics:
   group_min_questions: 150
 
 annotation:
+  round1_n: 300
   relabel_n: 150
   relabel_delay_hours: 48
+  # Rows outside this word range are mostly segmentation errors, so they are not labelled.
+  min_words: 5
+  max_words: 300
+  # Only subjects the owner has studied, so every label is an informed judgement (2026-11-13).
+  departments: [CS, AS]
+  choices: [Easy, Medium, Hard, Skip]
+  # Marks are a model feature, so the labelling page hides them (owner's choice, 2026-11-13).
+  show_marks: false
 
 difficulty:
   cv_folds: 5

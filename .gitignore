@@ -8,6 +8,7 @@ data/ocr_gold/*
 data/questions.csv
 data/questions_clean.csv
 reports/preprocess_review.md
+reports/kappa_disagreements.md
 data/labels/segment_lines_*.csv
 reports/segmentation_review/
 models/
