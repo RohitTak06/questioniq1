@@ -1,0 +1,55 @@
+year,exam_type,topic,topic_name,n_questions,year_total,share
+2019,Endterm,2,Entrepreneurship & Business in India,12,14,0.857
+2019,Endterm,10,Programming: Code Output & Arrays,2,14,0.143
+2020,Endterm,4,Brand Management & Brand Equity,5,9,0.556
+2020,Endterm,2,Entrepreneurship & Business in India,3,9,0.333
+2020,Endterm,8,Graphs & Network Matrices,1,9,0.111
+2022,Endterm,7,"IoT, Circuits & System Design",9,39,0.231
+2022,Endterm,10,Programming: Code Output & Arrays,9,39,0.231
+2022,Endterm,2,Entrepreneurship & Business in India,6,39,0.154
+2022,Endterm,3,Differential Equations,4,39,0.103
+2022,Endterm,1,"Scheduling, Memory & Sorting Algorithms",2,39,0.051
+2022,Endterm,5,Binary Trees & Traversals,2,39,0.051
+2022,Endterm,8,Graphs & Network Matrices,2,39,0.051
+2022,Endterm,9,Disaster Management,2,39,0.051
+2022,Endterm,4,Brand Management & Brand Equity,1,39,0.026
+2022,Endterm,6,Fourier & Laplace Transforms,1,39,0.026
+2022,Endterm,12,Vector Calculus,1,39,0.026
+2023,Endterm,2,Entrepreneurship & Business in India,157,580,0.271
+2023,Endterm,7,"IoT, Circuits & System Design",89,580,0.153
+2023,Endterm,10,Programming: Code Output & Arrays,86,580,0.148
+2023,Endterm,9,Disaster Management,48,580,0.083
+2023,Endterm,12,Vector Calculus,48,580,0.083
+2023,Endterm,1,"Scheduling, Memory & Sorting Algorithms",39,580,0.067
+2023,Endterm,3,Differential Equations,34,580,0.059
+2023,Endterm,5,Binary Trees & Traversals,19,580,0.033
+2023,Endterm,4,Brand Management & Brand Equity,18,580,0.031
+2023,Endterm,11,Multiple Integrals (Polar & Regions),18,580,0.031
+2023,Endterm,8,Graphs & Network Matrices,17,580,0.029
+2023,Endterm,6,Fourier & Laplace Transforms,7,580,0.012
+2023,Other,10,Programming: Code Output & Arrays,28,67,0.418
+2023,Other,2,Entrepreneurship & Business in India,12,67,0.179
+2023,Other,12,Vector Calculus,8,67,0.119
+2023,Other,7,"IoT, Circuits & System Design",6,67,0.09
+2023,Other,8,Graphs & Network Matrices,4,67,0.06
+2023,Other,11,Multiple Integrals (Polar & Regions),4,67,0.06
+2023,Other,5,Binary Trees & Traversals,2,67,0.03
+2023,Other,1,"Scheduling, Memory & Sorting Algorithms",1,67,0.015
+2023,Other,3,Differential Equations,1,67,0.015
+2023,Other,9,Disaster Management,1,67,0.015
+2024,Endterm,2,Entrepreneurship & Business in India,106,417,0.254
+2024,Endterm,10,Programming: Code Output & Arrays,71,417,0.17
+2024,Endterm,7,"IoT, Circuits & System Design",43,417,0.103
+2024,Endterm,8,Graphs & Network Matrices,39,417,0.094
+2024,Endterm,12,Vector Calculus,38,417,0.091
+2024,Endterm,1,"Scheduling, Memory & Sorting Algorithms",33,417,0.079
+2024,Endterm,9,Disaster Management,29,417,0.07
+2024,Endterm,3,Differential Equations,17,417,0.041
+2024,Endterm,11,Multiple Integrals (Polar & Regions),17,417,0.041
+2024,Endterm,5,Binary Trees & Traversals,14,417,0.034
+2024,Endterm,6,Fourier & Laplace Transforms,8,417,0.019
+2024,Endterm,4,Brand Management & Brand Equity,2,417,0.005
+2025,Midterm,10,Programming: Code Output & Arrays,8,19,0.421
+2025,Midterm,12,Vector Calculus,5,19,0.263
+2025,Midterm,3,Differential Equations,3,19,0.158
+2025,Midterm,8,Graphs & Network Matrices,3,19,0.158

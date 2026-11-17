@@ -36,6 +36,9 @@ MODULES = [
     "scripts.run_difficulty",
     "scripts.run_explain",
     "scripts.explain_eval",
+    "scripts.run_trends",
+    "scripts.build_db",
+    "scripts.run_pipeline",
 ]
 
 
