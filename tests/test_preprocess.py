@@ -16,6 +16,14 @@ def test_normalise_lowercases_and_removes_ocr_debris() -> None:
     assert normalise("| Fake “Routing” _Table_ |") == "  fake  routing   table   "
 
 
+def test_hyphenated_terms_stay_one_word() -> None:
+    assert clean_tokens("Fake op-amp circuit and k-means", EXAM_WORDS) == ["fake", "opamp", "circuit", "kmeans"]
+
+
+def test_ocr_reading_of_a_course_outcome_label_is_dropped() -> None:
+    assert clean_tokens("Prove fake induction col lo2 CO3", EXAM_WORDS) == ["prove", "fake", "induction"]
+
+
 def test_tokens_start_with_a_letter_so_pure_numbers_are_dropped() -> None:
     assert tokenize("IPv4 header of 2024, 15 bytes") == ["ipv4", "header", "of", "bytes"]
 

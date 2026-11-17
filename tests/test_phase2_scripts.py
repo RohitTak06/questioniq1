@@ -65,3 +65,17 @@ def test_review_shows_raw_and_clean_and_names_the_sheet() -> None:
 def test_check_rows_are_blank_for_the_owner() -> None:
     sheet = check_rows(ROWS[:1])
     assert sheet == [{"review_no": 1, "paper_id": "1", "qno": "1", "sub_part": "", "alternative": "0"}]
+
+
+def test_check_counts_yes_and_no_and_ignores_case_and_spaces() -> None:
+    from scripts.preprocess_eval import score_check
+
+    rows = [
+        {"review_no": "1", "paper_id": "7", "reads_as_topic": "Yes ", "notes": ""},
+        {"review_no": "2", "paper_id": "8", "reads_as_topic": "no", "notes": "fake note"},
+        {"review_no": "3", "paper_id": "9", "reads_as_topic": "", "notes": ""},
+    ]
+    report = score_check(rows)
+    assert (report["n_checked"], report["n_yes"], report["share_yes"]) == (2, 1, 0.5)
+    assert report["no"] == [{"review_no": "2", "paper_id": "8", "notes": "fake note"}]
+    assert report["not_answered"] == ["3"]

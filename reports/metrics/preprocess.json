@@ -1,0 +1,23 @@
+{
+  "n_checked": 20,
+  "n_yes": 17,
+  "share_yes": 0.85,
+  "no": [
+    {
+      "review_no": "4",
+      "paper_id": "55",
+      "notes": "Lost the whole statement n^2+1 >= 2^n (maths removed); only 'prove positive integer' left; CO tag 'col' kept"
+    },
+    {
+      "review_no": "5",
+      "paper_id": "97",
+      "notes": "Raw is an OCR fragment, not a real question; segmentation should drop it, not a cleaning fault"
+    },
+    {
+      "review_no": "6",
+      "paper_id": "78",
+      "notes": "'op-amp' split on hyphen and 'op' dropped as too short; 'vp' lost; only 'amp circuit' left"
+    }
+  ],
+  "not_answered": []
+}

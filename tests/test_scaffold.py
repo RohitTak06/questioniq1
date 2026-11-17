@@ -29,6 +29,7 @@ MODULES = [
     "scripts.seg_eval",
     "scripts.make_fresh_check",
     "scripts.run_preprocess",
+    "scripts.preprocess_eval",
     "scripts.make_label_queue",
     "scripts.kappa",
 ]

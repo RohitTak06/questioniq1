@@ -74,7 +74,7 @@ preprocess:
   # Words common to all exam questions, removed before topic modelling. Bloom verbs
   # (define, explain, ...) are removed here only; Phase 5 reads the raw text for them.
   exam_stopwords: [explain, write, brief, briefly, mark, marks, following, question, questions,
-    short, note, notes, answer, give, discuss, describe, define, state, list, find, compute,
+    short, note, notes, answer, give, discuss, describe, define, state, find, compute,
     calculate, determine, show, draw, using, use, consider, given, suitable, example, roll, page,
     # Added after the first run: frequent words that carry no topic.
     one, two, three, four, five, six, seven, eight, nine, ten, also, would, could, may, might,

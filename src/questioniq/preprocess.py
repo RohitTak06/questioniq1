@@ -15,13 +15,19 @@ from nltk.tokenize import RegexpTokenizer
 
 DEBRIS = re.compile(r"[|_~\"`*•¢©®«»“”‘’—–]")  # table rules and quote marks left by OCR
 TOKENIZER = RegexpTokenizer(r"[a-z][a-z0-9]*")  # a word starts with a letter, so 2024 is dropped
-OUTCOME_LABEL = re.compile(r"^[cl]o\d+$")  # co1, lo3: course-outcome labels, not content
+# co1, lo3, and col (OCR's reading of CO1): course-outcome labels, not content
+OUTCOME_LABEL = re.compile(r"^[cl]o[\dl]+$")
+HYPHENATED = re.compile(r"(?<=[a-z])-(?=[a-z])")  # op-amp, k-means, b-tree
 LEMMATIZER = WordNetLemmatizer()
 
 
 def normalise(text: str) -> str:
-    """Lowercase the text and replace OCR debris with spaces."""
-    return DEBRIS.sub(" ", text.lower())
+    """Lowercase the text, join hyphenated terms and replace OCR debris with spaces.
+
+    A hyphenated term is one technical term, so op-amp becomes opamp. Split apart,
+    "op" would be dropped as too short and only "amp" would be left.
+    """
+    return DEBRIS.sub(" ", HYPHENATED.sub("", text.lower()))
 
 
 def tokenize(text: str) -> list[str]:

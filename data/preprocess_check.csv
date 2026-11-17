@@ -1,21 +1,21 @@
 review_no,paper_id,qno,sub_part,alternative,reads_as_topic,notes
-1,72,2,,0,,
-2,106,2,,0,,
-3,169,8,,0,,
-4,55,8,,0,,
-5,97,1,5,0,,
-6,78,6,,2,,
-7,107,1,,0,,
-8,114,2,,0,,
-9,159,4,b,0,,
-10,64,2,,0,,
-11,52,3,,0,,
-12,155,7,,0,,
-13,117,2,,0,,
-14,33,3,1,0,,
-15,50,4,,1,,
-16,98,24,,0,,
-17,106,5,,0,,
-18,148,5,1,0,,
-19,29,2,,0,,
-20,63,3,,0,,
+1,72,2,,0,yes,
+2,106,2,,0,yes ,"Code tracing, recursion, nested loops still clear"
+3,169,8,,0,yes,"Toeplitz/circulant basis and dimension clear; OCR junk kept (pefinition, finda, eda)"
+4,55,8,,0,no,Lost the whole statement n^2+1 >= 2^n (maths removed); only 'prove positive integer' left; CO tag 'col' kept
+5,97,1,5,0,no,"Raw is an OCR fragment, not a real question; segmentation should drop it, not a cleaning fault"
+6,78,6,,2,no,'op-amp' split on hyphen and 'op' dropped as too short; 'vp' lost; only 'amp circuit' left
+7,107,1,,0,yes,"Search, BFS/DFS, alpha-beta, MDP clear; 'A*' lost (single letter)"
+8,114,2,,0,yes,
+9,159,4,b,0,yes,
+10,64,2,,0,yes,5-layered' became 'layered'; fine
+11,52,3,,0,yes,"Clear, but 'list' was removed as a stopword (it is a technical term here)"
+12,155,7,,0,yes,"Clear, but 'list' was removed as a stopword"
+13,117,2,,0,yes,
+14,33,3,1,0,yes,
+15,50,4,,1,yes,"Clear, but 'write' (a write operation here) was removed as a stopword"
+16,98,24,,0,yes,
+17,106,5,,0,yes,isomorphic' split into 'iso morphic' by the hyphen
+18,148,5,1,0,yes,
+19,29,2,,0,yes,"OCR typos kept (whi, clined, ustify)"
+20,63,3,,0,yes,
