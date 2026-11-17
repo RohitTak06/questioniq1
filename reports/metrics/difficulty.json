@@ -1,0 +1,247 @@
+{
+  "n_labelled": 292,
+  "label_counts": {
+    "Easy": 79,
+    "Medium": 125,
+    "Hard": 88
+  },
+  "label_source": "round 1 (round 2 not settled yet)",
+  "features": [
+    "bloom_level",
+    "word_count",
+    "marks",
+    "marks_missing",
+    "n_sub_parts",
+    "has_numbers",
+    "has_formula",
+    "n_technical_terms",
+    "topic_1",
+    "topic_2",
+    "topic_3",
+    "topic_4",
+    "topic_5",
+    "topic_6",
+    "topic_7",
+    "topic_8",
+    "topic_9",
+    "topic_10",
+    "topic_11",
+    "topic_12"
+  ],
+  "chosen_model": "random_forest",
+  "results": {
+    "random_forest": {
+      "macro_f1_mean": 0.3701569354692328,
+      "macro_f1_std": 0.057389791983313,
+      "macro_f1_folds": [
+        0.40839160839160843,
+        0.3260200572028529,
+        0.30897783336807727,
+        0.46313307288917044,
+        0.34426210549445474
+      ],
+      "per_class": {
+        "Easy": {
+          "precision": 0.327,
+          "recall": 0.405,
+          "f1-score": 0.362,
+          "support": 79.0
+        },
+        "Medium": {
+          "precision": 0.453,
+          "recall": 0.344,
+          "f1-score": 0.391,
+          "support": 125.0
+        },
+        "Hard": {
+          "precision": 0.354,
+          "recall": 0.398,
+          "f1-score": 0.374,
+          "support": 88.0
+        }
+      },
+      "accuracy": 0.377,
+      "labels": [
+        "Easy",
+        "Medium",
+        "Hard"
+      ],
+      "confusion_matrix": [
+        [
+          32,
+          23,
+          24
+        ],
+        [
+          42,
+          43,
+          40
+        ],
+        [
+          24,
+          29,
+          35
+        ]
+      ],
+      "best_params_per_fold": [
+        {
+          "max_depth": 10,
+          "min_samples_leaf": 1,
+          "n_estimators": 500
+        },
+        {
+          "max_depth": null,
+          "min_samples_leaf": 3,
+          "n_estimators": 500
+        },
+        {
+          "max_depth": null,
+          "min_samples_leaf": 3,
+          "n_estimators": 500
+        },
+        {
+          "max_depth": 10,
+          "min_samples_leaf": 1,
+          "n_estimators": 500
+        },
+        {
+          "max_depth": 10,
+          "min_samples_leaf": 3,
+          "n_estimators": 200
+        }
+      ]
+    },
+    "logistic_regression": {
+      "macro_f1_mean": 0.3701085490601946,
+      "macro_f1_std": 0.08064689634179824,
+      "macro_f1_folds": [
+        0.34101174345076785,
+        0.34483542462265865,
+        0.39584859584859583,
+        0.5068201193520886,
+        0.26202686202686204
+      ],
+      "per_class": {
+        "Easy": {
+          "precision": 0.333,
+          "recall": 0.392,
+          "f1-score": 0.36,
+          "support": 79.0
+        },
+        "Medium": {
+          "precision": 0.471,
+          "recall": 0.328,
+          "f1-score": 0.387,
+          "support": 125.0
+        },
+        "Hard": {
+          "precision": 0.33,
+          "recall": 0.42,
+          "f1-score": 0.37,
+          "support": 88.0
+        }
+      },
+      "accuracy": 0.373,
+      "labels": [
+        "Easy",
+        "Medium",
+        "Hard"
+      ],
+      "confusion_matrix": [
+        [
+          31,
+          23,
+          25
+        ],
+        [
+          34,
+          41,
+          50
+        ],
+        [
+          28,
+          23,
+          37
+        ]
+      ],
+      "best_params_per_fold": [
+        {
+          "model__C": 10
+        },
+        {
+          "model__C": 1
+        },
+        {
+          "model__C": 0.1
+        },
+        {
+          "model__C": 1
+        },
+        {
+          "model__C": 1
+        }
+      ]
+    },
+    "majority_baseline": {
+      "macro_f1_mean": 0.19984700707592276,
+      "macro_f1_std": 0.0011711081195176977,
+      "macro_f1_folds": [
+        0.1984126984126984,
+        0.1984126984126984,
+        0.20080321285140565,
+        0.20080321285140565,
+        0.20080321285140565
+      ],
+      "per_class": {
+        "Easy": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 79.0
+        },
+        "Medium": {
+          "precision": 0.428,
+          "recall": 1.0,
+          "f1-score": 0.6,
+          "support": 125.0
+        },
+        "Hard": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 88.0
+        }
+      },
+      "accuracy": 0.428,
+      "labels": [
+        "Easy",
+        "Medium",
+        "Hard"
+      ],
+      "confusion_matrix": [
+        [
+          0,
+          79,
+          0
+        ],
+        [
+          0,
+          125,
+          0
+        ],
+        [
+          0,
+          88,
+          0
+        ]
+      ],
+      "best_params_per_fold": [
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    }
+  }
+}

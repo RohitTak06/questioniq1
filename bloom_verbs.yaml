@@ -1,0 +1,30 @@
+# Action verbs by level of the revised Bloom's Taxonomy (Anderson & Krathwohl, 2001).
+# 1 Remember, 2 Understand, 3 Apply, 4 Analyse, 5 Evaluate, 6 Create.
+# Taken from the standard published verb lists, not from the owner's rubric, so the
+# model doesn't just copy the rubric back. Each verb has one level; where standard
+# lists disagree, the more common placement is used.
+#
+# One change for exam papers: "evaluate" is under Apply, because in these papers it
+# almost always means "compute" (evaluate the integral), not "judge".
+# Verbs are matched after reducing words to their verb form (proves -> prove).
+
+verbs:
+  1: [define, list, name, state, recall, recognise, recognize, identify, label, match,
+      enumerate, mention, memorise, memorize, tabulate, quote, reproduce]
+  2: [explain, describe, discuss, summarise, summarize, classify, compare, interpret,
+      illustrate, exemplify, paraphrase, predict, outline, express, review, translate,
+      clarify, represent, infer]
+  3: [apply, solve, compute, calculate, determine, find, use, implement, execute,
+      demonstrate, show, trace, sketch, draw, construct, convert, perform, operate,
+      simulate, verify, evaluate, estimate, obtain, prepare, plot, write]
+  4: [analyse, analyze, differentiate, distinguish, examine, contrast, categorise,
+      categorize, deduce, investigate, organise, organize, attribute, test, debug,
+      inspect, diagnose, break, relate]
+  5: [justify, assess, critique, criticise, criticize, judge, defend, argue, recommend,
+      appraise, prioritise, prioritize, validate, prove, derive, conclude, decide, rate]
+  6: [design, create, develop, devise, formulate, compose, plan, produce, invent,
+      propose, generate, build, modify, synthesise, synthesize, optimise, optimize]
+
+# Question openings that ask for recall, matched as phrases at the start of a question.
+phrases:
+  1: ["what is", "what are", "who is", "fill in the blank", "true or false"]
