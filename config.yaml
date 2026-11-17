@@ -45,6 +45,9 @@ paths:
   bloom_verbs: bloom_verbs.yaml
   features: data/features.csv
   difficulty_results: reports/difficulty_results.md
+  explanations: data/explanations.jsonl
+  explain_review: reports/explain_review.md
+  explain_check: data/explain_check.csv
   seg_summary: reports/segmentation_summary.md
   seg_review: reports/segmentation_review
   seg_check: data/seg_gold/segmentation_check.csv
@@ -118,3 +121,8 @@ difficulty:
   labels: [Easy, Medium, Hard]
   rf_grid: {n_estimators: [200, 500], max_depth: [null, 5, 10], min_samples_leaf: [1, 3]}
   lr_grid: {C: [0.01, 0.1, 1, 10]}
+
+explain:
+  n_reasons: 5
+  n_review: 20
+  target_matches: 15  # of 20 explanations that make sense by the owner's rubric

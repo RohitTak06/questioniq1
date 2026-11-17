@@ -34,6 +34,8 @@ MODULES = [
     "scripts.kappa",
     "scripts.run_topics",
     "scripts.run_difficulty",
+    "scripts.run_explain",
+    "scripts.explain_eval",
 ]
 
 

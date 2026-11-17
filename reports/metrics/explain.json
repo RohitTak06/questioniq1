@@ -1,0 +1,276 @@
+{
+  "explained_model": "random_forest",
+  "n_questions": 1155,
+  "n_outside_training_subjects": 671,
+  "shap_mean_abs": {
+    "bloom_level": 0.0266,
+    "word_count": 0.0256,
+    "marks": 0.0173,
+    "n_technical_terms": 0.0172,
+    "topic_7": 0.0133,
+    "marks_missing": 0.011,
+    "has_numbers": 0.0078,
+    "topic_10": 0.006,
+    "n_sub_parts": 0.0053,
+    "topic_2": 0.0047,
+    "topic_12": 0.0043,
+    "has_formula": 0.0039,
+    "topic_5": 0.0031,
+    "topic_3": 0.0021,
+    "topic_8": 0.0017,
+    "topic_6": 0.0014,
+    "topic_1": 0.0013,
+    "topic_11": 0.0005,
+    "topic_4": 0.0,
+    "topic_9": 0.0
+  },
+  "lr_coefficients": {
+    "Easy": [
+      {
+        "feature": "word_count",
+        "coefficient": -0.1046
+      },
+      {
+        "feature": "n_technical_terms",
+        "coefficient": -0.0893
+      },
+      {
+        "feature": "marks_missing",
+        "coefficient": 0.0853
+      },
+      {
+        "feature": "topic_6",
+        "coefficient": -0.0815
+      },
+      {
+        "feature": "topic_5",
+        "coefficient": 0.0702
+      },
+      {
+        "feature": "has_numbers",
+        "coefficient": -0.055
+      },
+      {
+        "feature": "topic_7",
+        "coefficient": -0.0477
+      },
+      {
+        "feature": "topic_2",
+        "coefficient": 0.0476
+      },
+      {
+        "feature": "topic_8",
+        "coefficient": 0.0445
+      },
+      {
+        "feature": "topic_3",
+        "coefficient": -0.0417
+      },
+      {
+        "feature": "n_sub_parts",
+        "coefficient": 0.0261
+      },
+      {
+        "feature": "topic_9",
+        "coefficient": 0.0227
+      },
+      {
+        "feature": "topic_12",
+        "coefficient": -0.0217
+      },
+      {
+        "feature": "topic_10",
+        "coefficient": 0.0151
+      },
+      {
+        "feature": "marks",
+        "coefficient": -0.0112
+      },
+      {
+        "feature": "topic_1",
+        "coefficient": -0.0104
+      },
+      {
+        "feature": "has_formula",
+        "coefficient": 0.0066
+      },
+      {
+        "feature": "topic_11",
+        "coefficient": 0.0061
+      },
+      {
+        "feature": "bloom_level",
+        "coefficient": 0.0
+      },
+      {
+        "feature": "topic_4",
+        "coefficient": 0.0
+      }
+    ],
+    "Hard": [
+      {
+        "feature": "marks",
+        "coefficient": 0.0857
+      },
+      {
+        "feature": "marks_missing",
+        "coefficient": -0.0827
+      },
+      {
+        "feature": "topic_7",
+        "coefficient": -0.0702
+      },
+      {
+        "feature": "bloom_level",
+        "coefficient": 0.0694
+      },
+      {
+        "feature": "topic_9",
+        "coefficient": -0.0635
+      },
+      {
+        "feature": "n_technical_terms",
+        "coefficient": 0.0589
+      },
+      {
+        "feature": "word_count",
+        "coefficient": 0.0588
+      },
+      {
+        "feature": "topic_12",
+        "coefficient": 0.0533
+      },
+      {
+        "feature": "topic_3",
+        "coefficient": 0.0525
+      },
+      {
+        "feature": "topic_2",
+        "coefficient": -0.0509
+      },
+      {
+        "feature": "topic_5",
+        "coefficient": -0.0406
+      },
+      {
+        "feature": "topic_10",
+        "coefficient": 0.0331
+      },
+      {
+        "feature": "n_sub_parts",
+        "coefficient": 0.0278
+      },
+      {
+        "feature": "has_numbers",
+        "coefficient": 0.0272
+      },
+      {
+        "feature": "topic_8",
+        "coefficient": -0.0247
+      },
+      {
+        "feature": "topic_1",
+        "coefficient": -0.0179
+      },
+      {
+        "feature": "topic_6",
+        "coefficient": 0.0175
+      },
+      {
+        "feature": "has_formula",
+        "coefficient": -0.015
+      },
+      {
+        "feature": "topic_11",
+        "coefficient": 0.0094
+      },
+      {
+        "feature": "topic_4",
+        "coefficient": 0.0
+      }
+    ],
+    "Medium": [
+      {
+        "feature": "topic_7",
+        "coefficient": 0.1178
+      },
+      {
+        "feature": "marks",
+        "coefficient": -0.0745
+      },
+      {
+        "feature": "bloom_level",
+        "coefficient": -0.0695
+      },
+      {
+        "feature": "topic_6",
+        "coefficient": 0.064
+      },
+      {
+        "feature": "n_sub_parts",
+        "coefficient": -0.0539
+      },
+      {
+        "feature": "topic_10",
+        "coefficient": -0.0482
+      },
+      {
+        "feature": "word_count",
+        "coefficient": 0.0458
+      },
+      {
+        "feature": "topic_9",
+        "coefficient": 0.0408
+      },
+      {
+        "feature": "topic_12",
+        "coefficient": -0.0316
+      },
+      {
+        "feature": "n_technical_terms",
+        "coefficient": 0.0304
+      },
+      {
+        "feature": "topic_5",
+        "coefficient": -0.0296
+      },
+      {
+        "feature": "topic_1",
+        "coefficient": 0.0283
+      },
+      {
+        "feature": "has_numbers",
+        "coefficient": 0.0278
+      },
+      {
+        "feature": "topic_8",
+        "coefficient": -0.0198
+      },
+      {
+        "feature": "topic_11",
+        "coefficient": -0.0155
+      },
+      {
+        "feature": "topic_3",
+        "coefficient": -0.0108
+      },
+      {
+        "feature": "has_formula",
+        "coefficient": 0.0085
+      },
+      {
+        "feature": "topic_2",
+        "coefficient": 0.0033
+      },
+      {
+        "feature": "marks_missing",
+        "coefficient": -0.0027
+      },
+      {
+        "feature": "topic_4",
+        "coefficient": 0.0
+      }
+    ]
+  },
+  "topic_names_filled": 12
+}

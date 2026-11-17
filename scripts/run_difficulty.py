@@ -19,9 +19,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from questioniq.annotate import add_question_ids, latest_labels, read_rows
+from questioniq.annotate import add_question_ids, read_rows
 from questioniq.config import load_config
-from questioniq.difficulty import choose_best, compare_models, fit_final, save_best, training_labels
+from questioniq.difficulty import choose_best, compare_models, fit_final, load_training_labels, save_best
 from questioniq.features import feature_names, feature_table, load_bloom_verbs, technical_vocabulary
 
 NICE_NAMES = {"random_forest": "Random Forest", "logistic_regression": "Logistic Regression",
@@ -94,23 +94,21 @@ def main() -> None:
     features = feature_table(questions, dominant, k, verbs, phrases, technical)
     features.to_csv(paths["features"], index=False)
 
-    labels_dir = Path(paths["labels"])
-    round1 = latest_labels(read_rows(labels_dir / "difficulty_round1.csv"))
-    queue_ids = [row["question_id"] for row in read_rows(Path(paths["round1_queue"]))]
-    settled_rows = [row for row in read_rows(Path(paths["settle_sheet"])) if row.get("final_label", "").strip()]
-    settled = {row["question_id"]: row["final_label"].strip() for row in settled_rows}
-    labels = training_labels(round1, queue_ids, settled)
-    source = "round 1" + (f", with {len(settled)} settled after round 2" if settled else " (round 2 not settled yet)")
+    labels, source = load_training_labels(paths)
 
     columns = feature_names(k)
     X = features.set_index("question_id").loc[list(labels), columns]
     y = pd.Series(labels).loc[X.index]
     results = compare_models(X, y, cfg)
     chosen = choose_best(results)
-    model = fit_final(chosen, X, y, cfg)
-    save_best(model, Path(paths["models"]) / "difficulty.joblib",
-              {"name": chosen, "features": columns, "labels": cfg["difficulty"]["labels"],
-               "n_trained": len(y), "departments": cfg["annotation"]["departments"], "label_source": source})
+    metadata = {"features": columns, "labels": cfg["difficulty"]["labels"], "n_trained": len(y),
+                "departments": cfg["annotation"]["departments"], "label_source": source}
+    save_best(fit_final(chosen, X, y, cfg), Path(paths["models"]) / "difficulty.joblib",
+              {"name": chosen, **metadata})
+    # Both trained models are kept: Phase 6 explains RF with SHAP and LR with its coefficients.
+    for name in ("random_forest", "logistic_regression"):
+        save_best(fit_final(name, X, y, cfg), Path(paths["models"]) / f"difficulty_{name}.joblib",
+                  {"name": name, **metadata})
 
     label_counts = {label: int((y == label).sum()) for label in cfg["difficulty"]["labels"]}
     metrics = {"n_labelled": len(y), "label_counts": label_counts, "label_source": source,

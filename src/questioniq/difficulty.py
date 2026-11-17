@@ -21,7 +21,7 @@ from sklearn.model_selection import GridSearchCV, StratifiedKFold
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-from questioniq.annotate import GRADES
+from questioniq.annotate import GRADES, latest_labels, read_rows
 
 
 def training_labels(round1: dict[str, str], queue_ids: list[str], settled: dict[str, str]) -> dict[str, str]:
@@ -36,6 +36,21 @@ def training_labels(round1: dict[str, str], queue_ids: list[str], settled: dict[
         if label in GRADES:
             labels[question_id] = label
     return labels
+
+
+def load_training_labels(paths: dict) -> tuple[dict[str, str], str]:
+    """Read the owner's labels from disk and return them with a note on where they came from.
+
+    Uses round 1 for the round-1 queue, replaced by settled labels where the owner
+    filled in final_label after round 2.
+    """
+    labels_dir = Path(paths["labels"])
+    round1 = latest_labels(read_rows(labels_dir / "difficulty_round1.csv"))
+    queue_ids = [row["question_id"] for row in read_rows(Path(paths["round1_queue"]))]
+    settled = {row["question_id"]: row["final_label"].strip()
+               for row in read_rows(Path(paths["settle_sheet"])) if row.get("final_label", "").strip()}
+    source = "round 1" + (f", with {len(settled)} settled after round 2" if settled else " (round 2 not settled yet)")
+    return training_labels(round1, queue_ids, settled), source
 
 
 def candidate_models(cfg: dict) -> dict[str, tuple[Any, dict]]:
