@@ -110,7 +110,7 @@ def _open(annotator: str) -> tuple[tuple[list[dict], dict[str, dict]] | None, Re
     return (queue, questions), None
 
 
-@bp.get("/")
+@bp.get("/label")
 def index() -> ResponseReturnValue:
     """Show links to the labelling rounds."""
     return render_template("index.html", annotators=ANNOTATORS)

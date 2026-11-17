@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Upload · QuestionIQ{% endblock %}
+{% block content %}
+<h1>Analyse a new paper</h1>
+<form class="card filters" method="post" enctype="multipart/form-data">
+  <label>Question paper (PDF, up to 20 MB)
+    <input type="file" name="paper" accept="application/pdf,.pdf" required></label>
+  <button class="btn primary" type="submit">Analyse</button>
+  <span class="muted">Runs OCR, splits the questions, finds topics and predicts difficulty with the saved models.
+  Nothing is added to the database.</span>
+</form>
+{% if error %}<p class="badge Hard">{{ error }}</p>{% endif %}
+
+{% if result %}
+<h2>{{ result.filename }}</h2>
+<p class="muted">{{ result.questions | length }} questions found on {{ result.n_pages }} page{{ 's' if result.n_pages != 1 }}
+({{ result.n_ocr_pages }} read with OCR) in {{ result.seconds }} s.
+Difficulty is trustworthy only for {{ result.departments | join(' and ') }} subjects, the ones the model was trained on.</p>
+<div class="scroll"><table>
+  <thead><tr><th>Q</th><th>Question</th><th>Main topic</th><th>Difficulty</th><th></th></tr></thead>
+  <tbody>
+  {% for item in result.questions %}
+    <tr>
+      <td>{{ item.qno }}{% if item.sub_part %} ({{ item.sub_part }}){% endif %}</td>
+      <td class="qtext">{{ item.text | truncate(240) }}</td>
+      <td>{{ item.topics.topics[0].name if item.topics.topics else '' }}</td>
+      <td><span class="badge {{ item.predicted }}">{{ item.predicted }}</span></td>
+      <td><button class="btn" type="button" data-upload="{{ loop.index0 }}">Explain</button></td>
+    </tr>
+  {% else %}
+    <tr><td colspan="5" class="muted">No questions were found in this paper.</td></tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+{% if result %}<script>window.UPLOAD_RESULTS = {{ result.questions | tojson }};</script>{% endif %}
+{% endblock %}

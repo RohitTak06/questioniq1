@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Model report · QuestionIQ{% endblock %}
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% endblock %}
+{% macro pct(value) %}{{ '%.1f' % (value * 100) }}%{% endmacro %}
+{% block content %}
+<h1>Model report</h1>
+<p class="muted">Every number here is read from <code>reports/metrics/</code>, so it matches the written report.</p>
+
+<h2>Evaluation targets</h2>
+<div class="scroll"><table>
+  <thead><tr><th>Stage</th><th>Measure</th><th>Result</th><th>Target</th></tr></thead>
+  <tbody>
+  {% if m.ocr %}<tr><td>OCR</td><td>Character error rate on hand-typed pages ({{ m.ocr.method_in_use }})</td>
+    <td>{{ pct(m.ocr.methods[m.ocr.method_in_use].pooled_cer) }}</td><td>≤ 10%</td></tr>{% endif %}
+  {% if m.segmentation %}<tr><td>Segmentation</td><td>Questions split correctly, 10 fresh papers</td>
+    <td>{{ pct(m.segmentation.score) }} ({{ m.segmentation.fresh_papers_after_fixes.n_correct }}/{{ m.segmentation.fresh_papers_after_fixes.n_total }});
+      before fixes {{ pct(m.segmentation.studied_papers_before_fixes.score) }}</td><td>≥ 90% (missed)</td></tr>{% endif %}
+  {% if m.preprocess %}<tr><td>Preprocessing</td><td>Cleaned questions that keep their topic</td>
+    <td>{{ m.preprocess.n_yes }} of {{ m.preprocess.n_checked }}</td><td>owner's check</td></tr>{% endif %}
+  {% if m.topics %}<tr><td>Topics</td><td>Best C_v coherence, k = 4..15</td>
+    <td>NMF {{ '%.3f' % m.topics.best.nmf.c_v }} (k={{ m.topics.best.nmf.k }}); LDA {{ '%.3f' % m.topics.best.lda.c_v }} (k={{ m.topics.best.lda.k }})</td>
+    <td>best k by C_v</td></tr>{% endif %}
+  <tr><td>Annotation</td><td>Cohen's Kappa, round 1 vs round 2</td>
+    <td>{% if m.kappa %}{{ '%.3f' % m.kappa.round1_vs_round2.kappa }} on {{ m.kappa.round1_vs_round2.n_compared }} questions{% else %}after round 2{% endif %}</td>
+    <td>≥ 0.6</td></tr>
+  {% if m.difficulty %}<tr><td>Difficulty</td><td>Macro-F1, nested 5-fold CV</td>
+    <td>{% for name, r in m.difficulty.results.items() %}{{ name.replace('_', ' ') }} {{ '%.3f' % r.macro_f1_mean }}{{ '; ' if not loop.last }}{% endfor %}</td>
+    <td>beats the baseline</td></tr>{% endif %}
+  {% if m.explain_check %}<tr><td>Explanations</td><td>Reasons that make sense by the rubric, 20 questions</td>
+    <td>{{ m.explain_check.n_yes }} of {{ m.explain_check.n_checked }}</td><td>≥ {{ m.explain_check.target }}</td></tr>{% endif %}
+  </tbody>
+</table></div>
+
+{% if m.difficulty %}
+<h2>Difficulty models</h2>
+<p class="muted">{{ m.difficulty.n_labelled }} labelled questions (CS and AS): {% for g, n in m.difficulty.label_counts.items() %}{{ g }} {{ n }}{{ ', ' if not loop.last }}{% endfor %}.
+Labels: {{ m.difficulty.label_source }}. Chosen: {{ m.difficulty.chosen_model.replace('_', ' ') }}.</p>
+<div class="scroll"><table>
+  <thead><tr><th>Model</th><th class="num">Macro-F1</th><th class="num">Accuracy</th>{% for g in grades %}<th class="num">{{ g }} P / R / F1</th>{% endfor %}</tr></thead>
+  <tbody>{% for name, r in m.difficulty.results.items() %}<tr><td>{{ name.replace('_', ' ') }}</td>
+    <td class="num">{{ '%.3f' % r.macro_f1_mean }} ± {{ '%.3f' % r.macro_f1_std }}</td><td class="num">{{ '%.3f' % r.accuracy }}</td>
+    {% for g in grades %}{% set s = r.per_class[g] %}<td class="num">{{ '%.2f' % s.precision }} / {{ '%.2f' % s.recall }} / {{ '%.2f' % s['f1-score'] }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+</table></div>
+<h2>Confusion matrices <span class="muted">(rows: owner's label, columns: predicted)</span></h2>
+<div class="tiles">
+{% for name, r in m.difficulty.results.items() %}
+  <div class="tile"><strong>{{ name.replace('_', ' ') }}</strong>
+    <table><thead><tr><th></th>{% for g in r.labels %}<th class="num">{{ g }}</th>{% endfor %}</tr></thead>
+      <tbody>{% for row in r.confusion_matrix %}<tr><th>{{ r.labels[loop.index0] }}</th>{% for v in row %}<td class="num">{{ v }}</td>{% endfor %}</tr>{% endfor %}</tbody></table>
+  </div>
+{% endfor %}
+</div>
+{% endif %}
+
+{% if m.topics %}
+<h2>Topic coherence by k</h2>
+<div class="card chart"><canvas id="coherenceChart" aria-label="C_v coherence by number of topics"></canvas></div>
+{% endif %}
+{% if m.explain %}
+<h2>What drives the difficulty predictions</h2>
+<div class="card chart"><canvas id="shapChart" aria-label="Mean absolute SHAP value per feature"></canvas></div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script>
+  Chart.defaults.color = getComputedStyle(document.body).color;
+  {% if m.topics %}
+  const sweep = {{ m.topics.sweep | tojson }};
+  const ks = [...new Set(sweep.map((row) => row.k))];
+  new Chart(document.getElementById("coherenceChart"), {
+    type: "line",
+    data: { labels: ks, datasets: ["lda", "nmf"].map((model, i) => ({ label: model.toUpperCase(),
+            data: ks.map((k) => sweep.find((row) => row.model === model && row.k === k).c_v),
+            borderColor: ["#4C78A8", "#F58518"][i], backgroundColor: ["#4C78A8", "#F58518"][i] })) },
+    options: { maintainAspectRatio: false, scales: { x: { title: { display: true, text: "Number of topics (k)" } },
+               y: { title: { display: true, text: "C_v coherence" } } } },
+  });
+  {% endif %}
+  {% if m.explain %}
+  const importance = Object.entries({{ m.explain.shap_mean_abs | tojson }}).slice(0, 12);
+  new Chart(document.getElementById("shapChart"), {
+    type: "bar",
+    data: { labels: importance.map(([name]) => name), datasets: [{ label: "Mean |SHAP|",
+            data: importance.map(([, value]) => value), backgroundColor: "#4C78A8" }] },
+    options: { indexAxis: "y", maintainAspectRatio: false, plugins: { legend: { display: false } } },
+  });
+  {% endif %}
+</script>
+{% endblock %}

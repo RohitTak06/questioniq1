@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Topics · QuestionIQ{% endblock %}
+{% block content %}
+<h1>Topics</h1>
+{% if metrics %}
+<p class="muted">{{ metrics.chosen_model | upper }} with k = {{ metrics.chosen_k }}, chosen by the highest C_v coherence
+({{ '%.3f' % metrics.best[metrics.chosen_model].c_v }}). Topic names were given by the owner from each topic's keywords.
+Topic–department normalised mutual information: {{ metrics.subject_alignment.nmi }} (0 = unrelated, 1 = identical).</p>
+{% endif %}
+<div class="scroll">
+<table>
+  <thead><tr><th>#</th><th>Topic</th><th>Top keywords</th><th class="num">Questions</th><th>Main departments</th></tr></thead>
+  <tbody>
+  {% for topic in topics %}
+    <tr>
+      <td>{{ topic.id }}</td>
+      <td><a href="{{ url_for('dash.questions', topic=topic.id) }}">{{ topic.name }}</a></td>
+      <td>{% for word in topic.keywords %}<span class="keyword">{{ word.replace('_', ' ') }}</span>{% endfor %}</td>
+      <td class="num">{{ topic.n_questions }}</td>
+      <td>{% for dept, n in topic.departments %}{{ dept }} {{ n }}{{ ', ' if not loop.last }}{% endfor %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

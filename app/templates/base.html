@@ -4,25 +4,29 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}QuestionIQ{% endblock %}</title>
-  <style>
-    :root { --bg: #f7f7f5; --card: #ffffff; --text: #1f2328; --muted: #656d76; --line: #d8dee4;
-            --accent: #1f6feb; --easy: #1a7f37; --medium: #9a6700; --hard: #cf222e; }
-    @media (prefers-color-scheme: dark) {
-      :root { --bg: #0d1117; --card: #161b22; --text: #e6edf3; --muted: #8d96a0; --line: #30363d;
-              --accent: #4493f8; --easy: #3fb950; --medium: #d29922; --hard: #f85149; }
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; background: var(--bg); color: var(--text);
-           font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
-    main { max-width: 860px; margin: 0 auto; padding: 24px 16px 48px; }
-    h1 { font-size: 1.3rem; margin: 0 0 16px; }
-    a { color: var(--accent); }
-    .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; }
-    .muted { color: var(--muted); font-size: 0.9rem; }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   {% block head %}{% endblock %}
 </head>
 <body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('dash.home') }}">QuestionIQ</a>
+    <nav>
+      {% set here = request.endpoint %}
+      <a href="{{ url_for('dash.questions') }}" class="{{ 'on' if here == 'dash.questions' }}">Questions</a>
+      <a href="{{ url_for('dash.topics') }}" class="{{ 'on' if here == 'dash.topics' }}">Topics</a>
+      <a href="{{ url_for('dash.trends') }}" class="{{ 'on' if here == 'dash.trends' }}">Trends</a>
+      <a href="{{ url_for('dash.report') }}" class="{{ 'on' if here == 'dash.report' }}">Model report</a>
+      <a href="{{ url_for('dash.upload') }}" class="{{ 'on' if here == 'dash.upload' }}">Upload</a>
+      <a href="{{ url_for('main.index') }}" class="{{ 'on' if here in ('main.index', 'main.annotate') }}">Label</a>
+    </nav>
+  </header>
   <main>{% block content %}{% endblock %}</main>
+
+  <aside id="drawer" class="drawer" aria-hidden="true" aria-label="Explanation">
+    <button class="drawer-close" type="button" aria-label="Close">×</button>
+    <div id="drawer-body"></div>
+  </aside>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  {% block scripts %}{% endblock %}
 </body>
 </html>

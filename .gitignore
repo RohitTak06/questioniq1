@@ -10,6 +10,7 @@ data/questions_clean.csv
 reports/preprocess_review.md
 reports/kappa_disagreements.md
 reports/explain_review.md
+data/uploads/
 data/labels/segment_lines_*.csv
 reports/segmentation_review/
 models/

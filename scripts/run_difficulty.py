@@ -101,8 +101,11 @@ def main() -> None:
     y = pd.Series(labels).loc[X.index]
     results = compare_models(X, y, cfg)
     chosen = choose_best(results)
+    # The technical-word list is saved with the model, so an uploaded paper's features are
+    # computed exactly as they were for training (Phase 8).
     metadata = {"features": columns, "labels": cfg["difficulty"]["labels"], "n_trained": len(y),
-                "departments": cfg["annotation"]["departments"], "label_source": source}
+                "departments": cfg["annotation"]["departments"], "label_source": source,
+                "technical_terms": sorted(technical), "topic_k": k}
     save_best(fit_final(chosen, X, y, cfg), Path(paths["models"]) / "difficulty.joblib",
               {"name": chosen, **metadata})
     # Both trained models are kept: Phase 6 explains RF with SHAP and LR with its coefficients.

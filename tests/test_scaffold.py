@@ -21,6 +21,8 @@ MODULES = [
     "questioniq.pipeline",
     "app",
     "app.routes",
+    "app.dashboard",
+    "questioniq.infer",
     "scripts.discover_api",
     "scripts.run_extraction",
     "scripts.run_segmentation",

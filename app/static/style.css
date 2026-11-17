@@ -1,0 +1,77 @@
+/* QuestionIQ dashboard styles. Colours are tokens, redefined for dark mode. */
+:root {
+  --bg: #f6f7f9; --card: #ffffff; --text: #1f2328; --muted: #5f6b76; --line: #d9dee3;
+  --accent: #1f6feb; --easy: #1a7f37; --medium: #9a6700; --hard: #cf222e; --grey: #6e7781;
+  --easy-bg: #dafbe1; --medium-bg: #fff8c5; --hard-bg: #ffebe9; --grey-bg: #eaeef2;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1117; --card: #161b22; --text: #e6edf3; --muted: #8d96a0; --line: #30363d;
+    --accent: #4493f8; --easy: #3fb950; --medium: #d29922; --hard: #f85149; --grey: #8d96a0;
+    --easy-bg: #12261e; --medium-bg: #272115; --hard-bg: #2d1517; --grey-bg: #21262d;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text);
+       font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+a { color: var(--accent); }
+main { max-width: 1180px; margin: 0 auto; padding: 22px 16px 60px; }
+h1 { font-size: 1.35rem; margin: 0 0 14px; }
+h2 { font-size: 1.1rem; margin: 26px 0 10px; }
+.muted { color: var(--muted); font-size: 0.9rem; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; }
+
+.topbar { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; padding: 10px 16px;
+          background: var(--card); border-bottom: 1px solid var(--line); }
+.brand { font-weight: 700; color: var(--text); text-decoration: none; font-size: 1.05rem; }
+.topbar nav { display: flex; gap: 4px; flex-wrap: wrap; }
+.topbar nav a { color: var(--muted); text-decoration: none; padding: 5px 10px; border-radius: 6px; }
+.topbar nav a:hover { color: var(--text); background: var(--grey-bg); }
+.topbar nav a.on { color: var(--text); background: var(--grey-bg); font-weight: 600; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.tile { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 14px; }
+.tile b { display: block; font-size: 1.6rem; }
+
+table { border-collapse: collapse; width: 100%; background: var(--card); }
+th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.scroll { overflow-x: auto; }
+
+.filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: end; margin-bottom: 14px; }
+.filters label { display: flex; flex-direction: column; font-size: 0.8rem; color: var(--muted); }
+.filters select, .filters input, button.btn { font: inherit; padding: 6px 8px; border-radius: 6px;
+  border: 1px solid var(--line); background: var(--card); color: var(--text); }
+button.btn { cursor: pointer; }
+button.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 0.8rem; font-weight: 600;
+         white-space: nowrap; }
+.badge.Easy { color: var(--easy); background: var(--easy-bg); }
+.badge.Medium { color: var(--medium); background: var(--medium-bg); }
+.badge.Hard { color: var(--hard); background: var(--hard-bg); }
+.badge.outside { color: var(--grey); background: var(--grey-bg); }
+.qtext { max-width: 560px; overflow-wrap: anywhere; }
+.pager { display: flex; gap: 12px; align-items: center; margin-top: 12px; }
+
+.drawer { position: fixed; top: 0; right: 0; height: 100vh; width: min(480px, 100vw); background: var(--card);
+          border-left: 1px solid var(--line); box-shadow: -6px 0 24px rgba(0,0,0,.15); padding: 18px 18px 40px;
+          overflow-y: auto; transform: translateX(105%); transition: transform .2s ease; z-index: 10; }
+.drawer.open { transform: translateX(0); }
+.drawer-close { position: absolute; top: 8px; right: 12px; font-size: 1.5rem; background: none; border: 0;
+                color: var(--muted); cursor: pointer; }
+.drawer h3 { margin: 4px 30px 6px 0; font-size: 1.05rem; }
+.probs { display: flex; height: 12px; border-radius: 6px; overflow: hidden; margin: 8px 0 4px; }
+.probs span.Easy { background: var(--easy); } .probs span.Medium { background: var(--medium); }
+.probs span.Hard { background: var(--hard); }
+.reason { display: grid; grid-template-columns: 1fr 120px; gap: 8px; align-items: center; margin: 5px 0; }
+.bar { position: relative; height: 10px; background: var(--grey-bg); border-radius: 5px; }
+.bar span { position: absolute; top: 0; height: 100%; border-radius: 5px; }
+/* Towards the predicted class: accent colour; away from it: grey. Not grade colours, so a bar
+   for an Easy prediction isn't mistaken for "Hard". */
+.bar span.up { left: 50%; background: var(--accent); } .bar span.down { right: 50%; background: var(--grey); }
+.keyword { display: inline-block; margin: 2px 4px 2px 0; padding: 0 6px; border-radius: 4px; background: var(--grey-bg);
+           font-size: 0.85rem; }
+.chart { position: relative; height: 380px; }
+@media (max-width: 640px) { .chart { height: 300px; } .qtext { max-width: none; } }

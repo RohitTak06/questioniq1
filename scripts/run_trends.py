@@ -6,7 +6,7 @@ Writes to reports/trends/ (counts and words only, no exam text):
 - topic_share_by_year.csv: each topic's share of questions per year and exam type
 - difficulty_mix_by_year.csv: predicted Easy/Medium/Hard mix per year, CS and AS only
 - owner_labels_by_year.csv: the owner's own labels per year, as a check on the predictions
-- recurring_concepts.csv: technical words and word pairs found in 3 or more years
+- recurring_concepts.csv: word pairs (concepts) found in 3 or more years
 and the figures reports/figures/topic_share_by_year.png and difficulty_mix_by_year.png.
 """
 
@@ -23,7 +23,6 @@ import pandas as pd
 from questioniq.annotate import add_question_ids, department, read_rows
 from questioniq.config import load_config
 from questioniq.difficulty import load_training_labels
-from questioniq.features import technical_vocabulary
 from questioniq.topics import ngram_tokens
 from questioniq.trends import GRADES, difficulty_mix_by_year, recurring_concepts, topic_share_by_year
 
@@ -31,13 +30,14 @@ MIN_YEARS = 3
 
 
 def concept_vocabulary(clean_docs: list[str], min_df: int) -> set[str]:
-    """Return the words and word pairs that count as concepts.
+    """Return the word pairs that count as concepts (fourier_transform, truth_table).
 
-    Technical words (high IDF, from Phase 5) plus word pairs found in at least min_df
-    questions, so one-off OCR errors are left out.
+    Only pairs found in at least min_df questions, so one-off OCR errors are left out, and
+    not pairs of the same word twice (int_int). Single words are not used: rare single
+    words turned out to be mostly OCR fragments (ere, ico) or generic words (away, chance).
     """
     pairs = Counter(pair for doc in clean_docs for pair in set(ngram_tokens(doc)) if "_" in pair)
-    return technical_vocabulary(clean_docs, min_df) | {pair for pair, n in pairs.items() if n >= min_df}
+    return {pair for pair, n in pairs.items() if n >= min_df and len(set(pair.split("_"))) == 2}
 
 
 def share_figure(table: pd.DataFrame, names: dict[int, str], path: Path) -> None:

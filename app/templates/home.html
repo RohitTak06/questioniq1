@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>QuestionIQ: JKLU exam pattern analysis</h1>
+<p class="muted">Previous-year papers from the JKLU Paper Portal, read with OCR, split into questions,
+grouped into topics and rated for difficulty by a classical model trained on the owner's labels.</p>
+<div class="tiles">
+  <div class="tile"><b>{{ totals.papers }}</b>papers</div>
+  <div class="tile"><b>{{ totals.questions }}</b>questions</div>
+  <div class="tile"><b>{{ totals.courses }}</b>courses</div>
+  <div class="tile"><b>{{ totals.departments }}</b>departments</div>
+  <div class="tile"><b>{{ totals.topics }}</b>topics</div>
+  <div class="tile"><b>{{ totals.years | first }}–{{ totals.years | last }}</b>years</div>
+</div>
+<h2>Explore</h2>
+<ul>
+  <li><a href="{{ url_for('dash.questions') }}">Question bank</a>: filter by subject, topic, difficulty, year and exam; open <em>Explain</em> on any question.</li>
+  <li><a href="{{ url_for('dash.topics') }}">Topics</a>: the {{ totals.topics }} topics found by NMF, with their keywords.</li>
+  <li><a href="{{ url_for('dash.trends') }}">Trends</a>: topic share and difficulty by year, and concepts that recur across years.</li>
+  <li><a href="{{ url_for('dash.report') }}">Model report</a>: every evaluation number.</li>
+  <li><a href="{{ url_for('dash.upload') }}">Upload a paper</a>: analyse a new PDF with the saved models.</li>
+</ul>
+{% if difficulty %}
+<p class="muted">Difficulty is predicted by a {{ difficulty.chosen_model.replace('_', ' ') }} trained on
+{{ difficulty.n_labelled }} labelled CS and AS questions; questions from other departments are marked
+<span class="badge outside">outside training subjects</span>.</p>
+{% endif %}
+{% endblock %}

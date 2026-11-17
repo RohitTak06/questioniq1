@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Trends · QuestionIQ{% endblock %}
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% endblock %}
+{% block content %}
+<h1>Trends by year</h1>
+<p class="muted">Papers are uneven across years: most questions are from 2023 and 2024, so only those two years
+carry much weight. Every year shows its number of questions (n).</p>
+
+<h2>Topic share by year (all subjects)</h2>
+<div class="card chart"><canvas id="topicChart" aria-label="Topic share by year"></canvas></div>
+
+<h2>Predicted difficulty by year (CS and AS)</h2>
+<div class="card chart"><canvas id="mixChart" aria-label="Predicted difficulty by year"></canvas></div>
+<p class="muted">Model predictions for the subjects it was trained on. The owner's own labels, as a check:</p>
+<div class="scroll"><table>
+  <thead><tr><th>Year</th><th class="num">Labelled</th>{% for g in grades %}<th class="num">{{ g }}</th>{% endfor %}</tr></thead>
+  <tbody>{% for row in owner_mix %}<tr><td>{{ row.year }}</td><td class="num">{{ row.n_questions }}</td>
+    {% for g in grades %}<td class="num">{{ '%.0f' % (row[g] * 100) }}%</td>{% endfor %}</tr>{% endfor %}</tbody>
+</table></div>
+
+<h2>Concepts found in 3 or more years</h2>
+{% if concepts %}
+<div class="scroll"><table>
+  <thead><tr><th>Concept</th><th class="num">Years</th><th>Which years</th><th class="num">Questions</th></tr></thead>
+  <tbody>{% for c in concepts %}<tr><td><a href="{{ url_for('dash.questions', q=c.concept.replace('_', ' ')) }}">{{ c.concept.replace('_', ' ') }}</a></td>
+    <td class="num">{{ c.n_years }}</td><td>{{ c.years }}</td><td class="num">{{ c.n_questions }}</td></tr>{% endfor %}</tbody>
+</table></div>
+{% else %}<p class="muted">Run scripts/run_trends.py to list recurring concepts.</p>{% endif %}
+{% endblock %}
+{% block scripts %}
+<script>
+  const chart = {{ chart | tojson }};
+  const palette = ["#4C78A8", "#F58518", "#54A24B", "#E45756", "#72B7B2", "#EECA3B", "#B279A2", "#FF9DA6",
+                   "#9D755D", "#BAB0AC", "#2F4B7C", "#A05195"];
+  const textColour = getComputedStyle(document.body).color;
+  Chart.defaults.color = textColour;
+  new Chart(document.getElementById("topicChart"), {
+    type: "bar",
+    data: { labels: chart.years, datasets: chart.topics.map((t, i) => ({ label: t.label, data: t.data,
+            backgroundColor: palette[i % palette.length] })) },
+    options: { maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true, max: 100,
+               title: { display: true, text: "% of the year's questions" } } },
+               plugins: { legend: { position: "right" } } },
+  });
+  const gradeColours = { Easy: "#3fb950", Medium: "#d29922", Hard: "#f85149" };
+  new Chart(document.getElementById("mixChart"), {
+    type: "line",
+    data: { labels: chart.mix_years, datasets: Object.entries(chart.mix).map(([grade, data]) => ({
+            label: grade, data, borderColor: gradeColours[grade], backgroundColor: gradeColours[grade], tension: 0.2 })) },
+    options: { maintainAspectRatio: false, scales: { y: { min: 0, max: 100,
+               title: { display: true, text: "% of the year's CS and AS questions" } } } },
+  });
+</script>
+{% endblock %}

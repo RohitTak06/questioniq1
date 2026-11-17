@@ -31,3 +31,10 @@ def test_recurring_concepts_need_enough_different_years() -> None:
         {"concept": "binary_tree", "n_years": 3, "years": "2020, 2022, 2023", "n_questions": 3}
     ]
     assert len(recurring_concepts(df, min_years=2)) == 2
+
+
+def test_concepts_are_word_pairs_seen_in_enough_questions() -> None:
+    from scripts.run_trends import concept_vocabulary
+
+    docs = ["fourier transform signal", "fourier transform", "int int fake", "int int", "ere fake"]
+    assert concept_vocabulary(docs, min_df=2) == {"fourier_transform"}

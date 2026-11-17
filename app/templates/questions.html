@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Questions · QuestionIQ{% endblock %}
+{% macro difficulty_badge(item) %}
+  {% if item.predicted %}
+    <span class="badge {{ 'outside' if item.outside_training_subjects else item.predicted }}"
+          title="{{ 'Outside training subjects (CS and AS only)' if item.outside_training_subjects else 'Predicted difficulty' }}">
+      {{ item.predicted }}{% if item.outside_training_subjects %}?{% endif %}</span>
+  {% endif %}
+{% endmacro %}
+{% block content %}
+<h1>Question bank <span class="muted">{{ total }} question{{ 's' if total != 1 }}</span></h1>
+<form class="filters" method="get">
+  <label>Department
+    <select name="department"><option value="">All</option>
+      {% for value in options.department %}<option {{ 'selected' if filters.department == value }}>{{ value }}</option>{% endfor %}
+    </select></label>
+  <label>Course
+    <select name="course"><option value="">All</option>
+      {% for value in options.course %}<option {{ 'selected' if filters.course == value }}>{{ value }}</option>{% endfor %}
+    </select></label>
+  <label>Topic
+    <select name="topic"><option value="">All</option>
+      {% for id, name in options.topic %}<option value="{{ id }}" {{ 'selected' if filters.topic == id|string }}>{{ name }}</option>{% endfor %}
+    </select></label>
+  <label>Difficulty
+    <select name="difficulty"><option value="">All</option>
+      {% for value in grades %}<option {{ 'selected' if filters.difficulty == value }}>{{ value }}</option>{% endfor %}
+    </select></label>
+  <label>Year
+    <select name="year"><option value="">All</option>
+      {% for value in options.year %}<option {{ 'selected' if filters.year == value|string }}>{{ value }}</option>{% endfor %}
+    </select></label>
+  <label>Exam
+    <select name="exam_type"><option value="">All</option>
+      {% for value in options.exam_type %}<option {{ 'selected' if filters.exam_type == value }}>{{ value }}</option>{% endfor %}
+    </select></label>
+  <label>Keyword <input type="search" name="q" value="{{ filters.q }}" placeholder="e.g. binary tree"></label>
+  <button class="btn primary" type="submit">Filter</button>
+  <a href="{{ url_for('dash.questions') }}">Clear</a>
+</form>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>Course</th><th>Year</th><th>Q</th><th>Question</th><th>Topic</th><th>Difficulty</th><th></th></tr></thead>
+  <tbody>
+  {% for item in items %}
+    <tr>
+      <td>{{ item.course }}<br><span class="muted">{{ item.exam_type }}</span></td>
+      <td>{{ item.year or '' }}</td>
+      <td>{{ item.qno }}{% if item.sub_part %} ({{ item.sub_part }}){% endif %}</td>
+      <td class="qtext">{{ item.text | truncate(220) }}</td>
+      <td>{{ item.topic_name or '' }}</td>
+      <td>{{ difficulty_badge(item) }}</td>
+      <td><button class="btn" type="button" data-explain="{{ item.question_id }}">Explain</button></td>
+    </tr>
+  {% else %}
+    <tr><td colspan="7" class="muted">No questions match these filters.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+{% set args = filters.copy() %}
+<div class="pager">
+  {% if page > 1 %}{% set _ = args.update({'page': page - 1}) %}<a href="{{ url_for('dash.questions', **args) }}">← Previous</a>{% endif %}
+  <span class="muted">Page {{ page }} of {{ pages }}</span>
+  {% if page < pages %}{% set _ = args.update({'page': page + 1}) %}<a href="{{ url_for('dash.questions', **args) }}">Next →</a>{% endif %}
+</div>
+<p class="muted">A grey badge with "?" means the question's department is outside the subjects the model was trained on (CS and AS).</p>
+{% endblock %}

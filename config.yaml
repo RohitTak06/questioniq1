@@ -48,6 +48,8 @@ paths:
   explanations: data/explanations.jsonl
   explain_review: reports/explain_review.md
   explain_check: data/explain_check.csv
+  uploads: data/uploads
+  trends: reports/trends
   seg_summary: reports/segmentation_summary.md
   seg_review: reports/segmentation_review
   seg_check: data/seg_gold/segmentation_check.csv
@@ -126,3 +128,7 @@ explain:
   n_reasons: 5
   n_review: 20
   target_matches: 15  # of 20 explanations that make sense by the owner's rubric
+
+dashboard:
+  page_size: 50
+  upload_max_mb: 20
