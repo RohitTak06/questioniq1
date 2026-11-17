@@ -1,0 +1,13 @@
+model,k,topic,keywords,name
+nmf,12,1,time process algorithm job step first memory sort machine scheduling,"Scheduling, Memory & Sorting Algorithms"
+nmf,12,2,company support india help customer technology startup service employee business,Entrepreneurship & Business in India
+nmf,12,3,equation differential differential_equation solve method solve_differential solution linear problem equation_method,Differential Equations
+nmf,12,4,brand product customer brand_equity equity model extension element equity_model creation,Brand Management & Brand Equity
+nmf,12,5,tree binary node binary_tree preorder search traversal search_tree binary_search postorder,Binary Trees & Traversals
+nmf,12,6,fourier transform fourier_transform function sin laplace fourier_sine transform_function cosine sine,Fourier & Laplace Transforms
+nmf,12,7,system design diagram circuit sensor operating_system operating circuit_diagram iot detail,"IoT, Circuits & System Design"
+nmf,12,8,matrix graph vertex adjacency network branch incidence_matrix incidence adjacency_matrix obtain,Graphs & Network Matrices
+nmf,12,9,disaster management disaster_management type accident role type_disaster disaster_nursing nursing phase,Disaster Management
+nmf,12,10,number function value int array print output variable random code,Programming: Code Output & Arrays
+nmf,12,11,integral evaluate evaluate_integral integration polar region sketch sketch_region region_integration polar_integral,Multiple Integrals (Polar & Regions)
+nmf,12,12,point vector field vector_field unit direction distance divergence derivative function,Vector Calculus

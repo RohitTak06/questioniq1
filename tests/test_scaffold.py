@@ -32,6 +32,7 @@ MODULES = [
     "scripts.preprocess_eval",
     "scripts.make_label_queue",
     "scripts.kappa",
+    "scripts.run_topics",
 ]
 
 

@@ -1,0 +1,22 @@
+model,k,topic,keywords
+lda,9,1,tata company mistry group ratan ratan_tata board started son cyrus_mistry
+lda,9,2,print output input value int equation function number method list
+lda,9,3,number algorithm digital time memory bank world block process view
+lda,9,4,data company new loan change employee customer set human code
+lda,9,5,data system per function variable person random hour random_variable fourier
+lda,9,6,system time design process management customer strategy type building problem
+lda,9,7,tree function queue node element int graph binary number name
+lda,9,8,matrix vertex brand netflix structure point time network second model
+lda,9,9,product property account company house year sale management tax brand
+nmf,12,1,time process algorithm job step first memory sort machine scheduling
+nmf,12,2,company support india help customer technology startup service employee business
+nmf,12,3,equation differential differential_equation solve method solve_differential solution linear problem equation_method
+nmf,12,4,brand product customer brand_equity equity model extension element equity_model creation
+nmf,12,5,tree binary node binary_tree preorder search traversal search_tree binary_search postorder
+nmf,12,6,fourier transform fourier_transform function sin laplace fourier_sine transform_function cosine sine
+nmf,12,7,system design diagram circuit sensor operating_system operating circuit_diagram iot detail
+nmf,12,8,matrix graph vertex adjacency network branch incidence_matrix incidence adjacency_matrix obtain
+nmf,12,9,disaster management disaster_management type accident role type_disaster disaster_nursing nursing phase
+nmf,12,10,number function value int array print output variable random code
+nmf,12,11,integral evaluate evaluate_integral integration polar region sketch sketch_region region_integration polar_integral
+nmf,12,12,point vector field vector_field unit direction distance divergence derivative function

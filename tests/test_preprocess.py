@@ -24,6 +24,10 @@ def test_ocr_reading_of_a_course_outcome_label_is_dropped() -> None:
     assert clean_tokens("Prove fake induction col lo2 CO3", EXAM_WORDS) == ["prove", "fake", "induction"]
 
 
+def test_course_codes_are_dropped_but_terms_with_digits_stay() -> None:
+    assert clean_tokens("Fake EE1118 question on IPv4 and CSE1132", EXAM_WORDS) == ["fake", "ipv4"]
+
+
 def test_tokens_start_with_a_letter_so_pure_numbers_are_dropped() -> None:
     assert tokenize("IPv4 header of 2024, 15 bytes") == ["ipv4", "header", "of", "bytes"]
 

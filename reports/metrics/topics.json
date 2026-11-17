@@ -1,0 +1,220 @@
+{
+  "n_questions": 1151,
+  "settings": {
+    "k_min": 4,
+    "k_max": 15,
+    "top_n": 10,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      2
+    ],
+    "group_min_questions": 150,
+    "lda_max_iter": 50,
+    "nmf_max_iter": 500
+  },
+  "sweep": [
+    {
+      "model": "lda",
+      "k": 4,
+      "c_v": 0.3729
+    },
+    {
+      "model": "lda",
+      "k": 5,
+      "c_v": 0.3469
+    },
+    {
+      "model": "lda",
+      "k": 6,
+      "c_v": 0.3701
+    },
+    {
+      "model": "lda",
+      "k": 7,
+      "c_v": 0.4023
+    },
+    {
+      "model": "lda",
+      "k": 8,
+      "c_v": 0.3782
+    },
+    {
+      "model": "lda",
+      "k": 9,
+      "c_v": 0.4294
+    },
+    {
+      "model": "lda",
+      "k": 10,
+      "c_v": 0.3847
+    },
+    {
+      "model": "lda",
+      "k": 11,
+      "c_v": 0.3959
+    },
+    {
+      "model": "lda",
+      "k": 12,
+      "c_v": 0.376
+    },
+    {
+      "model": "lda",
+      "k": 13,
+      "c_v": 0.423
+    },
+    {
+      "model": "lda",
+      "k": 14,
+      "c_v": 0.3872
+    },
+    {
+      "model": "lda",
+      "k": 15,
+      "c_v": 0.4011
+    },
+    {
+      "model": "nmf",
+      "k": 4,
+      "c_v": 0.4656
+    },
+    {
+      "model": "nmf",
+      "k": 5,
+      "c_v": 0.5123
+    },
+    {
+      "model": "nmf",
+      "k": 6,
+      "c_v": 0.4727
+    },
+    {
+      "model": "nmf",
+      "k": 7,
+      "c_v": 0.4299
+    },
+    {
+      "model": "nmf",
+      "k": 8,
+      "c_v": 0.4645
+    },
+    {
+      "model": "nmf",
+      "k": 9,
+      "c_v": 0.4883
+    },
+    {
+      "model": "nmf",
+      "k": 10,
+      "c_v": 0.5452
+    },
+    {
+      "model": "nmf",
+      "k": 11,
+      "c_v": 0.5523
+    },
+    {
+      "model": "nmf",
+      "k": 12,
+      "c_v": 0.5556
+    },
+    {
+      "model": "nmf",
+      "k": 13,
+      "c_v": 0.5071
+    },
+    {
+      "model": "nmf",
+      "k": 14,
+      "c_v": 0.4913
+    },
+    {
+      "model": "nmf",
+      "k": 15,
+      "c_v": 0.4883
+    }
+  ],
+  "best": {
+    "lda": {
+      "k": 9,
+      "c_v": 0.4293792655670174
+    },
+    "nmf": {
+      "k": 12,
+      "c_v": 0.5556289869705275
+    }
+  },
+  "chosen_model": "nmf",
+  "chosen_k": 12,
+  "subject_alignment": {
+    "nmi": 0.23,
+    "per_topic": {
+      "0": {
+        "top_department": "CS",
+        "top_share": 0.333,
+        "n_questions": 6
+      },
+      "1": {
+        "top_department": "CS",
+        "top_share": 0.493,
+        "n_questions": 75
+      },
+      "2": {
+        "top_department": "FA",
+        "top_share": 0.247,
+        "n_questions": 296
+      },
+      "3": {
+        "top_department": "AS",
+        "top_share": 0.508,
+        "n_questions": 59
+      },
+      "4": {
+        "top_department": "MA",
+        "top_share": 0.808,
+        "n_questions": 26
+      },
+      "5": {
+        "top_department": "CS",
+        "top_share": 0.784,
+        "n_questions": 37
+      },
+      "6": {
+        "top_department": "AS",
+        "top_share": 0.75,
+        "n_questions": 16
+      },
+      "7": {
+        "top_department": "EE",
+        "top_share": 0.381,
+        "n_questions": 147
+      },
+      "8": {
+        "top_department": "CS",
+        "top_share": 0.455,
+        "n_questions": 66
+      },
+      "9": {
+        "top_department": "ME",
+        "top_share": 0.25,
+        "n_questions": 80
+      },
+      "10": {
+        "top_department": "CS",
+        "top_share": 0.569,
+        "n_questions": 204
+      },
+      "11": {
+        "top_department": "AS",
+        "top_share": 0.436,
+        "n_questions": 39
+      },
+      "12": {
+        "top_department": "AS",
+        "top_share": 0.35,
+        "n_questions": 100
+      }
+    }
+  }
+}

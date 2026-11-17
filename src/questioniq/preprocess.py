@@ -15,8 +15,8 @@ from nltk.tokenize import RegexpTokenizer
 
 DEBRIS = re.compile(r"[|_~\"`*•¢©®«»“”‘’—–]")  # table rules and quote marks left by OCR
 TOKENIZER = RegexpTokenizer(r"[a-z][a-z0-9]*")  # a word starts with a letter, so 2024 is dropped
-# co1, lo3, and col (OCR's reading of CO1): course-outcome labels, not content
-OUTCOME_LABEL = re.compile(r"^[cl]o[\dl]+$")
+# co1, lo3, col (OCR's reading of CO1) and course codes (ee1118): labels, not content
+OUTCOME_LABEL = re.compile(r"^(?:[cl]o[\dl]+|[a-z]{2,3}\d{3,5})$")  # also course codes: ee1118
 HYPHENATED = re.compile(r"(?<=[a-z])-(?=[a-z])")  # op-amp, k-means, b-tree
 LEMMATIZER = WordNetLemmatizer()
 

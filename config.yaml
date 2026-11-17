@@ -38,6 +38,10 @@ paths:
   round2_queue: data/labels/round2_queue.csv
   kappa_disagreements: reports/kappa_disagreements.md
   settle_sheet: data/labels/settled_labels.csv
+  question_topics: data/question_topics.csv
+  topic_names: data/topic_names.csv
+  topic_keywords: reports/topic_keywords.csv
+  topic_by_department: reports/topic_by_department.csv
   seg_summary: reports/segmentation_summary.md
   seg_review: reports/segmentation_review
   seg_check: data/seg_gold/segmentation_check.csv
@@ -78,7 +82,9 @@ preprocess:
     calculate, determine, show, draw, using, use, consider, given, suitable, example, roll, page,
     # Added after the first run: frequent words that carry no topic.
     one, two, three, four, five, six, seven, eight, nine, ten, also, would, could, may, might,
-    various, different, take, assume]
+    various, different, take, assume,
+    # Added in Phase 3: MCQ answer-choice words ("None of the options") formed a noise topic.
+    option, options, none]
 
 topics:
   k_min: 4
@@ -86,7 +92,9 @@ topics:
   top_n: 10
   min_df: 2
   ngram_range: [1, 2]
-  group_min_questions: 150
+  group_min_questions: 150  # department-level models were cut (2026-11-17), so unused
+  lda_max_iter: 50
+  nmf_max_iter: 500
 
 annotation:
   round1_n: 300
