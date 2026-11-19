@@ -19,6 +19,7 @@ STEPS = [
     "run_difficulty",  # features, RF vs LR vs baseline, save the model
     "run_explain",  # SHAP reasons and topics for every question
     "run_trends",  # year-wise tables and figures
+    "make_figures",  # the report's dataset and evaluation figures
     "build_db",  # everything into data/questioniq.db
 ]
 

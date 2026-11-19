@@ -41,6 +41,7 @@ MODULES = [
     "scripts.run_trends",
     "scripts.build_db",
     "scripts.run_pipeline",
+    "scripts.make_figures",
 ]
 
 
