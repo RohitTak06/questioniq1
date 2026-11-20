@@ -3,15 +3,15 @@
 An outline for the owner's report: headings, the points to make, the numbers to quote and
 the figures to include. The prose is the owner's to write. Numbers come from
 `reports/metrics/*.json`; reasons come from `docs/decisions.md` (cite the dated entries).
-Items marked **[after round 2]** are filled in once Kappa is scored and the model retrained.
+Items previously marked **[after round 2]** have been filled in with the final numbers from round 2 and retraining.
 
 ## 1. Abstract
 - Problem: students revise from previous-year papers without knowing which topics recur
   or how hard questions tend to be.
 - What was built: a classical NLP/ML pipeline (no LLMs) from scanned PDFs to a dashboard.
 - Headline numbers: 148 papers, 1,155 questions; OCR CER 7.7%; NMF topics C_v 0.556
-  (k = 12); difficulty macro-F1 0.370 vs baseline 0.200; 19/20 explanations sensible;
-  Kappa **[after round 2]**.
+  (k = 12); difficulty macro-F1 0.412 vs baseline 0.212; 19/20 explanations sensible;
+  Kappa 0.119 on 146 questions (target 0.6 missed).
 
 ## 2. Problem statement and objectives
 - Restate the synopsis objectives: topic discovery, difficulty estimation, explainability,
@@ -64,16 +64,18 @@ Items marked **[after round 2]** are filled in once Kappa is scored and the mode
 - Labelling page: marks hidden (marks is a model feature), shuffled order, link to the PDF.
 - Round 1: 300 CS and AS questions (Easy 79, Medium 125, Hard 88, Skip 8). Limited to the
   subjects the owner could judge.
-- Round 2: 150 questions, at least 48 h later, new order. Kappa **[after round 2]**; target 0.6.
-- Figures: `label_distribution.png`, `kappa_matrix.png` **[after round 2]**.
+- Round 2: 150 questions (146 graded, 4 skips), at least 48 h later, new order. Kappa 0.119
+  (observed agreement 43.8%, 64/146 agreed, 82 disagreements); target 0.6 missed.
+- Figures: `label_distribution.png`, `kappa_matrix.png`.
 
 ## 9. Difficulty estimation
 - Features: Bloom level of command verbs (standard revised Bloom list), word count, marks
   (with a missing flag), parts, numbers, formulas, technical words, main topic.
 - Random Forest vs Logistic Regression vs majority baseline; nested stratified 5-fold CV
   with the grid search inside each training part.
-- Result: macro-F1 RF 0.370 ± 0.057, LR 0.370 ± 0.081, baseline 0.200. Accuracy RF 0.377
-  vs baseline 0.428. **[after round 2: retrained on settled labels]**
+- Result: retrained on 292 CS and AS questions (round 1 + 82 settled disagreements;
+  Easy 73, Medium 136, Hard 83): macro-F1 RF 0.412 ± 0.082, LR 0.374 ± 0.058, baseline 0.212 ± 0.003.
+  Accuracy RF 0.428 vs baseline 0.466.
 - Discuss why the signal is weak: difficulty depends on content more than on surface features.
 - The Bloom feature was corrected once (story verbs were counted); the score change was
   within the fold spread. Say so.

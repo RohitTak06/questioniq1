@@ -11,6 +11,7 @@ labels the owner clicks, keeps the rounds apart and compares them afterwards.
 
 import csv
 import hashlib
+import io
 import random
 import re
 from datetime import datetime, timedelta, timezone
@@ -135,11 +136,19 @@ def draw_round2(queue1: list[dict], labels1: dict[str, str], n: int, rng: random
 
 
 def read_rows(path: Path) -> list[dict]:
-    """Return the rows of a CSV file, or an empty list if it doesn't exist yet."""
+    """Return the rows of a CSV file, or an empty list if it doesn't exist yet.
+
+    Excel on Windows saves CSV files in the Windows-1252 character set, not UTF-8, so that
+    is tried when the file isn't valid UTF-8.
+    """
     if not path.exists():
         return []
-    with open(path, encoding="utf-8", newline="") as f:
-        return list(csv.DictReader(f))
+    raw = path.read_bytes()
+    try:
+        text = raw.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        text = raw.decode("cp1252")
+    return list(csv.DictReader(io.StringIO(text, newline="")))
 
 
 def write_rows(path: Path, rows: list[dict], columns: list[str]) -> None:

@@ -29,8 +29,8 @@
 | case | 42 |
 | order | 40 |
 | algorithm | 40 |
-| output | 39 |
 | list | 39 |
+| output | 39 |
 | program | 39 |
 | key | 39 |
 | total | 39 |

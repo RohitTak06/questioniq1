@@ -30,8 +30,8 @@ PDF papers (JKLU Paper Portal)
 | Segmentation | Questions split correctly, 10 fresh papers | **80.0%** (64/80); 48.9% before the rule fixes | ≥ 90% (**missed**) |
 | Preprocessing | Cleaned questions that keep their topic | 17 of 20 | owner's check |
 | Topics | Best C_v coherence | **NMF k = 12: 0.556**; LDA k = 9: 0.429 | best k by C_v |
-| Annotation | Cohen's Kappa, round 1 vs round 2 | *after round 2 (19 Nov)* | ≥ 0.6 |
-| Difficulty | Macro-F1, nested stratified 5-fold CV | **RF 0.370**, LR 0.370, baseline 0.200 | beats the baseline |
+| Annotation | Cohen's Kappa, round 1 vs round 2 | **0.119** on 146 questions (64/146 agreed, 82 settled) | ≥ 0.6 (**missed**) |
+| Difficulty | Macro-F1, nested stratified 5-fold CV | **RF 0.412**, LR 0.374, baseline 0.212 | beats the baseline |
 | Explanations | Reasons that make sense by the rubric | 19 of 20 | ≥ 15 of 20 |
 | System | Seconds per uploaded paper | 2.5–11.9 s (4 of 5 under target) | < 10 s |
 
@@ -40,11 +40,8 @@ its reason in [`docs/decisions.md`](docs/decisions.md). Missed targets are repor
 
 **Limits worth knowing**
 
-- The difficulty model was trained on 292 labelled **CS and AS** questions only (the
-  subjects the owner could judge). Predictions for other departments are marked
-  "outside training subjects".
-- Difficulty accuracy (0.377) does not beat always answering "Medium" (0.428); macro-F1,
-  the target measure, does.
+- The difficulty model was trained on 292 labelled **CS and AS** questions only (round 1 plus 82 settled disagreements; Easy 73, Medium 136, Hard 83). Predictions for other departments are marked "outside training subjects".
+- Difficulty accuracy (0.428) does not beat always answering "Medium" (0.466); macro-F1, the target measure, does.
 - Most questions come from 2023 (643) and 2024 (409), so only those years support trend
   comparisons; every chart shows its question counts.
 

@@ -173,3 +173,25 @@ def test_kappa_matches_the_textbook_value() -> None:
     second = dict(first)
     second["1-1"], second["1-6"] = "Hard", "Easy"
     assert agreement_report(first, second)["kappa"] == pytest.approx(0.6)
+
+
+def test_read_rows_handles_cp1252(tmp_path) -> None:
+    path = tmp_path / "windows1252.csv"
+    content = "question_id,label,notes\n1-1,Easy,Cost £5\n"
+    path.write_bytes(content.encode("cp1252"))
+    rows = read_rows(path)
+    assert len(rows) == 1
+    assert rows[0]["question_id"] == "1-1"
+    assert rows[0]["label"] == "Easy"
+    assert rows[0]["notes"] == "Cost £5"
+
+
+def test_read_rows_handles_utf8_bom(tmp_path) -> None:
+    path = tmp_path / "utf8_bom.csv"
+    content = "question_id,label\n1-1,Hard\n"
+    path.write_bytes(content.encode("utf-8-sig"))
+    rows = read_rows(path)
+    assert len(rows) == 1
+    assert "question_id" in rows[0]
+    assert rows[0]["question_id"] == "1-1"
+    assert rows[0]["label"] == "Hard"
