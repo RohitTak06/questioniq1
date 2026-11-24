@@ -3,30 +3,209 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}QuestionIQ{% endblock %}</title>
+  <title>{% block title %}QuestionIQ · JK Lakshmipat University{% endblock %}</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/jklu-logo.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   {% block head %}{% endblock %}
 </head>
-<body>
-  <header class="topbar">
-    <a class="brand" href="{{ url_for('dash.home') }}">QuestionIQ</a>
-    <nav>
-      {% set here = request.endpoint %}
-      <a href="{{ url_for('dash.questions') }}" class="{{ 'on' if here == 'dash.questions' }}">Questions</a>
-      <a href="{{ url_for('dash.topics') }}" class="{{ 'on' if here == 'dash.topics' }}">Topics</a>
-      <a href="{{ url_for('dash.trends') }}" class="{{ 'on' if here == 'dash.trends' }}">Trends</a>
-      <a href="{{ url_for('dash.report') }}" class="{{ 'on' if here == 'dash.report' }}">Model report</a>
-      <a href="{{ url_for('dash.upload') }}" class="{{ 'on' if here == 'dash.upload' }}">Upload</a>
-      <a href="{{ url_for('main.index') }}" class="{{ 'on' if here in ('main.index', 'main.annotate') }}">Label</a>
-    </nav>
-  </header>
-  <main>{% block content %}{% endblock %}</main>
+<body class="app-body">
 
-  <aside id="drawer" class="drawer" aria-hidden="true" aria-label="Explanation">
-    <button class="drawer-close" type="button" aria-label="Close">×</button>
-    <div id="drawer-body"></div>
+<div class="mockup-app-layout">
+
+  <!-- ======================================================================
+       Screen 2: Dark Navy Sidebar (Exact Mockup Match)
+       ====================================================================== -->
+  <aside class="mockup-sidebar" id="mainSidebar">
+    <!-- Brand Header with Golden Open Book Logo -->
+    <div class="sidebar-brand-block">
+      <a href="{{ url_for('dash.home') }}" class="sidebar-brand-link">
+        <svg class="sidebar-book-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+          <path d="M6 6h10"/>
+          <path d="M6 10h10"/>
+        </svg>
+        <span class="sidebar-brand-title">QuestionIQ</span>
+      </a>
+    </div>
+
+    <!-- Navigation Menu Items (Exact Labels from Mockup) -->
+    <nav class="sidebar-nav-list">
+      {% set ep = request.endpoint %}
+      {% set cur_prog = program or session.get('program', 'btech') %}
+
+      <!-- 1. Dashboard -->
+      <a href="{{ url_for('dash.dashboard', program=cur_prog) }}"
+         class="sidebar-nav-item {{ 'active' if ep in ('dash.home', 'dash.dashboard') }}">
+        <span class="nav-item-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        </span>
+        <span class="nav-item-text">Dashboard</span>
+      </a>
+
+      <!-- 2. Subjects -->
+      <a href="{{ url_for('dash.subjects', program=cur_prog) }}"
+         class="sidebar-nav-item {{ 'active' if ep == 'dash.subjects' }}">
+        <span class="nav-item-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </span>
+        <span class="nav-item-text">Subjects</span>
+      </a>
+
+      <!-- 3. Question Bank -->
+      <a href="{{ url_for('dash.questions', program=cur_prog) }}"
+         class="sidebar-nav-item {{ 'active' if ep == 'dash.questions' }}">
+        <span class="nav-item-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </span>
+        <span class="nav-item-text">Question Bank</span>
+      </a>
+
+      <!-- 4. Topic Insights -->
+      <a href="{{ url_for('dash.topics', program=cur_prog) }}" class="sidebar-nav-item {{ 'active' if ep == 'dash.topics' }}">
+        <span class="nav-item-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </span>
+        <span class="nav-item-text">Topic Insights</span>
+      </a>
+
+      <!-- 5. Difficulty Analysis -->
+      <a href="{{ url_for('dash.difficulty', program=cur_prog) }}" class="sidebar-nav-item {{ 'active' if ep == 'dash.difficulty' }}">
+        <span class="nav-item-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+        </span>
+        <span class="nav-item-text">Difficulty Analysis</span>
+      </a>
+
+      <!-- 6. Trends by Year -->
+      <a href="{{ url_for('dash.trends', program=cur_prog) }}" class="sidebar-nav-item {{ 'active' if ep == 'dash.trends' }}">
+        <span class="nav-item-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </span>
+        <span class="nav-item-text">Trends by Year</span>
+      </a>
+
+      <!-- 7. Model Report -->
+      <a href="{{ url_for('dash.report') }}" class="sidebar-nav-item {{ 'active' if ep == 'dash.report' }}">
+        <span class="nav-item-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </span>
+        <span class="nav-item-text">Model Report</span>
+      </a>
+
+      <!-- 8. Upload & Analyse -->
+      <a href="{{ url_for('dash.upload') }}" class="sidebar-nav-item {{ 'active' if ep == 'dash.upload' }}">
+        <span class="nav-item-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </span>
+        <span class="nav-item-text">Upload &amp; Analyse</span>
+      </a>
+    </nav>
+
+    <!-- Bottom Watermark: University Crest & Name -->
+    <div class="sidebar-watermark-bottom">
+      <img src="{{ url_for('static', filename='img/jklu-logo.png') }}" alt="JKLU Logo" class="sidebar-jklu-logo">
+      <div class="sidebar-jklu-text">
+        <strong>JK Lakshmipat</strong>
+        <span>University</span>
+      </div>
+    </div>
   </aside>
-  <script src="{{ url_for('static', filename='app.js') }}"></script>
-  {% block scripts %}{% endblock %}
+
+  <!-- ======================================================================
+       Main View Frame
+       ====================================================================== -->
+  <div class="mockup-main-pane">
+    
+    <!-- Topbar (Exact Mockup Match) -->
+    <header class="mockup-topbar">
+      <div class="topbar-title-area">
+        {% block topbar_title %}
+        <div class="header-titles">
+          <h1 class="header-main-title">B.Tech Dashboard</h1>
+          <p class="header-sub-title">Exam pattern insights for B.Tech (Engineering &amp; Technology) subjects.</p>
+        </div>
+        {% endblock %}
+      </div>
+
+      <div class="topbar-actions-area">
+        <!-- Programme Selector Dropdown (Screen 02 exact match) -->
+        {% set cur_prog = program or session.get('program', 'btech') %}
+        <div class="program-dropdown-wrapper">
+          <select id="globalProgramSelect" class="mockup-program-select" onchange="switchGlobalProgram(this.value)">
+            <option value="btech" {{ 'selected' if cur_prog == 'btech' }}>B.Tech</option>
+            <option value="bba" {{ 'selected' if cur_prog == 'bba' }}>BBA</option>
+            <option value="all" {{ 'selected' if cur_prog == 'all' }}>All Programmes</option>
+          </select>
+        </div>
+
+        <script>
+        function switchGlobalProgram(val) {
+          if (!val) return;
+          try {
+            var url = new URL(window.location.href);
+            url.searchParams.set('program', val);
+            // Clear sub-filters if switching discipline
+            if (url.pathname.indexOf('/questions') !== -1 || url.pathname.indexOf('/subjects') !== -1) {
+              url.searchParams.delete('department');
+              url.searchParams.delete('course');
+              url.searchParams.delete('topic');
+              url.searchParams.delete('q');
+            }
+            if (url.pathname === '/' || url.pathname === '') {
+              url.pathname = '/dashboard';
+            }
+            window.location.href = url.pathname + '?' + url.searchParams.toString();
+          } catch (e) {
+            window.location.href = '/dashboard?program=' + encodeURIComponent(val);
+          }
+        }
+        </script>
+
+        <!-- User Profile Circle Avatar -->
+        <div class="user-avatar-circle" title="Student Portal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Workspace -->
+    <main class="mockup-workspace">
+      {% block content %}{% endblock %}
+    </main>
+
+  </div>
+
+</div>
+
+<!-- ========================================================================
+     Screen 4: Question Analysis & Explanation Modal (Exact Mockup Match)
+     ======================================================================== -->
+<div class="mockup-modal-backdrop" id="explanationModal">
+  <div class="mockup-modal-dialog">
+    <div class="mockup-modal-top">
+      <div class="mockup-breadcrumb">
+        <span>Question Bank</span> › <span id="modalCourseYear">CS302 (2024)</span> › <strong id="modalBreadcrumbQ">Q2 (a) - Analysis</strong>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <a id="modalFullPageLink" href="#" class="btn-outline-navy" style="font-size: 0.76rem; padding: 4px 10px; text-decoration: none;">Full Page ↗</a>
+        <button type="button" class="mockup-modal-close" onclick="closeExplanationModal()" aria-label="Close">✕</button>
+      </div>
+    </div>
+
+    <div class="mockup-modal-content" id="modalBody">
+      <!-- Injected by app.js with exact Screen 4 components -->
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='grainient.js') }}"></script>
+<script src="{{ url_for('static', filename='spotlight.js') }}"></script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+{% block scripts %}{% endblock %}
+
 </body>
 </html>

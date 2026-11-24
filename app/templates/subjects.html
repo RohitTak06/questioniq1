@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+{% block title %}{% if program == 'btech' %}B.Tech Subjects{% elif program == 'bba' %}BBA Subjects{% else %}Subjects Directory{% endif %} · QuestionIQ{% endblock %}
+
+{% block topbar_title %}
+<div class="header-titles">
+  <h1 class="header-main-title">
+    {% if program == 'btech' %}B.Tech Subjects Directory{% elif program == 'bba' %}BBA Subjects Directory{% else %}Subjects Directory{% endif %}
+  </h1>
+  <p class="header-sub-title">Browse departments, courses and examination papers in {% if program == 'btech' %}B.Tech (Engineering &amp; Technology){% elif program == 'bba' %}BBA (Business &amp; Management){% else %}all programmes{% endif %}.</p>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- Summary KPI Row -->
+<div class="kpi-cards-grid-4" style="margin-bottom: 24px;">
+  <div class="kpi-card-exact">
+    <div class="kpi-icon-box-gold">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+      </svg>
+    </div>
+    <div class="kpi-text-group">
+      <h3 class="kpi-number">{{ summary.total_departments }}</h3>
+      <span class="kpi-label">Departments</span>
+    </div>
+  </div>
+
+  <div class="kpi-card-exact">
+    <div class="kpi-icon-box-gold">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+        <line x1="8" y1="21" x2="16" y2="21"/>
+        <line x1="12" y1="17" x2="12" y2="21"/>
+      </svg>
+    </div>
+    <div class="kpi-text-group">
+      <h3 class="kpi-number">{{ summary.total_courses }}</h3>
+      <span class="kpi-label">Total Courses</span>
+    </div>
+  </div>
+
+  <div class="kpi-card-exact">
+    <div class="kpi-icon-box-gold">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="8" y1="6" x2="21" y2="6"/>
+        <line x1="8" y1="12" x2="21" y2="12"/>
+        <line x1="8" y1="18" x2="21" y2="18"/>
+        <line x1="3" y1="6" x2="3.01" y2="6"/>
+        <line x1="3" y1="12" x2="3.01" y2="12"/>
+        <line x1="3" y1="18" x2="3.01" y2="18"/>
+      </svg>
+    </div>
+    <div class="kpi-text-group">
+      <h3 class="kpi-number">{{ "{:,}".format(summary.total_questions) }}</h3>
+      <span class="kpi-label">Questions Extracted</span>
+    </div>
+  </div>
+
+  <div class="kpi-card-exact">
+    <div class="kpi-icon-box-gold">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+      </svg>
+    </div>
+    <div class="kpi-text-group">
+      <h3 class="kpi-number">{{ summary.total_papers }}</h3>
+      <span class="kpi-label">Analysed Papers</span>
+    </div>
+  </div>
+</div>
+
+<!-- Search & Filter Bar (Screen 03 exact mockup) -->
+<div class="subjects-toolbar-row">
+  <div class="filter-search-wrapper">
+    <div class="filter-search-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    </div>
+    <input type="text" id="deptSearchInput"
+           placeholder="Search department name, code, or course (e.g. CS, Mechanical, AS1109)..."
+           class="filter-search-input" oninput="filterDepartments()">
+    <button type="button" id="clearSearchBtn" onclick="clearDeptSearch()"
+            style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94A3B8; cursor: pointer; font-size: 1rem; display: none;"
+            title="Clear search">✕</button>
+  </div>
+
+  <!-- Quick Department Dropdown Filter (Screen 03 match) -->
+  <select id="deptDropdownFilter" class="subjects-dept-select" onchange="filterDepartments()">
+    <option value="">All Departments</option>
+    {% for dept in departments %}
+      <option value="{{ dept.code }}">{{ dept.code }} · {{ dept.name }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<!-- Department Cards Grid (Responsive 2-column on desktop) -->
+<div id="deptGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); gap: 22px;">
+  {% for dept in departments %}
+  <div class="dept-card-item"
+       data-code="{{ dept.code|lower }}"
+       data-name="{{ dept.name|lower }}"
+       data-courses="{% for c in dept.courses %}{{ c.code|lower }} {% endfor %}">
+
+    <div>
+      <!-- Department Header -->
+      <div class="dept-header-flex">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div class="dept-icon-badge">
+            {{ dept.code }}
+          </div>
+          <div>
+            <h3 class="dept-title-text">
+              <a href="{{ url_for('dash.questions', department=dept.code, program=program) }}" style="color: #003366; text-decoration: none;">
+                {{ dept.name }} ({{ dept.code }})
+              </a>
+            </h3>
+            <span class="dept-meta-subtitle">
+              {{ dept.courses|length }} Courses &nbsp;·&nbsp; {{ dept.total_questions }} Questions
+            </span>
+          </div>
+        </div>
+
+        <a href="{{ url_for('dash.questions', department=dept.code, program=program) }}"
+           style="width: 36px; height: 36px; border-radius: 50%; background: #F4F7FB; border: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: center; color: #003366; text-decoration: none; transition: all 0.2s ease;"
+           title="Explore {{ dept.code }} Questions">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Stats Strip -->
+      <div class="dept-stats-strip">
+        <div class="dept-stat-unit">
+          <strong>{{ dept.courses|length }}</strong>
+          <span>Courses</span>
+        </div>
+        <div style="width: 1px; height: 16px; background: #CBD5E1;"></div>
+        <div class="dept-stat-unit">
+          <strong>{{ dept.total_papers }}</strong>
+          <span>Papers</span>
+        </div>
+        <div style="width: 1px; height: 16px; background: #CBD5E1;"></div>
+        <div class="dept-stat-unit">
+          <strong>{{ dept.total_questions }}</strong>
+          <span>Questions</span>
+        </div>
+      </div>
+
+      <!-- Courses List / Chips -->
+      <div style="margin-bottom: 18px;">
+        <div style="font-size: 0.76rem; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px;">
+          Available Courses:
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 7px; max-height: 125px; overflow-y: auto; padding-right: 4px;">
+          {% for c in dept.courses %}
+            <a href="{{ url_for('dash.questions', department=dept.code, course=c.code, program=program) }}"
+               class="course-chip-link"
+               title="{{ c.questions }} questions from {{ c.papers }} examination papers">
+              <span>{{ c.code }}</span>
+              <small>({{ c.questions }}q)</small>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Action Button -->
+    <div style="border-top: 1px solid #EDF2F7; padding-top: 16px; margin-top: auto; display: flex; justify-content: space-between; align-items: center;">
+      <span style="font-size: 0.78rem; color: #64748B;">Department Code: <strong style="color: #003366;">{{ dept.code }}</strong></span>
+      <a href="{{ url_for('dash.questions', department=dept.code, program=program) }}" class="btn-outline-navy" style="font-size: 0.82rem; padding: 7px 18px; border-radius: 8px;">
+        Browse {{ dept.code }} PYQs →
+      </a>
+    </div>
+
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Empty state if search finds nothing -->
+<div id="noDeptFound" class="panel-card" style="display: none; text-align: center; padding: 48px 24px; margin-top: 16px;">
+  <p style="font-size: 1.1rem; font-weight: 700; color: #003366; margin-bottom: 6px;">No matching departments or courses found</p>
+  <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 16px;">Try adjusting your keyword or clearing the department filter.</p>
+  <button type="button" class="btn-outline-navy" onclick="clearDeptSearch()">Reset Search</button>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function filterDepartments() {
+  const q = (document.getElementById("deptSearchInput").value || "").toLowerCase().trim();
+  const deptFilter = (document.getElementById("deptDropdownFilter").value || "").toLowerCase().trim();
+  const clearBtn = document.getElementById("clearSearchBtn");
+  if (clearBtn) {
+    clearBtn.style.display = q ? "block" : "none";
+  }
+
+  const cards = document.querySelectorAll(".dept-card-item");
+  let visible = 0;
+
+  cards.forEach(c => {
+    const code = c.dataset.code || "";
+    const name = c.dataset.name || "";
+    const courses = c.dataset.courses || "";
+
+    const matchesQuery = !q || code.includes(q) || name.includes(q) || courses.includes(q);
+    const matchesDept = !deptFilter || code === deptFilter;
+
+    if (matchesQuery && matchesDept) {
+      c.style.display = "flex";
+      visible++;
+    } else {
+      c.style.display = "none";
+    }
+  });
+
+  const emptyMsg = document.getElementById("noDeptFound");
+  if (emptyMsg) {
+    emptyMsg.style.display = visible === 0 ? "block" : "none";
+  }
+}
+
+function clearDeptSearch() {
+  document.getElementById("deptSearchInput").value = "";
+  document.getElementById("deptDropdownFilter").value = "";
+  filterDepartments();
+}
+</script>
+{% endblock %}

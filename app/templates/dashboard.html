@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+{% block title %}{% if program == 'btech' %}B.Tech Dashboard{% elif program == 'bba' %}BBA Dashboard{% else %}QuestionIQ Dashboard{% endif %} · JKLU{% endblock %}
+
+{% block topbar_title %}
+<div class="header-titles">
+  <h1 class="header-main-title">
+    {% if program == 'btech' %}B.Tech Dashboard{% elif program == 'bba' %}BBA Dashboard{% else %}QuestionIQ Dashboard{% endif %}
+  </h1>
+  <p class="header-sub-title">
+    Exam pattern insights for {% if program == 'btech' %}B.Tech (Engineering &amp; Technology){% elif program == 'bba' %}BBA (Business &amp; Management){% else %}all JKLU{% endif %} subjects.
+  </p>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- ========================================================================
+     Screen 2: 5 Top KPI Cards (Exact Mockup Match)
+     ======================================================================== -->
+<div class="kpi-cards-grid-5" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-bottom: 24px;">
+  <!-- Card 1: Papers Analysed -->
+  <div class="kpi-card-exact">
+    <div class="kpi-icon-box-gold">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+      </svg>
+    </div>
+    <div class="kpi-text-group">
+      <h3 class="kpi-number">{{ totals.papers }}</h3>
+      <span class="kpi-label">Papers Analysed</span>
+    </div>
+  </div>
+
+  <!-- Card 2: Questions -->
+  <div class="kpi-card-exact">
+    <div class="kpi-icon-box-gold">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="8" y1="6" x2="21" y2="6"/>
+        <line x1="8" y1="12" x2="21" y2="12"/>
+        <line x1="8" y1="18" x2="21" y2="18"/>
+        <line x1="3" y1="6" x2="3.01" y2="6"/>
+        <line x1="3" y1="12" x2="3.01" y2="12"/>
+        <line x1="3" y1="18" x2="3.01" y2="18"/>
+      </svg>
+    </div>
+    <div class="kpi-text-group">
+      <h3 class="kpi-number">{{ "{:,}".format(totals.questions) }}</h3>
+      <span class="kpi-label">Questions</span>
+    </div>
+  </div>
+
+  <!-- Card 3: Courses -->
+  <div class="kpi-card-exact">
+    <div class="kpi-icon-box-gold">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+        <line x1="8" y1="21" x2="16" y2="21"/>
+        <line x1="12" y1="17" x2="12" y2="21"/>
+      </svg>
+    </div>
+    <div class="kpi-text-group">
+      <h3 class="kpi-number">{{ totals.courses }}</h3>
+      <span class="kpi-label">Courses</span>
+    </div>
+  </div>
+
+  <!-- Card 4: Topics Identified -->
+  <div class="kpi-card-exact">
+    <div class="kpi-icon-box-gold">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+        <polyline points="2 17 12 22 22 17"/>
+        <polyline points="2 12 12 17 22 12"/>
+      </svg>
+    </div>
+    <div class="kpi-text-group">
+      <h3 class="kpi-number">{{ totals.topics }}</h3>
+      <span class="kpi-label">Topics Identified</span>
+    </div>
+  </div>
+
+  <!-- Card 5: Difficulty Categories -->
+  <div class="kpi-card-exact">
+    <div class="kpi-icon-box-gold">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="20" x2="18" y2="10"/>
+        <line x1="12" y1="20" x2="12" y2="4"/>
+        <line x1="6" y1="20" x2="6" y2="14"/>
+      </svg>
+    </div>
+    <div class="kpi-text-group">
+      <h3 class="kpi-number">3</h3>
+      <span class="kpi-label">Difficulty Categories</span>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================================
+     Screen 2: 3 Analytics Charts Row (Exact Mockup Match)
+     ======================================================================== -->
+<div class="dashboard-charts-3col">
+  <!-- Chart 1: Questions by Year -->
+  <div class="panel-card chart-panel">
+    <div class="panel-card-header">
+      <h4>Questions by Year</h4>
+    </div>
+    <div class="chart-wrapper">
+      <canvas id="chartQuestionsByYear"></canvas>
+    </div>
+  </div>
+
+  <!-- Chart 2: Difficulty Distribution -->
+  <div class="panel-card chart-panel">
+    <div class="panel-card-header">
+      <h4>Difficulty Distribution</h4>
+    </div>
+    <div class="donut-container-flex">
+      <div class="donut-chart-box">
+        <canvas id="chartDifficultyDonut"></canvas>
+        <div class="donut-center-caption">
+          <strong>{{ "{:,}".format(totals.questions) }}</strong>
+          <span>Questions</span>
+        </div>
+      </div>
+      <div class="donut-legend-col">
+        <div class="legend-row">
+          <span class="legend-indicator dot-green"></span>
+          <span class="legend-label">Easy ({{ diff_dist.pct_easy }}%)</span>
+        </div>
+        <div class="legend-row">
+          <span class="legend-indicator dot-amber"></span>
+          <span class="legend-label">Medium ({{ diff_dist.pct_medium }}%)</span>
+        </div>
+        <div class="legend-row">
+          <span class="legend-indicator dot-red"></span>
+          <span class="legend-label">Hard ({{ diff_dist.pct_hard }}%)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart 3: Top 5 Topics (All Subjects) -->
+  <div class="panel-card chart-panel">
+    <div class="panel-card-header">
+      <h4>Top 5 Topics (All Subjects)</h4>
+    </div>
+    <div class="chart-wrapper">
+      <canvas id="chartTopTopics"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Questions Bank Preview Table -->
+<div class="panel-card" style="margin-top: 24px;">
+  <div class="panel-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <h4>Question Bank (Recent)</h4>
+      <p style="font-size: 0.82rem; color: var(--text-muted);">Preview of extracted questions. Click "Explain →" to view the detailed AI difficulty explanation.</p>
+    </div>
+    <a href="{{ url_for('dash.questions', program=program) }}" class="btn-outline-navy">View All Questions →</a>
+  </div>
+
+  <div class="clean-table-container">
+    <table class="mockup-table">
+      <thead>
+        <tr>
+          <th>Course</th>
+          <th>Year</th>
+          <th>Q.</th>
+          <th>Question (Preview)</th>
+          <th>Topic</th>
+          <th>Difficulty</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in preview_questions %}
+        <tr>
+          <td><span class="pill-badge pill-course">{{ item.course }}</span></td>
+          <td>{{ item.year or '—' }}</td>
+          <td><strong>{{ item.qno }}{% if item.sub_part %} ({{ item.sub_part }}){% endif %}</strong></td>
+          <td class="q-preview-cell">{{ item.text | truncate(150) }}</td>
+          <td><span class="pill-badge pill-topic">{{ item.topic_name or 'General' }}</span></td>
+          <td>
+            <span class="pill-badge pill-diff-{{ item.predicted | lower if item.predicted else 'outside' }}">
+              {{ item.predicted or 'Unrated' }}
+            </span>
+          </td>
+          <td>
+            <button type="button" class="btn-explain-action" data-explain="{{ item.question_id }}">
+              Explain →
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  Chart.defaults.font.family = "'Plus Jakarta Sans', system-ui, sans-serif";
+  Chart.defaults.color = "#64748B";
+
+  // 1. Questions by Year Bar Chart
+  const yData = {{ by_year | tojson }};
+  const labelsY = yData.map(d => d.year);
+  const valuesY = yData.map(d => d.count);
+
+  new Chart(document.getElementById("chartQuestionsByYear"), {
+    type: "bar",
+    data: {
+      labels: labelsY,
+      datasets: [{
+        data: valuesY,
+        backgroundColor: labelsY.map((y, i) => i === labelsY.length - 1 ? "#C8961E" : "#002D62"),
+        borderRadius: 4,
+        maxBarThickness: 32
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "#0B1E33",
+          callbacks: {
+            title: function(items) { return "Year: " + items[0].label; },
+            label: function(item) { return item.raw + " Questions"; }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false } },
+        y: { grid: { color: "#F1F5F9" }, beginAtZero: true }
+      }
+    }
+  });
+
+  // 2. Difficulty Donut Chart
+  const dData = {{ diff_dist | tojson }};
+  new Chart(document.getElementById("chartDifficultyDonut"), {
+    type: "doughnut",
+    data: {
+      labels: ["Easy", "Medium", "Hard"],
+      datasets: [{
+        data: [dData.Easy, dData.Medium, dData.Hard],
+        backgroundColor: ["#059669", "#D97706", "#DC2626"],
+        borderWidth: 2,
+        borderColor: "#FFFFFF"
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: "72%",
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "#0B1E33"
+        }
+      }
+    }
+  });
+
+  // 3. Top 5 Topics Horizontal Bar Chart
+  const tData = {{ top_topics | tojson }};
+  new Chart(document.getElementById("chartTopTopics"), {
+    type: "bar",
+    data: {
+      labels: tData.map(t => t.name.length > 20 ? t.name.substring(0, 18) + "…" : t.name),
+      datasets: [{
+        data: tData.map(t => t.pct),
+        backgroundColor: "#002D62",
+        hoverBackgroundColor: "#C8961E",
+        borderRadius: 4,
+        maxBarThickness: 14
+      }]
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "#0B1E33",
+          callbacks: {
+            label: function(item) { return item.raw + "% of questions"; }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: "#F1F5F9" },
+          beginAtZero: true,
+          ticks: { callback: function(val) { return val + "%"; } }
+        },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+</script>
+{% endblock %}

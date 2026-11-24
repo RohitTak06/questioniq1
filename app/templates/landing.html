@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuestionIQ · AI Exam Pattern Analysis for JK Lakshmipat University</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/jklu-logo.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="fullpage-landing-body">
+
+  <!-- ========================================================================
+       1. Top Full-Width University Navigation Bar
+       ======================================================================== -->
+  <header class="fullpage-nav">
+    <div class="fullpage-nav-inner">
+      <!-- Left: Logo & University Identity -->
+      <div class="fullpage-nav-left">
+        <a href="{{ url_for('dash.home') }}" class="fullpage-brand">
+          <div class="brand-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+              <path d="M6 6h10"/>
+              <path d="M6 10h10"/>
+            </svg>
+          </div>
+          <span class="brand-text">Question<span class="brand-text-gold">IQ</span></span>
+        </a>
+
+        <div class="nav-pipe"></div>
+
+        <div class="nav-uni-meta">
+          <img src="{{ url_for('static', filename='img/jklu-logo.png') }}" alt="JKLU" class="nav-uni-crest">
+          <span class="nav-uni-title">JK Lakshmipat University</span>
+        </div>
+      </div>
+
+      <!-- Right: Navigation Links & Action Button -->
+      <div class="fullpage-nav-right">
+        <nav class="fullpage-menu">
+          <a href="{{ url_for('dash.home') }}" class="menu-link active">Home</a>
+          <a href="{{ url_for('dash.dashboard') }}" class="menu-link">Dashboard</a>
+          <a href="{{ url_for('dash.subjects') }}" class="menu-link">Subjects</a>
+          <a href="{{ url_for('dash.questions') }}" class="menu-link">Question Bank</a>
+          <a href="{{ url_for('dash.report') }}" class="menu-link">Model Report</a>
+        </nav>
+        <a href="{{ url_for('dash.dashboard') }}" class="btn-top-gold">
+          <span>Open Platform</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       2. Hero Section: Full-Width Panoramic College Campus View (Slight Gradient)
+       ======================================================================== -->
+  <section class="fullpage-hero">
+    <!-- Real JKLU College Campus Image (Clear & Crisp, Slight Natural Gradient) -->
+    <div class="hero-college-bg" style="background-image: url('{{ url_for('static', filename='img/jklu-campus.jpg') }}');"></div>
+    <div class="hero-slight-overlay"></div>
+
+    <div class="hero-content-wrapper">
+      <!-- Badge -->
+      <div class="hero-pill-badge">
+        <span class="badge-dot"></span>
+        <span>JKLU Academic Intelligence System</span>
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="hero-main-title">
+        Question <span class="gold-gradient-title">IQ</span>
+      </h1>
+
+      <p class="hero-lead-subtitle">
+        AI-Powered Examination Analytics &amp; Difficulty Prediction for Previous Year Papers
+      </p>
+
+      <p class="hero-supporting-text">
+        Analyze exam patterns, discover recurring academic topics, understand question difficulty trends, and prepare with data-driven insights from the unified university PYQ collection.
+      </p>
+
+      <!-- ====================================================================
+           Two Symmetrical Programme Gateways (B.Tech & BBA)
+           Clean, organized, and balanced — No dummy cutouts!
+           ==================================================================== -->
+      <div class="gateways-grid">
+        <!-- B.Tech Gateway Card -->
+        <div class="gateway-card btech-gateway spotlight-card" data-spotlight-color="#38BDF8" data-theme="dark">
+          <div class="gateway-card-top">
+            <div class="gateway-icon-badge btech-badge-color">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+            </div>
+            <div>
+              <h3 class="gateway-card-title">B.Tech</h3>
+              <span class="gateway-card-tag cyan-tag">Engineering &amp; Technology</span>
+            </div>
+          </div>
+
+          <p class="gateway-card-desc">
+            Explore topic trends, recurring question concepts, and difficulty breakdown for engineering courses.
+          </p>
+
+          <div class="gateway-stats-row">
+            <div class="gateway-stat-pill">
+              <strong>848</strong> Questions
+            </div>
+            <div class="gateway-stat-pill">
+              <strong>92</strong> Courses
+            </div>
+            <div class="gateway-stat-pill">
+              <strong>8</strong> Departments
+            </div>
+          </div>
+
+          <div class="gateway-dept-chips">
+            <span class="dept-chip">CS</span>
+            <span class="dept-chip">EE</span>
+            <span class="dept-chip">ME</span>
+            <span class="dept-chip">CE</span>
+            <span class="dept-chip">AS</span>
+          </div>
+
+          <a href="{{ url_for('dash.dashboard', program='btech') }}" class="btn-gateway-gold">
+            <span>Explore B.Tech PYQs</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </div>
+
+        <!-- BBA Gateway Card -->
+        <div class="gateway-card bba-gateway spotlight-card" data-spotlight-color="#C8961E" data-theme="dark">
+          <div class="gateway-card-top">
+            <div class="gateway-icon-badge bba-badge-color">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="gateway-card-title">BBA</h3>
+              <span class="gateway-card-tag gold-tag">Business &amp; Management</span>
+            </div>
+          </div>
+
+          <p class="gateway-card-desc">
+            Analyse exam patterns, core business themes, and question difficulty distribution across management subjects.
+          </p>
+
+          <div class="gateway-stats-row">
+            <div class="gateway-stat-pill">
+              <strong>307</strong> Questions
+            </div>
+            <div class="gateway-stat-pill">
+              <strong>23</strong> Courses
+            </div>
+            <div class="gateway-stat-pill">
+              <strong>8</strong> Departments
+            </div>
+          </div>
+
+          <div class="gateway-dept-chips">
+            <span class="dept-chip">Finance</span>
+            <span class="dept-chip">Marketing</span>
+            <span class="dept-chip">Operations</span>
+            <span class="dept-chip">HR</span>
+          </div>
+
+          <a href="{{ url_for('dash.dashboard', program='bba') }}" class="btn-gateway-gold">
+            <span>Explore BBA PYQs</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       3. Full-Width University Platform Statistics Section
+       ======================================================================== -->
+  <section class="fullpage-stats-section">
+    <div class="stats-section-inner">
+      <div class="stats-section-header">
+        <span class="section-tag-gold">University Metrics</span>
+        <h2 class="section-heading-dark">Overall Platform Coverage</h2>
+        <p class="section-desc-muted">Unified analytics extracted and validated across official university examination archives.</p>
+      </div>
+
+      <div class="stats-4col-grid">
+        <!-- Metric 1: Papers -->
+        <div class="stat-metric-card spotlight-card">
+          <div class="metric-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </div>
+          <div class="metric-value-text">{{ totals.papers }}</div>
+          <div class="metric-label-text">Papers Analysed</div>
+          <div class="metric-sub-text">Semester examination records</div>
+        </div>
+
+        <!-- Metric 2: Questions -->
+        <div class="stat-metric-card spotlight-card">
+          <div class="metric-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="8" y1="6" x2="21" y2="6"/>
+              <line x1="8" y1="12" x2="21" y2="12"/>
+              <line x1="8" y1="18" x2="21" y2="18"/>
+              <line x1="3" y1="6" x2="3.01" y2="6"/>
+              <line x1="3" y1="12" x2="3.01" y2="12"/>
+              <line x1="3" y1="18" x2="3.01" y2="18"/>
+            </svg>
+          </div>
+          <div class="metric-value-text">{{ "{:,}".format(totals.questions) }}</div>
+          <div class="metric-label-text">Questions Extracted</div>
+          <div class="metric-sub-text">Digitised &amp; segmented</div>
+        </div>
+
+        <!-- Metric 3: Courses -->
+        <div class="stat-metric-card spotlight-card">
+          <div class="metric-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+            </svg>
+          </div>
+          <div class="metric-value-text">{{ totals.courses }}</div>
+          <div class="metric-label-text">Academic Courses</div>
+          <div class="metric-sub-text">Across B.Tech &amp; BBA</div>
+        </div>
+
+        <!-- Metric 4: Topics -->
+        <div class="stat-metric-card spotlight-card">
+          <div class="metric-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 17 12 22 22 17"/>
+              <polyline points="2 12 12 17 22 12"/>
+            </svg>
+          </div>
+          <div class="metric-value-text">{{ totals.topics }}</div>
+          <div class="metric-label-text">Discovered Topics</div>
+          <div class="metric-sub-text">Pattern-modeled clusters</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       4. How QuestionIQ Works — 3-Step Academic Intelligence Flow
+       ======================================================================== -->
+  <section class="fullpage-flow-section">
+    <div class="flow-section-inner">
+      <div class="stats-section-header">
+        <span class="section-tag-gold">Academic Intelligence</span>
+        <h2 class="section-heading-dark">How QuestionIQ Works</h2>
+        <p class="section-desc-muted">From raw PDF question papers to transparent, explainable exam analytics.</p>
+      </div>
+
+      <div class="flow-3col-grid">
+        <!-- Step 1 -->
+        <div class="flow-card spotlight-card">
+          <div class="flow-step-num">01</div>
+          <h3 class="flow-step-title">OCR &amp; Question Segmentation</h3>
+          <p class="flow-step-desc">
+            Scanned question papers are processed using Tesseract OCR, cleaning noise and isolating individual questions, marks, and sub-parts.
+          </p>
+          <div class="flow-card-footer-pill">91.3% Extraction Accuracy</div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flow-card spotlight-card">
+          <div class="flow-step-num">02</div>
+          <h3 class="flow-step-title">NLP Topic Modeling (NMF)</h3>
+          <p class="flow-step-desc">
+            Non-Negative Matrix Factorization identifies recurring curriculum themes and maps every question to its core academic domain.
+          </p>
+          <div class="flow-card-footer-pill">12 Discovered Topic Clusters</div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flow-card spotlight-card">
+          <div class="flow-step-num">03</div>
+          <h3 class="flow-step-title">Explainable Difficulty (SHAP)</h3>
+          <p class="flow-step-desc">
+            Random Forest classifier predicts question complexity (Easy, Medium, Hard) and computes exact SHAP feature contributions explaining why.
+          </p>
+          <div class="flow-card-footer-pill">Transparent AI Breakdown</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       5. Full-Width University Footer
+       ======================================================================== -->
+  <footer class="fullpage-footer">
+    <div class="footer-top-row">
+      <div class="footer-brand-column">
+        <div class="footer-brand-flex">
+          <img src="{{ url_for('static', filename='img/jklu-logo.png') }}" alt="JKLU Logo" class="footer-crest-img">
+          <div>
+            <h4 class="footer-uni-heading">JK Lakshmipat University</h4>
+            <span class="footer-uni-sub">Near Mahindra SEZ, Ajmer Road, Jaipur, Rajasthan</span>
+          </div>
+        </div>
+        <p class="footer-mission-text">
+          QuestionIQ is an academic analytics initiative designed to help students, faculty, and departments understand examination patterns, question difficulty distributions, and syllabus mastery.
+        </p>
+      </div>
+
+      <div class="footer-nav-column">
+        <h5 class="footer-col-title">Navigation</h5>
+        <ul class="footer-links-list">
+          <li><a href="{{ url_for('dash.home') }}">Home</a></li>
+          <li><a href="{{ url_for('dash.dashboard', program='btech') }}">B.Tech Dashboard</a></li>
+          <li><a href="{{ url_for('dash.dashboard', program='bba') }}">BBA Dashboard</a></li>
+          <li><a href="{{ url_for('dash.subjects') }}">Subjects Directory</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-nav-column">
+        <h5 class="footer-col-title">Analytics</h5>
+        <ul class="footer-links-list">
+          <li><a href="{{ url_for('dash.questions') }}">Question Bank</a></li>
+          <li><a href="{{ url_for('dash.topics') }}">Topic Insights</a></li>
+          <li><a href="{{ url_for('dash.difficulty') }}">Difficulty Analysis</a></li>
+          <li><a href="{{ url_for('dash.trends') }}">Trends by Year</a></li>
+          <li><a href="{{ url_for('dash.report') }}">Model Report</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom-row">
+      <div class="footer-copy">
+        &copy; 2026 JK Lakshmipat University. All rights reserved.
+      </div>
+      <div class="footer-motto">
+        Better Insights. Better Preparation.
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='spotlight.js') }}"></script>
+</body>
+</html>

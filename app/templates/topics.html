@@ -1,26 +1,263 @@
 {% extends "base.html" %}
-{% block title %}Topics · QuestionIQ{% endblock %}
-{% block content %}
-<h1>Topics</h1>
-{% if metrics %}
-<p class="muted">{{ metrics.chosen_model | upper }} with k = {{ metrics.chosen_k }}, chosen by the highest C_v coherence
-({{ '%.3f' % metrics.best[metrics.chosen_model].c_v }}). Topic names were given by the owner from each topic's keywords.
-Topic–department normalised mutual information: {{ metrics.subject_alignment.nmi }} (0 = unrelated, 1 = identical).</p>
-{% endif %}
-<div class="scroll">
-<table>
-  <thead><tr><th>#</th><th>Topic</th><th>Top keywords</th><th class="num">Questions</th><th>Main departments</th></tr></thead>
-  <tbody>
-  {% for topic in topics %}
-    <tr>
-      <td>{{ topic.id }}</td>
-      <td><a href="{{ url_for('dash.questions', topic=topic.id) }}">{{ topic.name }}</a></td>
-      <td>{% for word in topic.keywords %}<span class="keyword">{{ word.replace('_', ' ') }}</span>{% endfor %}</td>
-      <td class="num">{{ topic.n_questions }}</td>
-      <td>{% for dept, n in topic.departments %}{{ dept }} {{ n }}{{ ', ' if not loop.last }}{% endfor %}</td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
+{% block title %}Topic Insights · QuestionIQ{% endblock %}
+
+{% block topbar_title %}
+<div class="header-titles">
+  <h1 class="header-main-title">Topic Insights</h1>
+  <p class="header-sub-title">Explore recurring academic topics discovered from previous-year question papers.</p>
 </div>
+{% endblock %}
+
+{% block content %}
+
+<!-- ========================================================================
+     Screen 05: Topic Insights Academic Summary Strip
+     ======================================================================== -->
+<div class="kpi-cards-grid-4" style="margin-bottom: 24px;">
+  <!-- Card 1: Total Topics -->
+  <div class="kpi-card-exact">
+    <div class="kpi-icon-box-gold">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+        <polyline points="2 17 12 22 22 17"/>
+        <polyline points="2 12 12 17 22 12"/>
+      </svg>
+    </div>
+    <div class="kpi-text-group">
+      <h3 class="kpi-number">{{ summary.total_topics }}</h3>
+      <span class="kpi-label">Topics Identified</span>
+    </div>
+  </div>
+
+  <!-- Card 2: Total Questions Mapped -->
+  <div class="kpi-card-exact">
+    <div class="kpi-icon-box-gold">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="8" y1="6" x2="21" y2="6"/>
+        <line x1="8" y1="12" x2="21" y2="12"/>
+        <line x1="8" y1="18" x2="21" y2="18"/>
+        <line x1="3" y1="6" x2="3.01" y2="6"/>
+        <line x1="3" y1="12" x2="3.01" y2="12"/>
+        <line x1="3" y1="18" x2="3.01" y2="18"/>
+      </svg>
+    </div>
+    <div class="kpi-text-group">
+      <h3 class="kpi-number">{{ "{:,}".format(summary.total_questions) }}</h3>
+      <span class="kpi-label">Questions Categorised</span>
+    </div>
+  </div>
+
+  <!-- Card 3: Departments Covered -->
+  <div class="kpi-card-exact">
+    <div class="kpi-icon-box-gold">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+      </svg>
+    </div>
+    <div class="kpi-text-group">
+      <h3 class="kpi-number">{{ summary.total_departments }}</h3>
+      <span class="kpi-label">Academic Departments</span>
+    </div>
+  </div>
+
+  <!-- Card 4: Exam Papers Analysed -->
+  <div class="kpi-card-exact">
+    <div class="kpi-icon-box-gold">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+      </svg>
+    </div>
+    <div class="kpi-text-group">
+      <h3 class="kpi-number">{{ summary.total_papers }}</h3>
+      <span class="kpi-label">Analysed Papers</span>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================================
+     Search, Filter & Sort Toolbar
+     ======================================================================== -->
+<div class="panel-card" style="padding: 14px 18px; margin-bottom: 24px;">
+  <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between;">
+    <!-- Keyword / Topic Search -->
+    <div class="filter-search-wrapper" style="min-width: 280px;">
+      <div class="filter-search-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </div>
+      <input type="text" id="topicSearchInput" placeholder="Search topics or keywords (e.g. algorithm, memory, sql)..."
+             class="filter-search-input" oninput="filterTopics()">
+    </div>
+
+    <!-- Department Filter Dropdown -->
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <label for="topicDeptFilter" style="font-size: 0.82rem; font-weight: 600; color: var(--navy-primary); white-space: nowrap;">Department:</label>
+      <select id="topicDeptFilter" class="dropdown-input" onchange="filterTopics()" style="min-width: 150px;">
+        <option value="">All Departments</option>
+        {% set depts = [] %}
+        {% for topic in topics %}
+          {% for d, n in topic.departments %}
+            {% if d not in depts %}
+              {% set _ = depts.append(d) %}
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+        {% for d in depts|sort %}
+          <option value="{{ d }}">{{ d }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Sort Dropdown -->
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <label for="topicSortSelect" style="font-size: 0.82rem; font-weight: 600; color: var(--navy-primary); white-space: nowrap;">Sort by:</label>
+      <select id="topicSortSelect" class="dropdown-input" onchange="sortTopics()" style="min-width: 170px;">
+        <option value="count-desc">Question Count (High → Low)</option>
+        <option value="count-asc">Question Count (Low → High)</option>
+        <option value="name-asc">Topic Name (A → Z)</option>
+        <option value="id-asc">Topic Number (01 → 12)</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================================
+     Screen 05: Topic Cards Responsive Grid (3 per row, Equal Height)
+     ======================================================================== -->
+<div id="topicsGrid" class="topics-grid-3col">
+  {% for topic in topics %}
+  <div class="topic-card-item"
+       data-id="{{ topic.id }}"
+       data-name="{{ topic.name|lower }}"
+       data-count="{{ topic.n_questions }}"
+       data-keywords="{{ topic.keywords|join(' ')|lower }}"
+       data-depts="{% for dept, n in topic.departments %}{{ dept }} {% endfor %}">
+
+    <!-- 1. Header: Topic number badge & topic title -->
+    <div class="topic-card-header">
+      <div class="topic-number-badge">
+        {{ "%02d" % topic.id }}
+      </div>
+      <h3 class="topic-card-title" title="{{ topic.name }}">
+        {{ topic.name }}
+      </h3>
+    </div>
+
+    <!-- 2. Question count displayed prominently -->
+    <div class="topic-card-count-box">
+      <span class="topic-count-number">{{ topic.n_questions }}</span>
+      <span class="topic-count-label">Questions</span>
+    </div>
+
+    <!-- 3. Relevant keywords displayed as small chips -->
+    <div class="topic-card-keywords-section">
+      <div class="topic-section-caption">Keywords:</div>
+      <div class="topic-keywords-chips-wrap">
+        {% for word in topic.keywords %}
+          <span class="topic-keyword-chip">{{ word.replace('_', ' ') }}</span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- 4. Top departments section -->
+    <div class="topic-card-depts-section">
+      <span class="topic-section-caption">Top Departments:</span>
+      <div class="topic-depts-chips-line">
+        {% if topic.departments %}
+          {% for dept, n in topic.departments %}
+            <span class="topic-dept-badge">{{ dept }} <strong>({{ n }})</strong></span>
+          {% endfor %}
+        {% else %}
+          <span style="font-size: 0.78rem; color: var(--text-muted);">None detected</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 5. Subtle Divider & 6. Explore Questions Action (bottom-aligned) -->
+    <div class="topic-card-footer">
+      <a href="{{ url_for('dash.questions', topic=topic.id, program=program) }}" class="btn-explore-topic">
+        <span>Explore Questions</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
+    </div>
+
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Empty state if search finds nothing -->
+<div id="noTopicsFound" class="panel-card" style="display: none; text-align: center; padding: 48px 24px; margin-top: 16px;">
+  <p style="font-size: 1.1rem; font-weight: 600; color: var(--navy-primary); margin-bottom: 6px;">No topics match your search criteria</p>
+  <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Try adjusting your keyword or clearing the department filter.</p>
+  <button type="button" class="btn-outline-navy" onclick="resetTopicFilters()">Reset Filters</button>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function filterTopics() {
+  const query = (document.getElementById("topicSearchInput").value || "").toLowerCase().trim();
+  const dept = (document.getElementById("topicDeptFilter").value || "").trim();
+  const cards = document.querySelectorAll(".topic-card-item");
+  let visibleCount = 0;
+
+  cards.forEach(card => {
+    const name = card.dataset.name || "";
+    const keywords = card.dataset.keywords || "";
+    const depts = card.dataset.depts || "";
+
+    const matchesQuery = !query || name.includes(query) || keywords.includes(query);
+    const matchesDept = !dept || depts.includes(dept);
+
+    if (matchesQuery && matchesDept) {
+      card.style.display = "flex";
+      visibleCount++;
+    } else {
+      card.style.display = "none";
+    }
+  });
+
+  const emptyMsg = document.getElementById("noTopicsFound");
+  if (emptyMsg) {
+    emptyMsg.style.display = visibleCount === 0 ? "block" : "none";
+  }
+}
+
+function sortTopics() {
+  const mode = document.getElementById("topicSortSelect").value;
+  const grid = document.getElementById("topicsGrid");
+  const cards = Array.from(grid.querySelectorAll(".topic-card-item"));
+
+  cards.sort((a, b) => {
+    if (mode === "count-desc") {
+      return parseInt(b.dataset.count) - parseInt(a.dataset.count);
+    } else if (mode === "count-asc") {
+      return parseInt(a.dataset.count) - parseInt(b.dataset.count);
+    } else if (mode === "name-asc") {
+      return (a.dataset.name || "").localeCompare(b.dataset.name || "");
+    } else if (mode === "id-asc") {
+      return parseInt(a.dataset.id) - parseInt(b.dataset.id);
+    }
+    return 0;
+  });
+
+  cards.forEach(card => grid.appendChild(card));
+}
+
+function resetTopicFilters() {
+  document.getElementById("topicSearchInput").value = "";
+  document.getElementById("topicDeptFilter").value = "";
+  document.getElementById("topicSortSelect").value = "count-desc";
+  filterTopics();
+  sortTopics();
+}
+</script>
 {% endblock %}

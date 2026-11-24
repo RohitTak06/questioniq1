@@ -10,7 +10,7 @@ from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
-from flask import Blueprint, abort, current_app, jsonify, render_template, request
+from flask import Blueprint, abort, current_app, jsonify, render_template, request, session as flask_session, redirect, url_for
 from flask.typing import ResponseReturnValue
 from sqlalchemy import Select, func, select
 from sqlalchemy.orm import Session
@@ -47,13 +47,45 @@ def _metric(name: str) -> dict | None:
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
 
 
+BTECH_DEPTS = ["CS", "AS", "EE", "ME", "CE", "CC", "ES", "MA"]
+BBA_DEPTS = ["FA", "ED", "OP", "BS", "LS", "IL", "LD", "ID"]
+
+DEPT_NAMES = {
+    "CS": "Computer Science & Engineering",
+    "AS": "Applied Sciences",
+    "EE": "Electrical & Electronics Engineering",
+    "ME": "Mechanical Engineering",
+    "CE": "Civil Engineering",
+    "CC": "Chemical & Cloud Computing",
+    "ES": "Environmental Studies",
+    "MA": "Mathematics",
+    "FA": "Finance & Accounting",
+    "ED": "Entrepreneurship & Innovation",
+    "OP": "Operations & Supply Chain",
+    "BS": "Business Studies",
+    "LS": "Legal Studies & Ethics",
+    "IL": "International Law & Relations",
+    "LD": "Leadership & Development",
+    "ID": "Interdisciplinary Studies",
+}
+
+
+def _get_program() -> str:
+    """Get active program from request arg or session, defaulting to 'btech'."""
+    prog = request.args.get("program")
+    if prog in ("btech", "bba", "all"):
+        flask_session["program"] = prog
+    return flask_session.get("program", "btech")
+
+
 def explanation_dict(question: Question, paper: Paper, prediction: Prediction | None,
                      topic: Topic | None) -> dict:
     """Return everything the Explain drawer shows for one stored question."""
     result = {
         "question_id": question.question_key, "course": paper.course, "year": paper.year,
-        "exam_type": paper.exam_type, "qno": question.qno, "sub_part": question.sub_part,
-        "text": question.text, "owner_label": question.owner_label,
+        "department": paper.department, "exam_type": paper.exam_type,
+        "qno": question.qno, "sub_part": question.sub_part,
+        "marks": question.marks, "text": question.text, "owner_label": question.owner_label,
         "topic_name": topic.name if topic else None,
     }
     if prediction is not None:
@@ -61,8 +93,8 @@ def explanation_dict(question: Question, paper: Paper, prediction: Prediction | 
             "predicted": prediction.predicted,
             "probabilities": {"Easy": prediction.p_easy, "Medium": prediction.p_medium, "Hard": prediction.p_hard},
             "because": prediction.because,
-            "reasons": json.loads(prediction.reasons_json),
-            "topics": json.loads(prediction.topics_json),
+            "reasons": json.loads(prediction.reasons_json) if prediction.reasons_json else [],
+            "topics": json.loads(prediction.topics_json) if prediction.topics_json else {},
             "outside_training_subjects": prediction.outside_training_subjects,
         })
     return result
@@ -81,6 +113,12 @@ def apply_filters(query: Select, filters: dict) -> Select:
 
     Empty values are ignored, and so are topic or year values that aren't whole numbers.
     """
+    program = filters.get("program")
+    if program == "btech":
+        query = query.where(Paper.department.in_(BTECH_DEPTS))
+    elif program == "bba":
+        query = query.where(Paper.department.in_(BBA_DEPTS))
+
     if filters.get("department"):
         query = query.where(Paper.department == filters["department"])
     if filters.get("course"):
@@ -100,58 +138,290 @@ def apply_filters(query: Select, filters: dict) -> Select:
 
 @bp.get("/")
 def home() -> ResponseReturnValue:
-    """Show the totals and links to every page."""
-    session = _session()
-    if session is None:
+    """Show the unified QuestionIQ Landing Page (Screen 1 in wireframe)."""
+    if request.args.get("view") == "dashboard" or request.args.get("program"):
+        return dashboard()
+
+    db_session = _session()
+    if db_session is None:
         return _no_database()
-    with session:
+
+    with db_session:
         totals = {
-            "papers": session.scalar(select(func.count()).select_from(Paper)),
-            "questions": session.scalar(select(func.count()).select_from(Question)),
-            "courses": session.scalar(select(func.count(func.distinct(Paper.course)))),
-            "departments": session.scalar(select(func.count(func.distinct(Paper.department)))),
-            "years": sorted(year for year in session.scalars(select(func.distinct(Paper.year))) if year),
-            "topics": session.scalar(select(func.count()).select_from(Topic)),
+            "papers": db_session.scalar(select(func.count()).select_from(Paper)),
+            "questions": db_session.scalar(select(func.count()).select_from(Question)),
+            "courses": db_session.scalar(select(func.count(func.distinct(Paper.course)))),
+            "topics": db_session.scalar(select(func.count()).select_from(Topic)),
         }
-    return render_template("home.html", totals=totals, difficulty=_metric("difficulty"))
+    return render_template("landing.html", totals=totals)
+
+
+@bp.get("/dashboard")
+def dashboard() -> ResponseReturnValue:
+    """Show the interactive Dashboard (Screen 2)."""
+    db_session = _session()
+    if db_session is None:
+        return _no_database()
+
+    program = _get_program()
+    dept_filter = None
+    if program == "btech":
+        dept_filter = Paper.department.in_(BTECH_DEPTS)
+    elif program == "bba":
+        dept_filter = Paper.department.in_(BBA_DEPTS)
+
+    with db_session:
+        q_papers_cnt = select(func.count()).select_from(Paper)
+        q_quest_cnt = select(func.count()).select_from(Question).join(Paper, Question.paper_id == Paper.id)
+        q_courses_cnt = select(func.count(func.distinct(Paper.course)))
+        q_depts_cnt = select(func.count(func.distinct(Paper.department)))
+        q_years = select(func.distinct(Paper.year))
+
+        if dept_filter is not None:
+            q_papers_cnt = q_papers_cnt.where(dept_filter)
+            q_quest_cnt = q_quest_cnt.where(dept_filter)
+            q_courses_cnt = q_courses_cnt.where(dept_filter)
+            q_depts_cnt = q_depts_cnt.where(dept_filter)
+            q_years = q_years.where(dept_filter)
+
+        totals = {
+            "papers": db_session.scalar(q_papers_cnt),
+            "questions": db_session.scalar(q_quest_cnt),
+            "courses": db_session.scalar(q_courses_cnt),
+            "departments": db_session.scalar(q_depts_cnt),
+            "years": sorted(year for year in db_session.scalars(q_years) if year),
+            "topics": db_session.scalar(select(func.count()).select_from(Topic)),
+        }
+
+        # Questions by Year
+        y_query = (select(Paper.year, func.count(Question.id))
+                   .join(Question, Question.paper_id == Paper.id)
+                   .where(Paper.year.is_not(None)))
+        if dept_filter is not None:
+            y_query = y_query.where(dept_filter)
+        y_rows = db_session.execute(y_query.group_by(Paper.year).order_by(Paper.year)).all()
+        by_year = [{"year": str(y), "count": count} for y, count in y_rows]
+
+        # Difficulty Distribution
+        d_query = (select(Prediction.predicted, func.count(Question.id))
+                   .join(Question, Prediction.question_id == Question.id)
+                   .join(Paper, Question.paper_id == Paper.id)
+                   .where(Prediction.predicted.is_not(None)))
+        if dept_filter is not None:
+            d_query = d_query.where(dept_filter)
+        d_counts = dict(db_session.execute(d_query.group_by(Prediction.predicted)).all())
+        total_d = sum(d_counts.values()) or 1
+        diff_dist = {
+            "Easy": d_counts.get("Easy", 0),
+            "Medium": d_counts.get("Medium", 0),
+            "Hard": d_counts.get("Hard", 0),
+            "total": total_d,
+            "pct_easy": round((d_counts.get("Easy", 0) / total_d) * 100, 1),
+            "pct_medium": round((d_counts.get("Medium", 0) / total_d) * 100, 1),
+            "pct_hard": round((d_counts.get("Hard", 0) / total_d) * 100, 1),
+        }
+
+        # Top 5 Topics
+        t_query = (select(Topic.name, func.count(Question.id))
+                   .join(Question, Question.dominant_topic == Topic.id)
+                   .join(Paper, Question.paper_id == Paper.id))
+        if dept_filter is not None:
+            t_query = t_query.where(dept_filter)
+        t_rows = db_session.execute(t_query.group_by(Topic.name).order_by(func.count(Question.id).desc()).limit(5)).all()
+        top_topics = [{"name": name, "count": count, "pct": round((count / (totals["questions"] or 1)) * 100, 1)}
+                      for name, count in t_rows]
+
+        # Recent preview questions
+        prev_query = _base_query()
+        if dept_filter is not None:
+            prev_query = prev_query.where(dept_filter)
+        prev_rows = db_session.execute(prev_query.order_by(Paper.year.desc(), Question.id).limit(6)).all()
+        preview_questions = [explanation_dict(*r) for r in prev_rows]
+
+    return render_template("dashboard.html", totals=totals, difficulty=_metric("difficulty"),
+                           program=program, by_year=by_year, diff_dist=diff_dist,
+                           top_topics=top_topics, preview_questions=preview_questions)
+
+
+@bp.get("/subjects")
+def subjects() -> ResponseReturnValue:
+    """Show the Subject & Department Directory (Screen 3 in collage)."""
+    db_session = _session()
+    if db_session is None:
+        return _no_database()
+
+    program = _get_program()
+    dept_filter = None
+    if program == "btech":
+        dept_filter = Paper.department.in_(BTECH_DEPTS)
+    elif program == "bba":
+        dept_filter = Paper.department.in_(BBA_DEPTS)
+
+    with db_session:
+        query = (select(Paper.department, Paper.course, func.count(Question.id), func.count(func.distinct(Paper.id)))
+                 .join(Question, Question.paper_id == Paper.id))
+        if dept_filter is not None:
+            query = query.where(dept_filter)
+        rows = db_session.execute(query.group_by(Paper.department, Paper.course).order_by(Paper.department, Paper.course)).all()
+
+        departments = {}
+        for dept, course, q_count, p_count in rows:
+            if dept not in departments:
+                departments[dept] = {
+                    "code": dept,
+                    "name": DEPT_NAMES.get(dept, dept),
+                    "courses": [],
+                    "total_questions": 0,
+                    "total_papers": 0,
+                }
+            departments[dept]["courses"].append({
+                "code": course,
+                "questions": q_count,
+                "papers": p_count
+            })
+            departments[dept]["total_questions"] += q_count
+            departments[dept]["total_papers"] += p_count
+
+        dept_list = sorted(departments.values(), key=lambda d: -d["total_questions"])
+        summary = {
+            "total_departments": len(dept_list),
+            "total_courses": sum(len(d["courses"]) for d in dept_list),
+            "total_questions": sum(d["total_questions"] for d in dept_list),
+            "total_papers": sum(d["total_papers"] for d in dept_list),
+        }
+
+    return render_template("subjects.html", departments=dept_list, summary=summary, program=program)
+
+
+@bp.get("/difficulty")
+def difficulty() -> ResponseReturnValue:
+    """Show Difficulty Analysis (Screen 9 in wireframe)."""
+    db_session = _session()
+    if db_session is None:
+        return _no_database()
+
+    program = _get_program()
+    dept_filter = None
+    if program == "btech":
+        dept_filter = Paper.department.in_(BTECH_DEPTS)
+    elif program == "bba":
+        dept_filter = Paper.department.in_(BBA_DEPTS)
+
+    with db_session:
+        # Overall difficulty
+        d_query = (select(Prediction.predicted, func.count(Question.id))
+                   .join(Question, Prediction.question_id == Question.id)
+                   .join(Paper, Question.paper_id == Paper.id)
+                   .where(Prediction.predicted.is_not(None)))
+        if dept_filter is not None:
+            d_query = d_query.where(dept_filter)
+        d_counts = dict(db_session.execute(d_query.group_by(Prediction.predicted)).all())
+        total_d = sum(d_counts.values()) or 1
+        diff_dist = {
+            "Easy": d_counts.get("Easy", 0),
+            "Medium": d_counts.get("Medium", 0),
+            "Hard": d_counts.get("Hard", 0),
+            "total": total_d,
+            "pct_easy": round((d_counts.get("Easy", 0) / total_d) * 100, 1),
+            "pct_medium": round((d_counts.get("Medium", 0) / total_d) * 100, 1),
+            "pct_hard": round((d_counts.get("Hard", 0) / total_d) * 100, 1),
+        }
+
+        # Breakdown by department
+        dept_diff_query = (select(Paper.department, Prediction.predicted, func.count(Question.id))
+                           .join(Question, Prediction.question_id == Question.id)
+                           .join(Paper, Question.paper_id == Paper.id)
+                           .where(Prediction.predicted.is_not(None)))
+        if dept_filter is not None:
+            dept_diff_query = dept_diff_query.where(dept_filter)
+        dept_diff_rows = db_session.execute(dept_diff_query.group_by(Paper.department, Prediction.predicted)).all()
+        dept_breakdown = {}
+        for dept, pred, count in dept_diff_rows:
+            if dept not in dept_breakdown:
+                dept_breakdown[dept] = {"dept": dept, "name": DEPT_NAMES.get(dept, dept), "Easy": 0, "Medium": 0, "Hard": 0, "total": 0}
+            dept_breakdown[dept][pred] = count
+            dept_breakdown[dept]["total"] += count
+
+        dept_diff_list = sorted(dept_breakdown.values(), key=lambda x: -x["total"])[:8]
+        for d in dept_diff_list:
+            tot = d["total"] or 1
+            d["pct_easy"] = round((d["Easy"] / tot) * 100, 1)
+            d["pct_medium"] = round((d["Medium"] / tot) * 100, 1)
+            d["pct_hard"] = round((d["Hard"] / tot) * 100, 1)
+
+    metric_data = _metric("difficulty")
+    return render_template("difficulty.html", diff_dist=diff_dist, dept_diff=dept_diff_list,
+                           metric=metric_data, program=program)
+
+
+@bp.get("/explain/<question_key>")
+def explain_page(question_key: str) -> ResponseReturnValue:
+    """Dedicated full-page view for Question Analysis & Explanation (Screen 4 / 6)."""
+    db_session = _session()
+    if db_session is None:
+        abort(503)
+    with db_session:
+        row = db_session.execute(_base_query().where(Question.question_key == question_key)).first()
+        if row is None:
+            abort(404)
+        item = explanation_dict(*row)
+    return render_template("explain.html", item=item, program=_get_program())
 
 
 @bp.get("/questions")
 def questions() -> ResponseReturnValue:
     """Show the question bank with filters, keyword search and pages of 50."""
-    session = _session()
-    if session is None:
+    db_session = _session()
+    if db_session is None:
         return _no_database()
+
+    prog_default = _get_program()
     filters = {key: request.args.get(key, "").strip()
-               for key in ("department", "course", "topic", "difficulty", "year", "exam_type", "q")}
+               for key in ("department", "course", "topic", "difficulty", "year", "exam_type", "q", "program")}
+    if not filters.get("program"):
+        filters["program"] = prog_default
+
     page = max(request.args.get("page", 1, type=int), 1)
     size = _cfg()["dashboard"]["page_size"]
-    with session:
+    with db_session:
         query = apply_filters(_base_query(), filters)
-        total = session.scalar(select(func.count()).select_from(query.subquery()))
-        rows = session.execute(query.order_by(Paper.year.desc(), Paper.id, Question.id)
+        total = db_session.scalar(select(func.count()).select_from(query.subquery()))
+        rows = db_session.execute(query.order_by(Paper.year.desc(), Paper.id, Question.id)
                                .offset((page - 1) * size).limit(size)).all()
+
+        dept_query = select(func.distinct(Paper.department))
+        if filters.get("program") == "btech":
+            dept_query = dept_query.where(Paper.department.in_(BTECH_DEPTS))
+        elif filters.get("program") == "bba":
+            dept_query = dept_query.where(Paper.department.in_(BBA_DEPTS))
+
+        course_query = select(func.distinct(Paper.course))
+        if filters.get("program") == "btech":
+            course_query = course_query.where(Paper.department.in_(BTECH_DEPTS))
+        elif filters.get("program") == "bba":
+            course_query = course_query.where(Paper.department.in_(BBA_DEPTS))
+
         options = {
-            "department": sorted(session.scalars(select(func.distinct(Paper.department)))),
-            "course": sorted(session.scalars(select(func.distinct(Paper.course)))),
-            "year": sorted((y for y in session.scalars(select(func.distinct(Paper.year))) if y), reverse=True),
-            "exam_type": sorted(session.scalars(select(func.distinct(Paper.exam_type)))),
-            "topic": session.execute(select(Topic.id, Topic.name).order_by(Topic.id)).all(),
+            "department": sorted(db_session.scalars(dept_query)),
+            "course": sorted(db_session.scalars(course_query)),
+            "year": sorted((y for y in db_session.scalars(select(func.distinct(Paper.year))) if y), reverse=True),
+            "exam_type": sorted(db_session.scalars(select(func.distinct(Paper.exam_type)))),
+            "topic": db_session.execute(select(Topic.id, Topic.name).order_by(Topic.id)).all(),
         }
         items = [explanation_dict(*row) for row in rows]
     pages = max((total + size - 1) // size, 1)
     return render_template("questions.html", items=items, filters=filters, options=options, total=total,
-                           page=page, pages=pages, grades=GRADES)
+                           page=page, pages=pages, grades=GRADES, program=filters["program"])
 
 
 @bp.get("/api/explain/<question_key>")
 def explain(question_key: str) -> ResponseReturnValue:
-    """Return one question's prediction, reasons and topics as JSON, for the Explain drawer."""
-    session = _session()
-    if session is None:
+    """Return one question's prediction, reasons and topics as JSON, for the Explain drawer/modal."""
+    db_session = _session()
+    if db_session is None:
         abort(503)
-    with session:
-        row = session.execute(_base_query().where(Question.question_key == question_key)).first()
+    with db_session:
+        row = db_session.execute(_base_query().where(Question.question_key == question_key)).first()
         if row is None:
             abort(404)
         return jsonify(explanation_dict(*row))
@@ -159,23 +429,62 @@ def explain(question_key: str) -> ResponseReturnValue:
 
 @bp.get("/topics")
 def topics() -> ResponseReturnValue:
-    """Show each topic with its keywords, question count and the departments it draws from."""
-    session = _session()
-    if session is None:
+    """Show each topic with its keywords, question count, departments, and summary strip."""
+    db_session = _session()
+    if db_session is None:
         return _no_database()
-    with session:
-        counts = session.execute(
+
+    program = _get_program()
+    dept_filter = None
+    if program == "btech":
+        dept_filter = Paper.department.in_(BTECH_DEPTS)
+    elif program == "bba":
+        dept_filter = Paper.department.in_(BBA_DEPTS)
+
+    with db_session:
+        counts_query = (
             select(Question.dominant_topic, Paper.department, func.count())
             .join(Paper, Question.paper_id == Paper.id)
             .where(Question.dominant_topic.is_not(None))
-            .group_by(Question.dominant_topic, Paper.department)
-        ).all()
+        )
+        if dept_filter is not None:
+            counts_query = counts_query.where(dept_filter)
+        counts = db_session.execute(counts_query.group_by(Question.dominant_topic, Paper.department)).all()
+
+        total_depts_q = select(func.count(func.distinct(Paper.department)))
+        total_papers_q = select(func.count(func.distinct(Paper.id)))
+        if dept_filter is not None:
+            total_depts_q = total_depts_q.where(dept_filter)
+            total_papers_q = total_papers_q.where(dept_filter)
+
+        total_depts = db_session.scalar(total_depts_q)
+        total_papers = db_session.scalar(total_papers_q)
+
         listing = []
-        for topic in session.scalars(select(Topic).order_by(Topic.id)):
+        for topic in db_session.scalars(select(Topic).order_by(Topic.id)):
             by_department = sorted(((dept, n) for t, dept, n in counts if t == topic.id), key=lambda item: -item[1])
-            listing.append({"id": topic.id, "name": topic.name, "keywords": topic.keywords.split(),
-                            "n_questions": sum(n for _, n in by_department), "departments": by_department[:4]})
-    return render_template("topics.html", topics=listing, metrics=_metric("topics"))
+            q_sum = sum(n for _, n in by_department)
+            listing.append({
+                "id": topic.id,
+                "name": topic.name,
+                "keywords": topic.keywords.split(),
+                "n_questions": q_sum,
+                "departments": by_department[:4]
+            })
+
+        total_mapped = sum(t["n_questions"] for t in listing)
+        active_topics = len([t for t in listing if t["n_questions"] > 0])
+
+        topic_metrics = _metric("topics") or {}
+        summary = {
+            "total_topics": len(listing),
+            "active_topics": active_topics,
+            "total_questions": total_mapped,
+            "total_departments": total_depts,
+            "total_papers": total_papers,
+        }
+
+    return render_template("topics.html", topics=listing, summary=summary, metrics=topic_metrics, program=program)
 
 
 def trend_frame(session: Session) -> pd.DataFrame:

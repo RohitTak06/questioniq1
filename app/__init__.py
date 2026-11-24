@@ -14,6 +14,8 @@ def create_app(cfg: dict | None = None) -> Flask:
     from app.routes import bp as labelling
 
     app = Flask(__name__)
+    app.secret_key = "questioniq-jklu-secure-session-key-2026"
+    app.config["TEMPLATES_AUTO_RELOAD"] = True
     app.config["QIQ"] = cfg if cfg is not None else load_config()
     upload_mb = app.config["QIQ"].get("dashboard", {}).get("upload_max_mb", 20)
     app.config["MAX_CONTENT_LENGTH"] = upload_mb * 1024 * 1024  # bigger uploads are refused

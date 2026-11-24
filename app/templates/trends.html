@@ -1,56 +1,187 @@
 {% extends "base.html" %}
-{% block title %}Trends · QuestionIQ{% endblock %}
-{% block head %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% block title %}Trends by Year · QuestionIQ{% endblock %}
+
+{% block topbar_title %}
+<div class="header-titles">
+  <h1 class="header-main-title">Trends by Year</h1>
+  <p class="header-sub-title">Topic share and difficulty trends across examination years.</p>
+</div>
 {% endblock %}
+
 {% block content %}
-<h1>Trends by year</h1>
-<p class="muted">Papers are uneven across years: most questions are from 2023 and 2024, so only those two years
-carry much weight. Every year shows its number of questions (n).</p>
 
-<h2>Topic share by year (all subjects)</h2>
-<div class="card chart"><canvas id="topicChart" aria-label="Topic share by year"></canvas></div>
+<!-- ========================================================================
+     Screen 5: Trends by Year (Exact Mockup Match)
+     ======================================================================== -->
+<div class="panel-card" style="margin-bottom: 24px;">
+  <!-- Pill Toggles: Topic Share vs Difficulty Trend -->
+  <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+    <button type="button" class="btn-explore-program" id="btnToggleTopicShare" onclick="showTrendMode('topics')" style="border: none; cursor: pointer; padding: 7px 18px; font-size: 0.82rem;">
+      Topic Share
+    </button>
+    <button type="button" class="btn-outline-navy" id="btnToggleDiffTrend" onclick="showTrendMode('diff')" style="cursor: pointer; padding: 7px 18px; font-size: 0.82rem;">
+      Difficulty Trend
+    </button>
+  </div>
 
-<h2>Predicted difficulty by year (CS and AS)</h2>
-<div class="card chart"><canvas id="mixChart" aria-label="Predicted difficulty by year"></canvas></div>
-<p class="muted">Model predictions for the subjects it was trained on. The owner's own labels, as a check:</p>
-<div class="scroll"><table>
-  <thead><tr><th>Year</th><th class="num">Labelled</th>{% for g in grades %}<th class="num">{{ g }}</th>{% endfor %}</tr></thead>
-  <tbody>{% for row in owner_mix %}<tr><td>{{ row.year }}</td><td class="num">{{ row.n_questions }}</td>
-    {% for g in grades %}<td class="num">{{ '%.0f' % (row[g] * 100) }}%</td>{% endfor %}</tr>{% endfor %}</tbody>
-</table></div>
+  <!-- View 1: Topic Share by Year Stacked Chart -->
+  <div id="viewTopicShare">
+    <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--navy-primary); margin-bottom: 14px;">
+      Topic share by year (all subjects)
+    </h4>
+    <div style="position: relative; height: 380px;">
+      <canvas id="chartTopicShareStacked"></canvas>
+    </div>
+  </div>
 
-<h2>Concepts found in 3 or more years</h2>
+  <!-- View 2: Predicted Difficulty by Year -->
+  <div id="viewDiffTrend" style="display: none;">
+    <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--navy-primary); margin-bottom: 14px;">
+      Predicted difficulty by year (CS and AS)
+    </h4>
+    <div style="position: relative; height: 380px;">
+      <canvas id="chartDiffTrendLine"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Recurring Concepts Section -->
 {% if concepts %}
-<div class="scroll"><table>
-  <thead><tr><th>Concept</th><th class="num">Years</th><th>Which years</th><th class="num">Questions</th></tr></thead>
-  <tbody>{% for c in concepts %}<tr><td><a href="{{ url_for('dash.questions', q=c.concept.replace('_', ' ')) }}">{{ c.concept.replace('_', ' ') }}</a></td>
-    <td class="num">{{ c.n_years }}</td><td>{{ c.years }}</td><td class="num">{{ c.n_questions }}</td></tr>{% endfor %}</tbody>
-</table></div>
-{% else %}<p class="muted">Run scripts/run_trends.py to list recurring concepts.</p>{% endif %}
+<div class="panel-card">
+  <div class="panel-card-header">
+    <h4>Concepts found in 3 or more years</h4>
+    <p style="font-size: 0.82rem; color: var(--text-muted);">High-yield recurring topics that appear continuously across batches.</p>
+  </div>
+
+  <div class="clean-table-container">
+    <table class="mockup-table">
+      <thead>
+        <tr>
+          <th>Concept</th>
+          <th>Years</th>
+          <th>Which years</th>
+          <th style="text-align: right;">Questions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in concepts %}
+        <tr>
+          <td>
+            <a href="{{ url_for('dash.questions', q=c.concept.replace('_', ' ')) }}" style="font-weight: 700; color: var(--navy-primary);">
+              {{ c.concept.replace('_', ' ') }}
+            </a>
+          </td>
+          <td><span class="pill-badge pill-course">{{ c.n_years }}</span></td>
+          <td style="color: var(--text-muted); font-size: 0.82rem;">{{ c.years }}</td>
+          <td style="text-align: right; font-weight: 700; color: var(--navy-primary);">{{ c.n_questions }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
 {% endblock %}
+
 {% block scripts %}
 <script>
+  function showTrendMode(mode) {
+    const vTopic = document.getElementById('viewTopicShare');
+    const vDiff = document.getElementById('viewDiffTrend');
+    const bTopic = document.getElementById('btnToggleTopicShare');
+    const bDiff = document.getElementById('btnToggleDiffTrend');
+
+    if (mode === 'topics') {
+      vTopic.style.display = 'block';
+      vDiff.style.display = 'none';
+      bTopic.className = 'btn-explore-program';
+      bDiff.className = 'btn-outline-navy';
+    } else {
+      vTopic.style.display = 'none';
+      vDiff.style.display = 'block';
+      bTopic.className = 'btn-outline-navy';
+      bDiff.className = 'btn-explore-program';
+    }
+  }
+
   const chart = {{ chart | tojson }};
-  const palette = ["#4C78A8", "#F58518", "#54A24B", "#E45756", "#72B7B2", "#EECA3B", "#B279A2", "#FF9DA6",
-                   "#9D755D", "#BAB0AC", "#2F4B7C", "#A05195"];
-  const textColour = getComputedStyle(document.body).color;
-  Chart.defaults.color = textColour;
-  new Chart(document.getElementById("topicChart"), {
+  const palette = [
+    "#002D62", "#C8961E", "#059669", "#DC2626", "#7E22CE",
+    "#2563EB", "#D97706", "#0D9488", "#DB2777", "#475569",
+    "#4338CA", "#65A30D"
+  ];
+
+  Chart.defaults.font.family = "'Plus Jakarta Sans', system-ui, sans-serif";
+
+  // Stacked Bar Chart for Topic Share
+  new Chart(document.getElementById("chartTopicShareStacked"), {
     type: "bar",
-    data: { labels: chart.years, datasets: chart.topics.map((t, i) => ({ label: t.label, data: t.data,
-            backgroundColor: palette[i % palette.length] })) },
-    options: { maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true, max: 100,
-               title: { display: true, text: "% of the year's questions" } } },
-               plugins: { legend: { position: "right" } } },
+    data: {
+      labels: chart.years,
+      datasets: chart.topics.map((t, i) => ({
+        label: t.label,
+        data: t.data,
+        backgroundColor: palette[i % palette.length],
+        borderRadius: 2
+      }))
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { stacked: true, grid: { display: false } },
+        y: {
+          stacked: true,
+          max: 100,
+          title: { display: true, text: "% of questions", color: "#64748B" },
+          grid: { color: "#F1F5F9" }
+        }
+      },
+      plugins: {
+        legend: {
+          position: "right",
+          labels: { boxWidth: 12, font: { size: 11 }, padding: 8 }
+        }
+      }
+    }
   });
-  const gradeColours = { Easy: "#3fb950", Medium: "#d29922", Hard: "#f85149" };
-  new Chart(document.getElementById("mixChart"), {
+
+  // Line Chart for Difficulty Trend
+  const gradeColours = { Easy: "#059669", Medium: "#D97706", Hard: "#DC2626" };
+  new Chart(document.getElementById("chartDiffTrendLine"), {
     type: "line",
-    data: { labels: chart.mix_years, datasets: Object.entries(chart.mix).map(([grade, data]) => ({
-            label: grade, data, borderColor: gradeColours[grade], backgroundColor: gradeColours[grade], tension: 0.2 })) },
-    options: { maintainAspectRatio: false, scales: { y: { min: 0, max: 100,
-               title: { display: true, text: "% of the year's CS and AS questions" } } } },
+    data: {
+      labels: chart.mix_years,
+      datasets: Object.entries(chart.mix).map(([grade, data]) => ({
+        label: grade,
+        data: data,
+        borderColor: gradeColours[grade],
+        backgroundColor: gradeColours[grade],
+        tension: 0.25,
+        borderWidth: 3,
+        pointRadius: 5
+      }))
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          min: 0,
+          max: 100,
+          title: { display: true, text: "% of questions", color: "#64748B" },
+          grid: { color: "#F1F5F9" }
+        },
+        x: { grid: { display: false } }
+      },
+      plugins: {
+        legend: {
+          position: "top",
+          labels: { boxWidth: 14, font: { size: 12, weight: "bold" }, padding: 14 }
+        }
+      }
+    }
   });
 </script>
 {% endblock %}

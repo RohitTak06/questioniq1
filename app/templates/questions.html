@@ -1,70 +1,158 @@
 {% extends "base.html" %}
-{% block title %}Questions · QuestionIQ{% endblock %}
-{% macro difficulty_badge(item) %}
-  {% if item.predicted %}
-    <span class="badge {{ 'outside' if item.outside_training_subjects else item.predicted }}"
-          title="{{ 'Outside training subjects (CS and AS only)' if item.outside_training_subjects else 'Predicted difficulty' }}">
-      {{ item.predicted }}{% if item.outside_training_subjects %}?{% endif %}</span>
-  {% endif %}
-{% endmacro %}
+{% block title %}Question Bank · QuestionIQ{% endblock %}
+
+{% block topbar_title %}
+<div class="header-titles">
+  <h1 class="header-main-title">Question Bank</h1>
+  <p class="header-sub-title">Browse and search analysed questions from previous-year papers.</p>
+</div>
+{% endblock %}
+
 {% block content %}
-<h1>Question bank <span class="muted">{{ total }} question{{ 's' if total != 1 }}</span></h1>
-<form class="filters" method="get">
-  <label>Department
-    <select name="department"><option value="">All</option>
-      {% for value in options.department %}<option {{ 'selected' if filters.department == value }}>{{ value }}</option>{% endfor %}
-    </select></label>
-  <label>Course
-    <select name="course"><option value="">All</option>
-      {% for value in options.course %}<option {{ 'selected' if filters.course == value }}>{{ value }}</option>{% endfor %}
-    </select></label>
-  <label>Topic
-    <select name="topic"><option value="">All</option>
-      {% for id, name in options.topic %}<option value="{{ id }}" {{ 'selected' if filters.topic == id|string }}>{{ name }}</option>{% endfor %}
-    </select></label>
-  <label>Difficulty
-    <select name="difficulty"><option value="">All</option>
-      {% for value in grades %}<option {{ 'selected' if filters.difficulty == value }}>{{ value }}</option>{% endfor %}
-    </select></label>
-  <label>Year
-    <select name="year"><option value="">All</option>
-      {% for value in options.year %}<option {{ 'selected' if filters.year == value|string }}>{{ value }}</option>{% endfor %}
-    </select></label>
-  <label>Exam
-    <select name="exam_type"><option value="">All</option>
-      {% for value in options.exam_type %}<option {{ 'selected' if filters.exam_type == value }}>{{ value }}</option>{% endfor %}
-    </select></label>
-  <label>Keyword <input type="search" name="q" value="{{ filters.q }}" placeholder="e.g. binary tree"></label>
-  <button class="btn primary" type="submit">Filter</button>
-  <a href="{{ url_for('dash.questions') }}">Clear</a>
-</form>
 
-<div class="scroll">
-<table>
-  <thead><tr><th>Course</th><th>Year</th><th>Q</th><th>Question</th><th>Topic</th><th>Difficulty</th><th></th></tr></thead>
-  <tbody>
-  {% for item in items %}
-    <tr>
-      <td>{{ item.course }}<br><span class="muted">{{ item.exam_type }}</span></td>
-      <td>{{ item.year or '' }}</td>
-      <td>{{ item.qno }}{% if item.sub_part %} ({{ item.sub_part }}){% endif %}</td>
-      <td class="qtext">{{ item.text | truncate(220) }}</td>
-      <td>{{ item.topic_name or '' }}</td>
-      <td>{{ difficulty_badge(item) }}</td>
-      <td><button class="btn" type="button" data-explain="{{ item.question_id }}">Explain</button></td>
-    </tr>
-  {% else %}
-    <tr><td colspan="7" class="muted">No questions match these filters.</td></tr>
-  {% endfor %}
-  </tbody>
-</table>
+<!-- ========================================================================
+     Screen 3: Filter Toolbar (Exact Mockup Match)
+     ======================================================================== -->
+<div class="clean-filter-bar">
+  <form class="horizontal-filter-row" method="get">
+    {% if filters.program %}<input type="hidden" name="program" value="{{ filters.program }}">{% endif %}
+
+    <!-- Department Dropdown -->
+    <div class="select-filter-item">
+      <label>Department</label>
+      <select name="department" class="dropdown-input">
+        <option value="">All Departments</option>
+        {% for value in options.department %}
+          <option value="{{ value }}" {{ 'selected' if filters.department == value }}>{{ value }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Course Dropdown -->
+    <div class="select-filter-item">
+      <label>Course</label>
+      <select name="course" class="dropdown-input">
+        <option value="">All Courses</option>
+        {% for value in options.course %}
+          <option value="{{ value }}" {{ 'selected' if filters.course == value }}>{{ value }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Semester / Exam Type -->
+    <div class="select-filter-item">
+      <label>Semester / Exam</label>
+      <select name="exam_type" class="dropdown-input">
+        <option value="">All Semesters</option>
+        {% for value in options.exam_type %}
+          <option value="{{ value }}" {{ 'selected' if filters.exam_type == value }}>{{ value }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Difficulty -->
+    <div class="select-filter-item">
+      <label>Difficulty</label>
+      <select name="difficulty" class="dropdown-input">
+        <option value="">All</option>
+        {% for value in grades %}
+          <option value="{{ value }}" {{ 'selected' if filters.difficulty == value }}>{{ value }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Year -->
+    <div class="select-filter-item">
+      <label>Year</label>
+      <select name="year" class="dropdown-input">
+        <option value="">All</option>
+        {% for value in options.year %}
+          <option value="{{ value }}" {{ 'selected' if filters.year == value|string }}>{{ value }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Keyword Search -->
+    <div class="select-filter-item" style="flex: 1.5; min-width: 180px;">
+      <label>Search Keyword</label>
+      <input type="search" name="q" value="{{ filters.q }}" placeholder="Search by keyword..." class="search-box-input">
+    </div>
+
+    <div style="display: flex; gap: 8px; margin-top: 18px;">
+      <button class="btn-explore-program" type="submit" style="padding: 7px 18px; font-size: 0.82rem;">Filter</button>
+      <a href="{{ url_for('dash.questions') }}" class="btn-outline-navy" style="display: inline-flex; align-items: center;">Reset</a>
+    </div>
+  </form>
 </div>
 
+<!-- ========================================================================
+     Screen 3: Data Table (Exact Mockup Match with Navy Header)
+     ======================================================================== -->
+<div class="clean-table-container">
+  <table class="mockup-table">
+    <thead>
+      <tr>
+        <th>Course</th>
+        <th>Year</th>
+        <th>Q.</th>
+        <th>Question (Preview)</th>
+        <th>Topic</th>
+        <th>Difficulty</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td><span class="pill-badge pill-course">{{ item.course }}</span></td>
+        <td>{{ item.year or '—' }}</td>
+        <td><strong>{{ item.qno }}{% if item.sub_part %} ({{ item.sub_part }}){% endif %}</strong></td>
+        <td class="q-preview-cell" style="max-width: 440px;">{{ item.text | truncate(160) }}</td>
+        <td>
+          {% if item.topic_name %}
+            <span class="pill-badge pill-topic">{{ item.topic_name }}</span>
+          {% else %}
+            <span style="color: var(--text-muted); font-size: 0.8rem;">General</span>
+          {% endif %}
+        </td>
+        <td>
+          <span class="pill-badge pill-diff-{{ item.predicted | lower if item.predicted else 'outside' }}">
+            {{ item.predicted or 'Unrated' }}
+          </span>
+        </td>
+        <td>
+          <button type="button" class="btn-explain-action" data-explain="{{ item.question_id }}">
+            Explain →
+          </button>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="7" style="text-align: center; padding: 48px; color: var(--text-muted);">
+          No questions matched your filter criteria.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
 {% set args = filters.copy() %}
-<div class="pager">
-  {% if page > 1 %}{% set _ = args.update({'page': page - 1}) %}<a href="{{ url_for('dash.questions', **args) }}">← Previous</a>{% endif %}
-  <span class="muted">Page {{ page }} of {{ pages }}</span>
-  {% if page < pages %}{% set _ = args.update({'page': page + 1}) %}<a href="{{ url_for('dash.questions', **args) }}">Next →</a>{% endif %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px; font-size: 0.85rem; color: var(--text-muted);">
+  <div>
+    Showing page <strong>{{ page }}</strong> of <strong>{{ pages }}</strong> ({{ total }} total questions)
+  </div>
+  <div style="display: flex; gap: 8px;">
+    {% if page > 1 %}
+      {% set _ = args.update({'page': page - 1}) %}
+      <a href="{{ url_for('dash.questions', **args) }}" class="btn-outline-navy">← Previous</a>
+    {% endif %}
+    {% if page < pages %}
+      {% set _ = args.update({'page': page + 1}) %}
+      <a href="{{ url_for('dash.questions', **args) }}" class="btn-outline-navy">Next →</a>
+    {% endif %}
+  </div>
 </div>
-<p class="muted">A grey badge with "?" means the question's department is outside the subjects the model was trained on (CS and AS).</p>
+
 {% endblock %}

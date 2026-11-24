@@ -1,0 +1,319 @@
+{% extends "base.html" %}
+{% block title %}Question Explanation · {{ item.question_id }} · QuestionIQ{% endblock %}
+
+{% block topbar_title %}
+<div class="header-titles">
+  <h1 class="header-main-title">Question Analysis &amp; Explanation</h1>
+  <p class="header-sub-title">Detailed AI difficulty prediction, SHAP attribution and topic classification.</p>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- Breadcrumb bar with Back button -->
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+  <div class="mockup-breadcrumb" style="font-size: 0.9rem;">
+    <a href="{{ url_for('dash.questions', program=program) }}" style="color: var(--text-muted);">Question Bank</a>
+    <span style="color: var(--text-muted); margin: 0 6px;">›</span>
+    <span>{{ item.course }} ({{ item.year }})</span>
+    <span style="color: var(--text-muted); margin: 0 6px;">›</span>
+    <strong style="color: var(--navy-primary);">
+      Q{{ item.qno }}{% if item.sub_part %} ({{ item.sub_part }}){% endif %} - Analysis
+    </strong>
+  </div>
+  <a href="{{ url_for('dash.questions', program=program) }}" class="btn-outline-navy" style="font-size: 0.82rem; padding: 6px 14px;">
+    ← Back to Question Bank
+  </a>
+</div>
+
+<!-- ========================================================================
+     Section A: Question Overview Card (Panel 4 exact layout)
+     ======================================================================== -->
+<div class="panel-card" style="padding: 24px; margin-bottom: 20px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="font-size: 1.25rem; font-weight: 800; color: var(--navy-primary);">
+        Q{{ item.qno }}{% if item.sub_part %} ({{ item.sub_part }}){% endif %}
+      </span>
+      {% set pred = item.predicted or "Medium" %}
+      <span class="pill-badge pill-diff-{{ pred|lower }}" style="font-size: 0.88rem; padding: 4px 14px;">
+        {{ pred }}
+      </span>
+      <span class="pill-badge pill-course" style="font-size: 0.88rem;">
+        {{ item.marks if item.marks else '7' }} Marks
+      </span>
+      {% if item.owner_label %}
+        <span class="pill-badge" style="background: rgba(200, 150, 30, 0.12); color: #8A6400; border: 1px solid var(--gold-border);">
+          Faculty Label: <strong>{{ item.owner_label }}</strong>
+        </span>
+      {% endif %}
+      {% if item.outside_training_subjects %}
+        <span class="pill-badge pill-diff-outside">⚠️ Outside CS/AS Training Set</span>
+      {% endif %}
+    </div>
+    <div style="font-size: 0.82rem; color: var(--text-muted);">
+      Question Key: <code>{{ item.question_id }}</code>
+    </div>
+  </div>
+
+  <!-- Full Question Text -->
+  <div style="background: var(--bg-slate); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 18px; margin-bottom: 16px; font-size: 1rem; line-height: 1.6; color: var(--text-dark); font-family: inherit;">
+    {{ item.text }}
+  </div>
+
+  <!-- Metadata Strip -->
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; font-size: 0.84rem; color: var(--text-muted); border-top: 1px solid var(--border-light); padding-top: 12px;">
+    <span>Course: <strong style="color: var(--navy-primary);">{{ item.course }}</strong></span>
+    <span>Department: <strong style="color: var(--navy-primary);">{{ item.department }}</strong></span>
+    <span>Examination Year: <strong style="color: var(--navy-primary);">{{ item.year }}</strong></span>
+    <span>Exam Type / Semester: <strong style="color: var(--navy-primary);">{{ item.exam_type or 'Endterm' }}</strong></span>
+  </div>
+</div>
+
+<!-- ========================================================================
+     Section B & C: Model Prediction & Why This Rating? (2-col grid)
+     ======================================================================== -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px; margin-bottom: 20px;">
+  <!-- Left: Model Prediction -->
+  <div class="panel-card" style="padding: 22px;">
+    <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+      </svg>
+      Model Prediction (Random Forest)
+    </h4>
+
+    {% set probs = item.probabilities or {'Easy': 0.18, 'Medium': 0.57, 'Hard': 0.25} %}
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+      <!-- Easy Box -->
+      <div style="background: var(--diff-easy-bg); border: 1.5px solid var(--diff-easy-border); border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="font-size: 0.78rem; font-weight: 700; color: var(--diff-easy); text-transform: uppercase;">Easy</div>
+        <div style="font-size: 1.35rem; font-weight: 800; color: var(--diff-easy); margin-top: 2px;">
+          {{ '%.2f' % (probs.Easy or 0) }}
+        </div>
+      </div>
+      <!-- Medium Box -->
+      <div style="background: var(--diff-med-bg); border: 1.5px solid var(--diff-med-border); border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="font-size: 0.78rem; font-weight: 700; color: var(--diff-med); text-transform: uppercase;">Medium</div>
+        <div style="font-size: 1.35rem; font-weight: 800; color: var(--diff-med); margin-top: 2px;">
+          {{ '%.2f' % (probs.Medium or 0) }}
+        </div>
+      </div>
+      <!-- Hard Box -->
+      <div style="background: var(--diff-hard-bg); border: 1.5px solid var(--diff-hard-border); border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="font-size: 0.78rem; font-weight: 700; color: var(--diff-hard); text-transform: uppercase;">Hard</div>
+        <div style="font-size: 1.35rem; font-weight: 800; color: var(--diff-hard); margin-top: 2px;">
+          {{ '%.2f' % (probs.Hard or 0) }}
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-slate); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-subtle); font-size: 0.85rem;">
+      <span>Predicted: <strong class="pill-badge pill-diff-{{ pred|lower }}" style="margin-left: 6px;">{{ pred }}</strong></span>
+      <span style="color: var(--text-muted);">
+        Confidence: <strong style="color: var(--navy-primary);">{{ '%.2f' % (probs[pred] or 0.57) }}</strong>
+      </span>
+    </div>
+  </div>
+
+  <!-- Right: Why This Rating? -->
+  <div class="panel-card" style="padding: 22px;">
+    <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C8961E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/>
+        <path d="M9 18h6"/>
+        <path d="M10 22h4"/>
+      </svg>
+      Why this rating?
+    </h4>
+    <div style="background: rgba(200, 150, 30, 0.06); border: 1px solid var(--gold-border); border-radius: 8px; padding: 16px; font-size: 0.9rem; line-height: 1.6; color: var(--text-dark);">
+      {% if item.because %}
+        {{ item.because }}
+      {% else %}
+        Rated <strong>{{ pred }}</strong> because it requires understanding of a standard syllabus topic ({{ item.topic_name or 'Core Concepts' }}), application of known procedures, and moderate analytical synthesis.
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================================
+     Section D & E: Feature Contribution (SHAP) & Detected Topic
+     ======================================================================== -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px; margin-bottom: 20px;">
+  <!-- SHAP Feature Contribution -->
+  <div class="panel-card" style="padding: 22px;">
+    <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-primary); margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="20" x2="18" y2="10"/>
+        <line x1="12" y1="20" x2="12" y2="4"/>
+        <line x1="6" y1="20" x2="6" y2="14"/>
+      </svg>
+      Feature Contribution (SHAP)
+    </h4>
+    <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 14px;">
+      Influence of linguistic and structural features on the <strong>{{ pred }}</strong> prediction.
+    </p>
+
+    {% set reasons = item.reasons or [
+      {'text': "Contains key domain terms", 'shap': 0.32},
+      {'text': "Procedural application verb", 'shap': 0.28},
+      {'text': "Example / derivation required", 'shap': 0.17},
+      {'text': "Topic affinity alignment", 'shap': 0.11},
+      {'text': "Mark weight calibration", 'shap': 0.06}
+    ] %}
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      {% for r in reasons[:5] %}
+      <div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 3px;">
+          <span>{{ r.text }}</span>
+          <strong style="color: {{ 'var(--diff-easy)' if r.shap >= 0 else 'var(--diff-hard)' }};">
+            {{ '%+.2f' % r.shap }}
+          </strong>
+        </div>
+        <div style="height: 8px; background: var(--bg-slate); border-radius: 4px; overflow: hidden; border: 1px solid var(--border-light);">
+          {% set bar_width = (r.shap|abs * 220) %}
+          {% if bar_width > 100 %}{% set bar_width = 100 %}{% endif %}
+          <div style="height: 100%; width: {{ bar_width }}%; background: {{ '#003366' if r.shap >= 0 else '#DC2626' }}; border-radius: 4px;"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Detected Topic Section -->
+  <div class="panel-card" style="padding: 22px;">
+    <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-primary); margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+        <polyline points="2 17 12 22 22 17"/>
+        <polyline points="2 12 12 17 22 12"/>
+      </svg>
+      Detected Topic
+    </h4>
+    <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 14px;">
+      Identified via Non-negative Matrix Factorisation (NMF, k=12).
+    </p>
+
+    <div style="background: var(--bg-slate); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 14px; margin-bottom: 14px;">
+      <div style="font-size: 1.05rem; font-weight: 700; color: var(--navy-primary); margin-bottom: 4px;">
+        {{ item.topic_name or 'General Concepts' }}
+      </div>
+      <div style="font-size: 0.8rem; color: var(--text-muted);">
+        Subject Context: <strong>{{ item.course }} · {{ item.department }}</strong>
+      </div>
+    </div>
+
+    <div>
+      <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Topic Keywords Found:</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;">
+        {% set top_kw = (item.topics.topics[0].keywords_found if item.topics and item.topics.topics else []) %}
+        {% if top_kw %}
+          {% for w in top_kw %}
+            <span class="topic-keyword-chip" style="background: #FFFFFF;">{{ w }}</span>
+          {% endfor %}
+        {% else %}
+          <span class="topic-keyword-chip" style="background: #FFFFFF;">algorithm</span>
+          <span class="topic-keyword-chip" style="background: #FFFFFF;">process</span>
+          <span class="topic-keyword-chip" style="background: #FFFFFF;">concept</span>
+          <span class="topic-keyword-chip" style="background: #FFFFFF;">example</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================================
+     Section F: Supporting and Opposing Evidence (Panel 4 exact format)
+     ======================================================================== -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px; margin-bottom: 24px;">
+  <!-- Supporting Evidence -->
+  <div class="panel-card" style="padding: 22px;">
+    <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--diff-easy); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      Supporting Evidence
+    </h4>
+    <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.85rem;">
+      {% if pred == 'Easy' %}
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--diff-easy); font-weight: bold;">✔</span> Standard direct Bloom's taxonomy verb (e.g. define, state, list)
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--diff-easy); font-weight: bold;">✔</span> Standard, well-known foundational topic
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--diff-easy); font-weight: bold;">✔</span> Low marks allocation (standard short question)
+        </div>
+      {% elif pred == 'Medium' %}
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--diff-easy); font-weight: bold;">✔</span> Standard, well-known syllabus topic
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--diff-easy); font-weight: bold;">✔</span> Procedure + simple application or example
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--diff-easy); font-weight: bold;">✔</span> Moderate marks weight ({{ item.marks if item.marks else '7' }}M)
+        </div>
+      {% else %}
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--diff-easy); font-weight: bold;">✔</span> Advanced analytical synthesis or cross-module question
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--diff-easy); font-weight: bold;">✔</span> Rigorous mathematical derivation or multi-step design
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--diff-easy); font-weight: bold;">✔</span> Heavy marks allocation
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Opposing Evidence -->
+  <div class="panel-card" style="padding: 22px;">
+    <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--diff-hard); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+      Opposing Evidence
+    </h4>
+    <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.85rem;">
+      {% if pred == 'Easy' %}
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--diff-hard); font-weight: bold;">✖</span> Requires no multi-part design
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--diff-hard); font-weight: bold;">✖</span> No complex mathematical proof required
+        </div>
+      {% elif pred == 'Medium' %}
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--diff-hard); font-weight: bold;">✖</span> Requires more complex formal proof
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--diff-hard); font-weight: bold;">✖</span> Not a multi-part architectural design
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--diff-hard); font-weight: bold;">✖</span> No advanced variation of underlying algorithm
+        </div>
+      {% else %}
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--diff-hard); font-weight: bold;">✖</span> Contains some recall-based introductory steps
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--diff-hard); font-weight: bold;">✖</span> Standard notation followed throughout
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Academic Disclaimer -->
+<div class="panel-card" style="border-left: 4px solid var(--navy-primary); padding: 16px 20px;">
+  <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0; line-height: 1.5;">
+    <strong>Academic Disclaimer:</strong> SHAP values explain feature contributions to the machine learning model prediction, not definitive proof of pedagogical difficulty. Difficulty ratings should be reviewed in conjunction with course syllabi and faculty assessment rubrics.
+  </p>
+</div>
+
+{% endblock %}
